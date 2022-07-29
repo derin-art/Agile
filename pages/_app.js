@@ -1,7 +1,15 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
+import Wrapper from "../Components/Wrapper";
+import { useAuth, AuthUserProvider } from "../Context/firebaseUserContext";
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return (
+    <AuthUserProvider>
+      <Wrapper>
+        <Component {...pageProps} />
+      </Wrapper>
+    </AuthUserProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;

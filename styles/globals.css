@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   padding: 0;
@@ -13,4 +17,13 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Josefin";
+  src: url("../public/Fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf");
+}
+@font-face {
+  font-family: "Rampart";
+  src: url("../public/Fonts/Rampart_One/RampartOne-Regular.ttf");
 }
