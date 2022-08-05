@@ -5,17 +5,31 @@ import { useRouter } from "next/router";
 import usefirebaseAuthState from "../../Hooks/firebaseAuthState";
 import { useAuth } from "../../Context/firebaseUserContext";
 import axios from "axios";
+import UserStory from "../../Components/ProductOwner/UserStory";
+import Team from "../../Components/ProductOwner/Teams";
 import { io } from "socket.io-client";
 let socket;
 
 export default function Newpage({ finalData }) {
   const router = useRouter();
-  const { authUser, loading, getUserData, SignOut } = useAuth();
+  const {
+    authUser,
+    loading,
+    getUserData,
+    SignOut,
+    userData,
+    CreateTeam,
+    getUserTeam,
+    userTeamData,
+    setCurrentTeamAvailable,
+    currentTeam,
+  } = useAuth();
   useEffect(() => {
     console.log(authUser, loading, "NewPage");
-    if (!authUser && !loading) {
+    if (!authUser) {
       router.push("/");
     }
+    console.log("index data", userData);
   }, [authUser, loading]);
 
   useEffect(() => {
@@ -57,58 +71,18 @@ export default function Newpage({ finalData }) {
   };
 
   return (
-    <h1>
-      Newpage
-      <Link href="/">
-        <button>Home</button>
-      </Link>
-      <input
-        onChange={(e) => {
-          onChangeHandler(e.target.value);
-        }}
-        value={typedInput}
-      ></input>
-      <button
-        onClick={() => {
-          socket.emit("join", "room1");
-          console.log("join room emitted");
-        }}
-      >
-        Create New Room
-      </button>
-      <button>Join created room</button>
-      <input
-        placeholder="room data"
-        onChange={(e) => {
-          setRoomInput(e.target.value);
-        }}
-        value={roomInput}
-      ></input>
-      <button
-        onClick={() => {
-          socket.emit("roomMessage", roomInput);
-        }}
-      >
-        Send
-      </button>
-      <button
-        onClick={() => {
-          getUserData();
-        }}
-        className="border bg-purple-400"
-      >
-        Get User
-      </button>
-      <button
-        onClick={() => {
-          SignOut();
-          router.push("/");
-        }}
-        className="border bg-red-600"
-      >
-        SignOut
-      </button>
-    </h1>
+    <div className="">
+      <div className="mt-20 md:ml-4">
+        <Team
+          userData={userData}
+          CreateTeam={CreateTeam}
+          getUserTeam={getUserTeam}
+          userTeamData={userTeamData}
+          authUser={authUser}
+          setCurrentTeamAvailable={setCurrentTeamAvailable}
+        ></Team>
+      </div>
+    </div>
   );
 }
 
@@ -124,3 +98,39 @@ export default function Newpage({ finalData }) {
     },
   };
 } */
+
+/*  <h1>
+        Newpage
+        <Link href="/">
+          <button>Home</button>
+        </Link>
+        <input
+          onChange={(e) => {
+            onChangeHandler(e.target.value);
+          }}
+          value={typedInput}
+        ></input>
+        <button
+          onClick={() => {
+            socket.emit("join", "room1");
+            console.log("join room emitted");
+          }}
+        >
+          Create New Room
+        </button>
+        <button>Join created room</button>
+        <input
+          placeholder="room data"
+          onChange={(e) => {
+            setRoomInput(e.target.value);
+          }}
+          value={roomInput}
+        ></input>
+        <button
+          onClick={() => {
+            socket.emit("roomMessage", roomInput);
+          }}
+        >
+          Send
+        </button>
+      </h1> */

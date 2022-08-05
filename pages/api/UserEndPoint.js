@@ -3,7 +3,6 @@ import { AgileUser } from "../../Models/agileUser";
 import multer from "multer";
 import nextConnect, { createRouter } from "next-connect";
 const fs = require("fs");
-import { NextApiRequest, NextApiResponse } from "next";
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -34,15 +33,26 @@ router
       .catch((err) => {
         console.log("Mongo ERR", err);
       });
-
-    const getRequest = async () => {
-      const data = await AgileUser.find({});
-      if (!data) {
-        return res.status(404).json({ message: "Item does not exist" });
-      }
-      return res.status(200).json(data);
-    };
-    return getRequest();
+    if (req.query.email) {
+      const getRequest = async () => {
+        const data = await AgileUser.findOne({ email: req.query.email });
+        if (!data) {
+          return res.statusCode(404).json({ message: "Item does not exist" });
+        }
+        return res.status(200).json(data);
+      };
+      return getRequest();
+    } else {
+      const getRequest = async () => {
+        console.log(req.body);
+        const data = await AgileUser.find({});
+        if (!data) {
+          return res.status(404).json({ message: "Item does not exist" });
+        }
+        return res.status(200).json(data);
+      };
+      return getRequest();
+    }
   })
 
   .post(uploadImageMiddleWare, async (req, res) => {
@@ -72,20 +82,46 @@ router
           contentType: req.file.mimetype,
         },
       });
-      return res.status(200).json(createdUser);
+      return res.status(201).json(createdUser);
     } else {
       const createdUser = await AgileUser.create({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        role: req.body.TeamRole,
         gitHub: req.body.gitHub,
       });
 
-      return res.status(200).json(createdUser);
+      return res.status(201).json(createdUser);
     }
-  });
+  })
 
+  .patch(uploadImageMiddleWare, async (req, res) => {
+    await mongoose
+      .connect(
+        "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      )
+      .then(() => {
+        console.log("Connected to server");
+      })
+      .catch((err) => {
+        console.log("Mongo ERR", err);
+      });
+    console.log(req.body);
+    const patchedUser = await AgileUser.findOneAndUpdate(
+      { email: req.query.email },
+      { role: req.body.TeamRole },
+      {
+        new: true,
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+    return res.status(200).json(patchedUser);
+  });
 /* export default async function handler(req, res) {
   console.log("MongooseConnect", mongoose.connection);
   await mongoose
@@ -137,7 +173,7 @@ router
 
 export const config = {
   api: {
-    bodyParser: false, // Disallow body parsing, consume as stream
+    bodyParser: false,
   },
 };
 

@@ -1,6 +1,8 @@
 import { useRouter } from "next/dist/client/router";
+import { useAuth } from "../../Context/firebaseUserContext";
 
 export default function id() {
+  const { authUser, loading, getUserData, SignOut, userData } = useAuth();
   const postFunction = async () => {
     try {
       const res = await fetch("/api/handler", {

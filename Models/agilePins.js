@@ -7,7 +7,14 @@ const agilePin = new Schema({
   AssignedTo: { type: String, default: "AnyOne" },
   DateAssigned: { type: Date, default: Date.now },
   DateCompleted: { type: Date },
-  ColorCode: { type: String, default: "yellow" },
+  inProgress: { type: Boolean, default: false },
+  storyPoints: { type: Number },
+  theme: {
+    color: { type: String, default: "green" },
+    name: { type: String },
+  },
+  Release: { type: String },
+  ColorCode: { type: String, default: "green" },
 });
 
 mongoose.models = {};

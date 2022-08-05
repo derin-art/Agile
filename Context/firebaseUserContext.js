@@ -1,5 +1,5 @@
 import usefirebaseAuthState from "../Hooks/firebaseAuthState";
-import react, { createContext, useContext, Context } from "react";
+import react, { createContext, useContext, Context, useEffect } from "react";
 import axios from "axios";
 
 const authUserContext = createContext({
@@ -12,11 +12,20 @@ const authUserContext = createContext({
 
 function AuthUserProvider({ children }) {
   const auth = usefirebaseAuthState();
-  react.useEffect(() => {
-    const getUsers = async () => {
-      const data = await axios.get("localhost:3000/api/UserEndPoint");
-    };
+
+  useEffect(() => {
+    if (auth.authUser) {
+      console.log(auth.authUser);
+      if (auth.authUser.email) {
+        console.log(auth.authUser.email);
+        if (!auth.userData) {
+          auth.getUserData(auth.authUser.email);
+        }
+      }
+    } else {
+    }
   }, []);
+
   return (
     <authUserContext.Provider
       value={auth}

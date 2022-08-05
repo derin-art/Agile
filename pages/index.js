@@ -89,10 +89,10 @@ export default function Home() {
       });
       return;
     }
-    SignInWithEmailAndPassword(email, password)
+    SignInWithEmailAndPassword(email, password, teamRole)
       .then((authUser) => {
         console.log("Login successful");
-        router.push("/NewPage");
+        router.push("/Teams");
         toast.success("Login Successful!", {
           position: toast.POSITION.BOTTOM_CENTER,
           className: "text-sm",
@@ -155,6 +155,62 @@ export default function Home() {
               }}
               value={password}
             ></input>
+            <div className="flex flex-col mt-2 w-64 sm:w-fit">
+              <p className="text-xs text-green-200 text-center">
+                Please Select your role for the team. Note you can change it
+                later
+              </p>
+              <div className="flex mt-2 text-xs items-center justify-center text-indigo-300">
+                <button
+                  className="flex-col flex items-center mr-2"
+                  onClick={() => {
+                    setTeamRole("TeamMember");
+                  }}
+                >
+                  {TeamRoleIcon(
+                    "TeamMember",
+                    `${
+                      teamRole === "TeamMember"
+                        ? "fill-green-300"
+                        : "fill-indigo-300"
+                    }`
+                  )}
+                  Team Member
+                </button>
+                <button
+                  className="flex-col flex items-center mr-2"
+                  onClick={() => {
+                    setTeamRole("ProductOwner");
+                  }}
+                >
+                  {TeamRoleIcon(
+                    "ProductOwner",
+                    `${
+                      teamRole === "ProductOwner"
+                        ? "fill-green-300"
+                        : "fill-indigo-300"
+                    }`
+                  )}
+                  Product Owner
+                </button>
+                <button
+                  className="flex-col flex items-center"
+                  onClick={() => {
+                    setTeamRole("ScrumMaster");
+                  }}
+                >
+                  {TeamRoleIcon(
+                    "ScrumMaster",
+                    `${
+                      teamRole === "ScrumMaster"
+                        ? "fill-green-300"
+                        : "fill-indigo-300"
+                    }`
+                  )}
+                  Scrum Master
+                </button>
+              </div>
+            </div>
             <button
               onClick={() => {
                 loginRequest();
@@ -214,62 +270,7 @@ export default function Home() {
               }}
               value={gitHubPage}
             ></input>
-            <div className="flex flex-col mt-2 w-64 sm:w-fit">
-              <p className="text-xs text-green-200 text-center">
-                Please Select your role for the team. Note you can change it
-                later
-              </p>
-              <div className="flex mt-2 text-xs items-center justify-center text-indigo-300">
-                <button
-                  className="flex-col flex items-center mr-2"
-                  onClick={() => {
-                    setTeamRole("TeamMember");
-                  }}
-                >
-                  {TeamRoleIcon(
-                    "TeamMember",
-                    `${
-                      teamRole === "TeamMember"
-                        ? "fill-green-300"
-                        : "fill-indigo-300"
-                    }`
-                  )}
-                  Team Member
-                </button>
-                <button
-                  className="flex-col flex items-center mr-2"
-                  onClick={() => {
-                    setTeamRole("ProductOwner");
-                  }}
-                >
-                  {TeamRoleIcon(
-                    "ProductOwner",
-                    `${
-                      teamRole === "ProductOwner"
-                        ? "fill-green-300"
-                        : "fill-indigo-300"
-                    }`
-                  )}
-                  Product Owner
-                </button>
-                <button
-                  className="flex-col flex items-center"
-                  onClick={() => {
-                    setTeamRole("ScrumMaster");
-                  }}
-                >
-                  {TeamRoleIcon(
-                    "ScrumMaster",
-                    `${
-                      teamRole === "ScrumMaster"
-                        ? "fill-green-300"
-                        : "fill-indigo-300"
-                    }`
-                  )}
-                  Scrum Master
-                </button>
-              </div>
-            </div>
+
             <button
               onClick={() => {
                 createUserRequest();
