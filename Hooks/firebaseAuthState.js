@@ -164,7 +164,34 @@ export default function usefirebaseAuthState() {
     });
   };
 
-  const CreateRelease = async (owner, teamId, name) => {
+  const PatchTeamWithNewRelease = async (teamId, releaseData, config) => {
+    console.log("Patchhh", releaseData);
+    const formdata = new FormData();
+    formdata.append("newRelease", releaseData);
+    formdata.append("agilePins", releaseData.agilePins);
+    formdata.append("name", releaseData.name);
+    formdata.append("owner", releaseData.owner);
+    formdata.append("id", releaseData._id);
+    formdata.append("dateEnd", releaseData.dateEnd);
+    formdata.append("dateStart", releaseData.dateStart);
+
+    console.log("Made it through");
+    const updatedTeamWithRelease = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?id=${teamId}`,
+        formdata,
+        config
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log("UpdatedTeam", updatedTeamWithRelease);
+    if (updatedTeamWithRelease) {
+      setCurrentTeam([updatedTeamWithRelease.data]);
+    }
+  };
+
+  const CreateRelease = async (owner, teamId, name, startDate, endDate) => {
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
@@ -172,13 +199,18 @@ export default function usefirebaseAuthState() {
     formdata.append("owner", owner);
     formdata.append("teamId", teamId);
     formdata.append("name", name);
+    formdata.append("startDate", startDate);
+    formdata.append("endDate", endDate);
     const data = await axios
-      .post(NEXT_PUBLIC_API_RELEASE_ROUTE, formdata, config)
+      .post(process.env.NEXT_PUBLIC_API_RELEASE_ROUTE, formdata, config)
       .catch((err) => {
         console.log(err);
       });
     if (data) {
-      console.log(data);
+      console.log("DDD", data);
+      console.log("dd", typeof data.data);
+      PatchTeamWithNewRelease(teamId, data.data, config);
+
       return data.data;
     }
   };

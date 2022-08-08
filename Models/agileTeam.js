@@ -6,10 +6,10 @@ import { agileRelease } from "./agileRelease";
 const Schema = mongoose.Schema;
 
 const agileTeam = new Schema({
-  name: { type: String, required: [true, "Name of Agile Team is Required"] },
+  name: { type: String, required: [true, "Team Name is required"] },
   teamOwner: {
     type: String,
-    required: [true, "Name of team owner is Required"],
+    required: [true, "Team owner is required"],
   },
   members: [agileUser],
   BackLog: [agilePin],

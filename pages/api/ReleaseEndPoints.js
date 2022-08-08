@@ -1,6 +1,19 @@
 import { AgileRelease } from "../../Models/agileRelease";
 import { createRouter } from "next-connect";
 import mongoose from "mongoose";
+import multer from "multer";
+import bodyParser from "body-parser";
+
+const TeamJson = bodyParser.json();
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: "./public/uploads",
+    filename: (req, file, cb) => cb(null, file.originalname),
+  }),
+});
+
+const uploadImageMiddleWare = upload.single("Image");
 
 const router = createRouter();
 
@@ -31,7 +44,7 @@ router
 
     return getRequest();
   })
-  .post(async (req, res) => {
+  .post(uploadImageMiddleWare, async (req, res) => {
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -50,6 +63,8 @@ router
       owner: req.body.owner,
       teamId: req.body.teamId,
       name: req.body.name,
+      dateEnd: req.body.endDate,
+      dateStart: req.body.startDate,
     });
     return res.status(201).json(newRelease);
   });
@@ -63,3 +78,9 @@ export default router.handler({
     res.status(404).end("Page is not found");
   },
 });
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

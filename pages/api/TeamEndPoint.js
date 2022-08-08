@@ -78,14 +78,26 @@ router
     console.log(createdTeam);
     return res.status(201).json(createdTeam);
   })
-  .patch(async (req, res) => {
+  .patch(uploadImageMiddleWare, async (req, res) => {
+    console.log("Sent");
     if (req.body.newRelease) {
-      const updatedTeam = await AgileTeam.findByIdAndUpdate(
-        req.query.id,
-        { $push: { Release: req.body.newRelease } },
+      console.log("IDD", req.body.newRelease);
+
+      const updatedTeam = await AgileTeam.findOneAndUpdate(
+        { _id: req.query.id },
         {
-          new: true,
-        }
+          $push: {
+            Release: {
+              agilePins: req.body.agilePins,
+              name: req.body.name,
+              owner: req.body.owner,
+              id: req.body.id,
+              startDate: req.body.startDate,
+              endDate: req.body.endDate,
+            },
+          },
+        },
+        { new: true }
       ).catch((err) => {
         console.log(err);
       });

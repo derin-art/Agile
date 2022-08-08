@@ -12,8 +12,8 @@ export default function Wrapper(props) {
       <div className="flex h-full">
         <SideBar></SideBar>
         <div
-          className={`w-screen ${router.pathname != "/" ? "ml-24" : ""}
-        ${router.pathname === "/Teams" ? "ml-0" : ""}`}
+          className={`w-screen ${router.pathname != "/" ? "md:ml-24" : ""}
+        ${router.pathname === "/Teams" ? "md:ml-0 ml-0" : ""}`}
         >
           {props.children}
         </div>

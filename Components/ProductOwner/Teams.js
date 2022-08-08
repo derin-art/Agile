@@ -174,10 +174,9 @@ export default function Team({
                 }
 
                 if (userData) {
-                  if (userData.email) {
-                    const data = getUserTeam(userData.email);
-                    console.log(data, "actual");
-                  }
+                  if (!userData.email) return;
+                  const data = getUserTeam(userData.email);
+                  console.log(data, "actual");
                 }
               }
             }}
