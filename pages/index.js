@@ -92,10 +92,11 @@ export default function Home() {
     SignInWithEmailAndPassword(email, password, teamRole)
       .then((authUser) => {
         console.log("Login successful");
-        router.push("/Teams");
+
         toast.success("Login Successful!", {
           position: toast.POSITION.BOTTOM_CENTER,
           className: "text-sm",
+          onClose: () => router.push("/Teams"),
         });
       })
       .catch((err) => {

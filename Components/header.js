@@ -9,7 +9,7 @@ import { useState } from "react";
 import openFolderIcon from "../public/SideBarIcons/openFolderIcon";
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const { SignOut } = useAuth();
   const router = useRouter();
   return (

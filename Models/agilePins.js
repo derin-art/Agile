@@ -4,17 +4,18 @@ const Schema = mongoose.Schema;
 const agilePin = new Schema({
   name: { type: String, required: [true, "Agile Pin is Required"] },
   completed: { type: Boolean, default: false },
-  AssignedTo: { type: String, default: "AnyOne" },
-  DateAssigned: { type: Date, default: Date.now },
+  AcceptanceCriteria: { type: String },
+  AssignedTo: { type: String, default: "Anyone" },
+  DateCreated: { type: Date, default: Date.now },
   DateCompleted: { type: Date },
   inProgress: { type: Boolean, default: false },
   storyPoints: { type: Number },
   theme: {
-    color: { type: String, default: "green" },
-    name: { type: String },
+    color: { type: String, default: "indigo" },
+    name: { type: String, default: "Notheme" },
   },
   Release: { type: String },
-  ColorCode: { type: String, default: "green" },
+  PriorityRank: { type: String, default: "green" },
 });
 
 mongoose.models = {};

@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { Tooltip } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/styles";
 import infoIcon from "../../public/infoIcon";
+import StoryTeamCard from "../StoryTeamCard";
+import { useAuth } from "../../Context/firebaseUserContext";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function UserStory() {
+  const { addUserStory, currentOpenRelease } = useAuth();
+  console.log(currentOpenRelease, "CUrrent release");
   const BlueOnGreenTooltip = withStyles({
     tooltip: {
       color: "lightblue",
@@ -20,23 +25,46 @@ export default function UserStory() {
 
   const [storyPoints, setStoryPoints] = useState(1);
 
+  const [storyName, setStoryName] = useState("");
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState("");
+
   const storyPointsClick = (e) => {
     setStoryPoints(e.target.value);
   };
 
+  const [userstories, setUserStories] = useState([]);
+
   return (
-    <div className="w-fit bg-gray-100 border border-indigo-800 relative">
-      <div className={`p-2 bg-${color}-400 absolute top-0 w-full`}></div>
-      <div className="mt-4 p-2 flex flex-col px-6">
-        <p>User Story Creator</p>
+    <div className="w-fit bg-indigo-200 font-Josefin border border-indigo-100 shadow-inner relative rounded-xl">
+      <div
+        className={`p-2 bg-${color}-400 absolute top-0 w-full duration-300 rounded-t-xl`}
+      ></div>
+      <div className="mt-4 p-2 flex flex-col">
+        <p className="hidden border-b-4 border-yellow-300">N</p>
+        <p className="hidden border-b-4 border-orange-300">N</p>
+        <p className="hidden border-b-4 border-red-300">N</p>
+        <p
+          className={`text-indigo-800 border-b-4 border-${color}-300 w-fit mb-2`}
+        >
+          User Story Creator
+        </p>
         <div className="flex flex-col">
-          <input placeholder="title" className="p-2"></input>
+          <input
+            placeholder="Story Name"
+            className="p-2 bg-indigo-800 text-green-300 rounded-sm"
+            onChange={(e) => {
+              setStoryName(e.target.value);
+            }}
+          ></input>
           <textarea
             placeholder="Description/Acceptance Criteria"
-            className="placeholder:text-sm mt-2 mb-2 p-2"
+            onChange={(e) => {
+              setAcceptanceCriteria(e.target.value);
+            }}
+            className="placeholder:text-sm mt-2 mb-2 p-2 bg-indigo-800 text-green-300 placeholder:text-gray-400 rounded-sm"
           ></textarea>
-          <div className="flex">
-            <p className="text-sm">Priority rank</p>
+          <div className="flex items-center">
+            <p className="text-sm text-indigo-800">Priority Rank</p>
             <BlueOnGreenTooltip
               title={<p className="text-xs">low risk, high value</p>}
             >
@@ -79,11 +107,11 @@ export default function UserStory() {
             </BlueOnGreenTooltip>
           </div>
         </div>
-        <div className="mt-2 flex text-sm">
+        <div className="mt-2 flex text-sm text-indigo-800 items-center">
           Story Points
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 1 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 1 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={1}
             onClick={(e) => {
@@ -93,8 +121,8 @@ export default function UserStory() {
             1
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 2 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 2 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={2}
             onClick={(e) => {
@@ -104,8 +132,8 @@ export default function UserStory() {
             2
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 3 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 3 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={3}
             onClick={(e) => {
@@ -115,8 +143,8 @@ export default function UserStory() {
             3
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 5 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 5 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={5}
             onClick={(e) => {
@@ -126,8 +154,8 @@ export default function UserStory() {
             5
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 8 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 8 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={8}
             onClick={(e) => {
@@ -137,8 +165,8 @@ export default function UserStory() {
             8
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 13 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 13 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={13}
             onClick={(e) => {
@@ -148,8 +176,8 @@ export default function UserStory() {
             13
           </button>
           <button
-            className={`w-6 h-6 ml-2 text-white rounded-full ${
-              storyPoints == 21 ? "bg-green-400" : "bg-black"
+            className={`w-6 h-6 ml-2 text-white rounded-full duration-300 ${
+              storyPoints == 21 ? "bg-green-400" : "bg-indigo-800"
             }`}
             value={21}
             onClick={(e) => {
@@ -169,11 +197,37 @@ export default function UserStory() {
               </p>
             }
           >
-            {infoIcon("ml-2 fill-green-400", "20", "20")}
+            {infoIcon("ml-2 fill-indigo-600", "20", "20")}
           </BlueOnGreenTooltip>
         </div>
-        <button className="mt-8">Create</button>
+        <button
+          className="mt-8  text-lg bg-indigo-800 shadow-inner p-1 text-indigo-200 rounded-lg"
+          onClick={() => {
+            if (!storyName) {
+              toast.error("Story Name Required", {
+                position: toast.POSITION.BOTTOM_CENTER,
+                className: "text-sm",
+              });
+              return;
+            } else if (!acceptanceCriteria) {
+              toast.error("Acceptance Criteria Required", {
+                position: toast.POSITION.BOTTOM_CENTER,
+                className: "text-sm",
+              });
+              return;
+            }
+            addUserStory(
+              storyName,
+              currentOpenRelease[0]._id,
+              storyPoints,
+              acceptanceCriteria
+            );
+          }}
+        >
+          Create
+        </button>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

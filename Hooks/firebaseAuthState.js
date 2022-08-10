@@ -22,6 +22,7 @@ export default function usefirebaseAuthState() {
   const [userData, setUserData] = useState(null);
   const [userTeamData, setUserTeamData] = useState(null);
   const [currentTeam, setCurrentTeam] = useState(null);
+  const [currentOpenRelease, setCurrentOpenRelease] = useState(null);
 
   const clear = () => {
     setAuthUser(null);
@@ -215,10 +216,79 @@ export default function usefirebaseAuthState() {
     }
   };
 
+  const addUserStoryToTeam = async (data, teamCurrentId, releaseCurrentId) => {
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    const formdata = new FormData();
+    formdata.append("AcceptanceCriteria", data.AcceptanceCriteria);
+    formdata.append("AssignedTo", data.AssignedTo);
+    formdata.append("DateCreated", data.DateCreated);
+    formdata.append("PriorityRank", data.PriorityRank);
+    formdata.append("Release", data.Release);
+    formdata.append("completed", data.completed);
+    formdata.append("inProgress", data.inProgress);
+    formdata.append("themeName", data.theme.name);
+    formdata.append("themeColor", data.theme.color);
+
+    const result = axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamCurrentId=${teamCurrentId}&releaseCurrentId=${releaseCurrentId}`,
+        formdata,
+        config
+      )
+      .catch((err) => console.log(err));
+  };
+
+  const addUserStory = async (
+    name,
+    Release,
+    PriorityRank,
+    AcceptanceCriteria
+  ) => {
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    const formdata = new FormData();
+    formdata.append("name", name);
+    formdata.append("Release", Release);
+    formdata.append("PriorityRank", PriorityRank);
+    formdata.append("AcceptanceCriteria", AcceptanceCriteria);
+    const data = await axios
+      .post(`${process.env.NEXT_PUBLIC_API_STORY_ROUTE}`, formdata, config)
+      .catch((err) => {
+        console.log(err);
+      });
+    if (data) {
+      console.log(data);
+      addUserStoryToTeam(
+        data.data,
+        currentTeam[0]._id,
+        currentOpenRelease[0]._id
+      );
+    }
+  };
+
+  const setCurrentOpenReleaseData = (id) => {
+    const current = currentTeam[0].Release.filter((item) => item._id === id);
+    console.log("set", current, id);
+    if (current) {
+      setCurrentOpenRelease(current);
+    }
+    console.log(
+      "Auth Reke",
+      currentOpenRelease,
+      process.env.NEXT_PUBLIC_API_STORY_ROUTE
+    );
+  };
+
   return {
+    addUserStory,
+    setCurrentOpenReleaseData,
     setCurrentTeamAvailable,
     CreateRelease,
     CreateTeam,
+    currentOpenRelease,
     authUser,
     loading,
     CreateUserWithEmailAndPassword,

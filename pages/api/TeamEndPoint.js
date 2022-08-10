@@ -3,6 +3,7 @@ import AgileTeam from "../../Models/agileTeam";
 import mongoose from "mongoose";
 import multer from "multer";
 import bodyParser from "body-parser";
+import Release from "../../Components/ProductOwner/Release";
 
 const router = createRouter();
 
@@ -102,6 +103,48 @@ router
         console.log(err);
       });
       return res.status(200).json(updatedTeam);
+    }
+
+    if (req.body.newStory) {
+      const retrievedTeam = await AgileTeam.findById(
+        req.query.teamCurrentId
+      ).catch((err) => {
+        console.log(err);
+      });
+      const TeamData = retrievedTeam.data;
+      const UpdatedRelease = TeamData.Release.map((item) => {
+        const sentStory = {
+          AcceptanceCriteria: req.body.AcceptanceCriteria,
+          AssignedTo: req.body.AssignedTo,
+          DateCreated: req.body.DateCreated,
+          PriorityRank: req.body.PriorityRank,
+          Release: req.body.Release,
+          completed: req.body.completed,
+          inProgress: req.body.inProgress,
+          theme: {
+            name: req.body.themeName,
+            color: req.body.color,
+          },
+          name: req.body.name,
+        };
+        console.log(sentStory);
+        if (item._id === req.query.releaseCurrentId) {
+          item.agilePins.push(sentStory);
+        } else {
+          return item;
+        }
+      });
+      const UpdatedTeamWithUpdatedRelease = await AgileTeam.findByIdAndUpdate(
+        req.query.teamCurrentId,
+        { Release: UpdatedRelease },
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      if (UpdatedTeamWithUpdatedRelease) {
+        return res.status(200).json(UpdatedTeamWithUpdatedRelease);
+      }
     }
   });
 

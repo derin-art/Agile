@@ -9,7 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import addIcon from "../../../public/addIcon";
 
 export default function AccessTeam() {
-  const { CreateRelease, currentTeam, userData } = useAuth();
+  const { CreateRelease, currentTeam, userData, setCurrentOpenReleaseData } =
+    useAuth();
   const [releaseName, setReleaseName] = useState("");
   const [currentRelease, setCurrentRelease] = useState(null);
   const [releaseStartDate, setReleaseStartDate] = useState("");
@@ -121,7 +122,13 @@ export default function AccessTeam() {
             {currentTeam[0].Release.length > 0 ? (
               currentTeam[0].Release.map((item) => (
                 <div key={item._id} className="p-1">
-                  <Release name={item.name} key={item._id}></Release>
+                  <Release
+                    setCurrentOpenReleaseData={setCurrentOpenReleaseData}
+                    name={item.name}
+                    key={item._id}
+                    currentTeam={currentTeam}
+                    id={item._id}
+                  ></Release>
                 </div>
               ))
             ) : (
@@ -129,48 +136,6 @@ export default function AccessTeam() {
             )}
           </div>
           <ToastContainer></ToastContainer>
-
-          <div className="border hidden">
-            <UserStory></UserStory>
-            <DragDropContext>
-              <Droppable droppableId="characters">
-                {(provided) => (
-                  <ul
-                    className="characters"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    <Draggable draggableId="2" index={1}>
-                      {(provided) => (
-                        <li
-                          index={1}
-                          className="bg-green-300 m-2 w-fit"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          Heyyd
-                        </li>
-                      )}
-                    </Draggable>
-                    <Draggable draggableId="1" index={2}>
-                      {(provided) => (
-                        <li
-                          index={2}
-                          className="bg-green-300 m-2 w-fit"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          Heyy
-                        </li>
-                      )}
-                    </Draggable>
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </div>
         </div>
       )}
     </div>

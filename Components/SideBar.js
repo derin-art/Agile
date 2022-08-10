@@ -5,6 +5,7 @@ import { useAuth } from "../Context/firebaseUserContext";
 
 export default function SideBar() {
   const router = useRouter();
+  const { currentTeam } = useAuth();
 
   console.log("routerName", router.pathname);
 
@@ -27,18 +28,26 @@ export default function SideBar() {
       `}
     >
       <div className="flex-col flex mt-12">
-        <button
-          className={`flex flex-col items-center justify-center p-4 ${
-            router.pathname === "/Teams/[accessteam]"
-              ? "bg-indigo-800 border-r-4 border-indigo-900"
-              : ""
-          }`}
+        <Link
+          href={`${currentTeam ? `/Teams/${currentTeam[0]._id}` : "/Teams"}  `}
+          className=""
         >
-          <Link href="/Teams/[accessteam]" className="">
+          <button
+            className={`flex flex-col items-center justify-center p-4 ${
+              router.pathname === "/Teams/[accessteam]"
+                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                : ""
+            }  ${
+              router.pathname === "/Teams/[accessteam]/userstory"
+                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                : ""
+            }`}
+          >
             {openFolderIcon("fill-green-300")}
-          </Link>
-          <p className="text-green-300">Backlog</p>
-        </button>
+
+            <p className="text-green-300">Backlog</p>
+          </button>
+        </Link>
       </div>
     </div>
   );
