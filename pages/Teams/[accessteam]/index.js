@@ -120,17 +120,21 @@ export default function AccessTeam() {
               RELEASES
             </div>
             {currentTeam[0].Release.length > 0 ? (
-              currentTeam[0].Release.map((item) => (
-                <div key={item._id} className="p-1">
-                  <Release
-                    setCurrentOpenReleaseData={setCurrentOpenReleaseData}
-                    name={item.name}
-                    key={item._id}
-                    currentTeam={currentTeam}
-                    id={item._id}
-                  ></Release>
-                </div>
-              ))
+              currentTeam[0].Release.map((item) => {
+                if (item) {
+                  return (
+                    <div key={item._id} className="p-1">
+                      <Release
+                        setCurrentOpenReleaseData={setCurrentOpenReleaseData}
+                        name={item.name}
+                        key={item._id}
+                        currentTeam={currentTeam}
+                        id={item._id}
+                      ></Release>
+                    </div>
+                  );
+                }
+              })
             ) : (
               <p>No releases created yet</p>
             )}

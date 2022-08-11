@@ -111,7 +111,8 @@ router
       ).catch((err) => {
         console.log(err);
       });
-      const TeamData = retrievedTeam.data;
+      const TeamData = retrievedTeam;
+
       const UpdatedRelease = TeamData.Release.map((item) => {
         const sentStory = {
           AcceptanceCriteria: req.body.AcceptanceCriteria,
@@ -123,14 +124,20 @@ router
           inProgress: req.body.inProgress,
           theme: {
             name: req.body.themeName,
-            color: req.body.color,
+            color: req.body.themeColor,
           },
           name: req.body.name,
         };
-        console.log(sentStory);
-        if (item._id === req.query.releaseCurrentId) {
+        console.log(item._id, req.query.releaseCurrentId);
+        if (item._id.toString() === req.query.releaseCurrentId) {
+          console.log("Fit");
+          console.log(item);
           item.agilePins.push(sentStory);
+          return { ...item, agilePins: [...item.agilePins, sentStory] };
         } else {
+          if (item === "") {
+            return;
+          }
           return item;
         }
       });

@@ -230,14 +230,19 @@ export default function usefirebaseAuthState() {
     formdata.append("inProgress", data.inProgress);
     formdata.append("themeName", data.theme.name);
     formdata.append("themeColor", data.theme.color);
+    formdata.append("name", data.name);
+    formdata.append("newStory", true);
 
-    const result = axios
+    const result = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamCurrentId=${teamCurrentId}&releaseCurrentId=${releaseCurrentId}`,
         formdata,
         config
       )
       .catch((err) => console.log(err));
+    if (result) {
+      console.log(result);
+    }
   };
 
   const addUserStory = async (
@@ -270,7 +275,11 @@ export default function usefirebaseAuthState() {
   };
 
   const setCurrentOpenReleaseData = (id) => {
-    const current = currentTeam[0].Release.filter((item) => item._id === id);
+    const current = currentTeam[0].Release.filter((item) => {
+      if (item) {
+        return item._id === id;
+      }
+    });
     console.log("set", current, id);
     if (current) {
       setCurrentOpenRelease(current);
