@@ -12,6 +12,7 @@ import deleteIcon from "../../public/deleteIcon";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Team({
+  deleteTeam,
   userData,
   CreateTeam,
   getUserTeam,
@@ -61,9 +62,10 @@ export default function Team({
 
   return (
     <div className="w-full h-full font-Josefin">
-      <div className="lg:text-7xl md:text-5xl text-slate-300 mb-4 hidden md:block text-3xl p-2 md:p-0">
-        Every great project starts with a great team...
+      <div className="lg:text-7xl md:text-5xl text-slate-300 mb-4 hidden md:block text-3xl p-2 md:p-0 border-b border-green-400">
+        Teams
       </div>
+
       <div className="md:flex-row flex hidden md:flex">
         <button
           className={`relative duration-1000 ${
@@ -137,7 +139,11 @@ export default function Team({
                       });
                       return;
                     }
-                    const newTeam = CreateTeam(name, userData.email);
+                    const newTeam = CreateTeam(
+                      name,
+                      userData.email,
+                      teamSummary
+                    );
                     if (newTeam) {
                       toast.success(
                         "Team Created. Click the explore card to access it",
@@ -230,7 +236,22 @@ export default function Team({
                             {item.name}
                           </button>
                         </Link>
-                        {deleteIcon("fill-green-400 mr-10 absolute left-2")}
+                        <button
+                          className=""
+                          id={item._id}
+                          onClick={(e) => {
+                            console.log(e.target.id);
+                            console.log(e.target);
+                          }}
+                        >
+                          {deleteIcon(
+                            "fill-green-400 mr-10 absolute left-2 -mt-4 hover:fill-indigo-400",
+                            "24",
+                            "24",
+                            item._id,
+                            deleteTeam
+                          )}
+                        </button>
                       </div>
                     ))
                   ) : (
@@ -251,18 +272,21 @@ export default function Team({
       </div>
       <div className="mt-4 p-2 md:hidden">
         <ToastContainer></ToastContainer>
-        <div className="flex ">
+        <div className="flex justify-center items-center text-2xl text-slate-300 mb-4 border-b border-green-300">
+          Teams
+        </div>
+        <div className="flex justify-center items-center">
           <button
-            className="flex leading-4 p-2 border rounded-xl border-green-400"
+            className="flex leading-4 p-2 border-2 border-l-4 rounded-sm border-green-300 text-green-300 text-sm text-left bg-indigo-800"
             onClick={() => {
               setMobileTeamMenuOpen(false);
             }}
           >
-            {TeamCreateIcon(true, "fill-green-400 mr-2", "30", "30")}
+            {TeamCreateIcon(true, "fill-green-300 mr-2", "30", "30")}
             Create a new Team{" "}
           </button>
           <button
-            className="flex leading-4 p-2 ml-2 border rounded-xl border-green-400"
+            className="flex leading-4 p-2 ml-2 border-2 rounded-sm border-green-300 border-l-4 text-sm text-green-300 text-left bg-indigo-800"
             onClick={() => {
               setMobileTeamMenuOpen(true);
               if (userData) {
@@ -273,7 +297,7 @@ export default function Team({
               }
             }}
           >
-            {TeamCreateIcon(false, "fill-green-400 mr-2", "30", "30")}
+            {TeamCreateIcon(false, "fill-green-300 mr-2", "30", "30")}
             Explore created teams{" "}
           </button>
         </div>
@@ -315,7 +339,7 @@ export default function Team({
                     });
                     return;
                   }
-                  const newTeam = CreateTeam(name, userData.email);
+                  const newTeam = CreateTeam(name, userData.email, teamSummary);
                   if (newTeam) {
                     toast.success(
                       "Team Created. Click the explore card to access it",
@@ -336,29 +360,38 @@ export default function Team({
                 !mobileTeamMenuOpen ? "hidden" : ""
               }`}
             >
-              {userTeamData ? (
-                userTeamData.map((item) => (
-                  <div className="flex p-2" key={item._id}>
-                    {teamHeadsIcon("fill-green-400")}
-                    <Link href={`/Teams/${item._id}`}>
+              <div className="mt-4">
+                {userTeamData ? (
+                  userTeamData.map((item) => (
+                    <div className="flex" key={item._id}>
+                      {teamHeadsIcon("fill-green-400 mr-2 -mt-1")}
+                      <Link href={`/Teams/${item._id}`}>
+                        <button
+                          className="text-green-400"
+                          onClick={() => {
+                            setCurrentTeamAvailable(item._id);
+                          }}
+                        >
+                          {item.name}
+                        </button>
+                      </Link>
                       <button
-                        className="text-green-400"
-                        onClick={() => {
-                          setCurrentTeamAvailable(item._id);
+                        id={item._id}
+                        onClick={(e) => {
+                          deleteTeam(e.target.id);
                         }}
                       >
-                        {item.name}
+                        {deleteIcon("fill-green-400 absolute left-32 -mt-4")}
                       </button>
-                    </Link>
-                    {deleteIcon("fill-green-400 absolute left-32")}
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center">
+                    {logo("animate-spin fill-green-400", "40", "40")}
+                    <p className="mt-4 text-green-400">loading data...</p>
                   </div>
-                ))
-              ) : (
-                <div className="flex items-center justify-center">
-                  {logo("animate-spin fill-green-400", "40", "40")}
-                  <p className="mt-4">loading data...</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

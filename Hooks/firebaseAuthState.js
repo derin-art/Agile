@@ -16,14 +16,16 @@ const formatAuthUser = (user) => ({
 });
 
 export default function usefirebaseAuthState() {
-  console.log("proccess", process.env.NEXT_PUBLIC_API_USER_ROUTE);
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [userTeamData, setUserTeamData] = useState(null);
   const [currentTeam, setCurrentTeam] = useState(null);
   const [currentOpenRelease, setCurrentOpenRelease] = useState(null);
+  const [currentPinsOpen, setCurrentPinsOpen] = useState(null);
+  const [currentPinsOpenRevised, setCurrentPinsOpenRevised] = useState(null);
 
+  console.log("id current", currentTeam, currentOpenRelease);
   const clear = () => {
     setAuthUser(null);
     setLoading(false);
@@ -32,12 +34,15 @@ export default function usefirebaseAuthState() {
   const getUserData = async (email) => {
     const formdata = new FormData();
     formdata.append("email", email);
+    console.log("emailData", email);
     const data = await axios
       .get(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`)
       .catch((err) => {
         console.log(err);
       });
-    setUserData(data.data);
+    if (data) {
+      setUserData(data.data);
+    }
     console.log(data);
   };
 
@@ -89,6 +94,7 @@ export default function usefirebaseAuthState() {
 
     const formdata = new FormData();
     formdata.append("TeamRole", role);
+    console.log("loginEmail", email);
     const editedUser = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`,
@@ -128,7 +134,7 @@ export default function usefirebaseAuthState() {
     }
   };
 
-  const CreateTeam = async (name, email) => {
+  const CreateTeam = async (name, email, Summary) => {
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
@@ -136,6 +142,7 @@ export default function usefirebaseAuthState() {
     const formdata = new FormData();
     formdata.append("name", name);
     formdata.append("email", email);
+    formdata.append("Summary", Summary);
     const createdTeamData = await axios
       .post(process.env.NEXT_PUBLIC_API_TEAM_ROUTE, formdata, config)
       .catch((err) => {
@@ -232,6 +239,7 @@ export default function usefirebaseAuthState() {
     formdata.append("themeColor", data.theme.color);
     formdata.append("name", data.name);
     formdata.append("newStory", true);
+    formdata.append("storyPoints", data.storyPoints);
 
     const result = await axios
       .patch(
@@ -242,14 +250,31 @@ export default function usefirebaseAuthState() {
       .catch((err) => console.log(err));
     if (result) {
       console.log(result);
+      const UpdatedReleaseWithStory = result.data.Release.filter(
+        (item) => item._id === releaseCurrentId
+      );
+      if (UpdatedReleaseWithStory) {
+        setCurrentOpenRelease(UpdatedReleaseWithStory);
+        setCurrentTeam((prev) => {
+          const Release = prev[0].Release.map((item) => {
+            if (item._id === releaseCurrentId) {
+              return UpdatedReleaseWithStory;
+            } else {
+              return item;
+            }
+          });
+          return [{ ...prev[0], Release: Release[0] }];
+        });
+      }
     }
   };
 
   const addUserStory = async (
     name,
     Release,
-    PriorityRank,
-    AcceptanceCriteria
+    storyPoints,
+    AcceptanceCriteria,
+    color
   ) => {
     const config = {
       headers: { "content-type": "multipart/form-data" },
@@ -257,7 +282,8 @@ export default function usefirebaseAuthState() {
     const formdata = new FormData();
     formdata.append("name", name);
     formdata.append("Release", Release);
-    formdata.append("PriorityRank", PriorityRank);
+    formdata.append("PriorityRank", color);
+    formdata.append("StoryPoints", storyPoints);
     formdata.append("AcceptanceCriteria", AcceptanceCriteria);
     const data = await axios
       .post(`${process.env.NEXT_PUBLIC_API_STORY_ROUTE}`, formdata, config)
@@ -283,6 +309,32 @@ export default function usefirebaseAuthState() {
     console.log("set", current, id);
     if (current) {
       setCurrentOpenRelease(current);
+      setCurrentPinsOpen({
+        allPins: current[0].agilePins,
+        other1: [],
+        other2: [],
+      });
+      setCurrentPinsOpenRevised((prev) => {
+        const finalArr = {};
+        const defaultArr = {};
+        let arrNo = 0;
+        for (let i = 0; i < current[0].agilePins.length; i += 1) {
+          if (i % 4 === 0) {
+            arrNo++;
+            defaultArr = { ...defaultArr, [arrNo.toString()]: [] };
+            console.log(arrNo, "No");
+          }
+
+          defaultArr[arrNo].push(current[0].agilePins[i]);
+
+          console.log(defaultArr, "default");
+        }
+        finalArr = { ...finalArr, defaultArr };
+
+        return finalArr;
+      });
+      console.log(currentPinsOpenRevised, "lets gooo");
+      console.log(currentPinsOpen, "msms");
     }
     console.log(
       "Auth Reke",
@@ -291,8 +343,56 @@ export default function usefirebaseAuthState() {
     );
   };
 
+  const deleteTeam = async (id) => {
+    console.log("sentId", id);
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+
+    const data = await axios
+      .delete(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?id=${id}&teamDelete=${true}`
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    if (data) {
+      console.log("deletedteam", data.data);
+      setUserTeamData((prev) => {
+        const item = prev.filter((item) => {
+          if (item._id != data.data._id) {
+            return item;
+          }
+        });
+        console.log("deleting what", item);
+        console.log("prev", prev);
+        return item;
+      });
+    }
+  };
+
+  const deleteRelease = async (ReleaseId) => {
+    const deletedReleaseTeam = await axios
+      .delete(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${
+          currentTeam[0]._id
+        }&ReleaseId=${ReleaseId}&deleteRelease=${true}`
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    if (deletedReleaseTeam) {
+      console.log("deletedReleaseData", deletedReleaseTeam.data);
+      setCurrentTeam([deletedReleaseTeam.data]);
+    }
+  };
+
   return {
+    currentPinsOpenRevised,
+    setCurrentPinsOpenRevised,
+    deleteRelease,
     addUserStory,
+    deleteTeam,
     setCurrentOpenReleaseData,
     setCurrentTeamAvailable,
     CreateRelease,
@@ -308,5 +408,8 @@ export default function usefirebaseAuthState() {
     getUserTeam,
     userTeamData,
     currentTeam,
+    setCurrentOpenRelease,
+    setCurrentPinsOpen,
+    currentPinsOpen,
   };
 }

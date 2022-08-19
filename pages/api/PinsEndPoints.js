@@ -31,11 +31,14 @@ router.post(uploadImageMiddleWare, async (req, res) => {
       console.log("Mongo ERR", err);
     });
 
+  console.log("Story point", req.body.StoryPoints);
+
   const data = await AgilePin.create({
     name: req.body.name,
     Release: req.body.Release,
     PriorityRank: req.body.PriorityRank,
     AcceptanceCriteria: req.body.AcceptanceCriteria,
+    storyPoints: req.body.StoryPoints,
   }).catch((err) => {
     console.log(err);
   });

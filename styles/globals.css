@@ -27,3 +27,10 @@ a {
   font-family: "Rampart";
   src: url("../public/Fonts/Rampart_One/RampartOne-Regular.ttf");
 }
+
+@layer utilities {
+  .scrollbar-medium::-webkit-scrollbar {
+    width: 6px;
+    color: "blue";
+  }
+}

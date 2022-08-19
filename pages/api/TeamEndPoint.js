@@ -70,11 +70,13 @@ router
 
     const name = req.body.name;
     const email = req.body.email;
+    const Summary = req.body.Summary;
     console.log(req.body, "actual body");
 
     const createdTeam = await AgileTeam.create({
       name: name,
       teamOwner: email,
+      teamSummary: Summary,
     });
     console.log(createdTeam);
     return res.status(201).json(createdTeam);
@@ -83,7 +85,7 @@ router
     console.log("Sent");
     if (req.body.newRelease) {
       console.log("IDD", req.body.newRelease);
-
+      console.log(req.body.dateEnd, req.body.dateStart, "dates");
       const updatedTeam = await AgileTeam.findOneAndUpdate(
         { _id: req.query.id },
         {
@@ -93,8 +95,8 @@ router
               name: req.body.name,
               owner: req.body.owner,
               id: req.body.id,
-              startDate: req.body.startDate,
-              endDate: req.body.endDate,
+              dateStart: req.body.dateStart,
+              dateEnd: req.body.dateEnd,
             },
           },
         },
@@ -122,6 +124,7 @@ router
           Release: req.body.Release,
           completed: req.body.completed,
           inProgress: req.body.inProgress,
+          storyPoints: req.body.storyPoints,
           theme: {
             name: req.body.themeName,
             color: req.body.themeColor,
@@ -129,16 +132,15 @@ router
           name: req.body.name,
         };
         console.log(item._id, req.query.releaseCurrentId);
-        if (item._id.toString() === req.query.releaseCurrentId) {
-          console.log("Fit");
-          console.log(item);
-          item.agilePins.push(sentStory);
-          return { ...item, agilePins: [...item.agilePins, sentStory] };
-        } else {
-          if (item === "") {
-            return;
+        if (item) {
+          if (item._id.toString() === req.query.releaseCurrentId) {
+            console.log("Fit");
+            console.log(item);
+            item.agilePins.push(sentStory);
+            return { ...item, agilePins: [...item.agilePins, sentStory] };
+          } else {
+            return item;
           }
-          return item;
         }
       });
       const UpdatedTeamWithUpdatedRelease = await AgileTeam.findByIdAndUpdate(
@@ -151,6 +153,35 @@ router
 
       if (UpdatedTeamWithUpdatedRelease) {
         return res.status(200).json(UpdatedTeamWithUpdatedRelease);
+      }
+    }
+  })
+  .delete(uploadImageMiddleWare, async (req, res) => {
+    console.log("iddddd", req.query.id, req.query.teamDelete);
+    if (req.query.teamDelete) {
+      console.log("deleting team");
+      const newTeamAfterDelete = await AgileTeam.findByIdAndDelete(
+        req.query.id
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      if (newTeamAfterDelete) {
+        return res.status(200).json(newTeamAfterDelete);
+      }
+    }
+    if (req.query.deleteRelease) {
+      console.log(req.query.ReleaseId);
+      const newTeamAfterReleaseDelete = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        { $pull: { Release: { _id: req.query.ReleaseId } } },
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+      if (newTeamAfterReleaseDelete) {
+        console.log("newTeamAfterRElease", newTeamAfterReleaseDelete);
+        return res.status(200).json(newTeamAfterReleaseDelete);
       }
     }
   });

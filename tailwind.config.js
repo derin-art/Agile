@@ -22,5 +22,8 @@ module.exports = {
       },
     },
   },
-  plugins: [Myclass],
+  plugins: [Myclass, require("tailwind-scrollbar")],
+  variants: {
+    scrollbar: ["rounded"],
+  },
 };

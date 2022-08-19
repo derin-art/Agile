@@ -23,6 +23,7 @@ export default function Newpage({ finalData }) {
     userTeamData,
     setCurrentTeamAvailable,
     currentTeam,
+    deleteTeam,
   } = useAuth();
   useEffect(() => {
     console.log(authUser, loading, "NewPage");
@@ -80,6 +81,7 @@ export default function Newpage({ finalData }) {
           userTeamData={userTeamData}
           authUser={authUser}
           setCurrentTeamAvailable={setCurrentTeamAvailable}
+          deleteTeam={deleteTeam}
         ></Team>
       </div>
     </div>

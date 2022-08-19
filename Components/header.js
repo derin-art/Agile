@@ -34,8 +34,8 @@ export default function Header() {
         >
           {downArrowFunction(
             `fill-green-400 duration-500 ml-10 md:hidden ${
-              mobileMenuOpen ? "" : "rotate-180"
-            }`
+              router.pathname === "/" ? "md:hidden hidden" : ""
+            } ${mobileMenuOpen ? "" : "rotate-180"}`
           )}
         </button>
         <button

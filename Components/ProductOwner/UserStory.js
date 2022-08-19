@@ -220,7 +220,8 @@ export default function UserStory() {
               storyName,
               currentOpenRelease[0]._id,
               storyPoints,
-              acceptanceCriteria
+              acceptanceCriteria,
+              color
             );
           }}
         >

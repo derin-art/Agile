@@ -110,7 +110,7 @@ router
       .catch((err) => {
         console.log("Mongo ERR", err);
       });
-    console.log(req.body);
+    console.log("sent", req.query.email, "role", req.body.TeamRole);
     const patchedUser = await AgileUser.findOneAndUpdate(
       { email: req.query.email },
       { role: req.body.TeamRole },
@@ -121,7 +121,8 @@ router
       console.log(err);
     });
     return res.status(200).json(patchedUser);
-  });
+  })
+  .delete(async (req, res) => {});
 /* export default async function handler(req, res) {
   console.log("MongooseConnect", mongoose.connection);
   await mongoose
