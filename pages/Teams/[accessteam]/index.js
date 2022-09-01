@@ -156,9 +156,9 @@ export default function AccessTeam() {
             <div
               className={`p-2 shadow-lg ${
                 smallMenuOpen
-                  ? "h-96 w-56 translate-y-4 rounded-r-lg bg-indigo-100 border border-indigo-800 "
+                  ? "h-96 w-56 translate-y-4 bg-white rounded border  "
                   : "h-4 w-4 shadow-none rounded-full bg-transparent"
-              } p-2 relative duration-500 ease-in-out static`}
+              } p-2 relative duration-300 static`}
             >
               <button
                 onClick={() => setSmallMenuOpen(false)}
@@ -177,7 +177,7 @@ export default function AccessTeam() {
                 }`}
               >
                 <button
-                  className="border border-indigo-800 rounded-sm shadow bg-green-400 text-white w-fit flex p-1 mt-2 items-center justify-center md:p-2 hover:text-indigo-900"
+                  className="border border-indigo-800 rounded-sm shadow bg-green-400 text-white w-fit flex p-1 text-sm mt-2 items-center justify-center md:p-2 hover:text-indigo-900"
                   onClick={() => {
                     if (!releaseName) {
                       toast.error("Name input required", {
@@ -223,7 +223,7 @@ export default function AccessTeam() {
                       setReleaseName(e.target.value);
                     }}
                     placeholder="Name"
-                    className={`border mt-2 ${
+                    className={`border mt-2 text-sm ${
                       smallMenuOpen ? "" : "hidden"
                     } md:p-2 border-indigo-800 text-indigo-800 rounded-sm w-20 bg-indigo-100 placeholder:text-indigo-400 p-2`}
                     value={releaseName}
@@ -247,8 +247,8 @@ export default function AccessTeam() {
                     className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 rounded-sm text-indigo-700"
                   ></input>
                 </div>
-                <p className="mt-2 mb-2 text-lg border-b-4 border-indigo-800">
-                  Release Creating Menu
+                <p className="mt-2 mb-2 text-sm border-b-4 border-indigo-800">
+                  Release Creating PopUp
                 </p>
               </div>
             </div>

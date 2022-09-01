@@ -35,10 +35,7 @@ export default function UserStory() {
   const [userstories, setUserStories] = useState([]);
 
   return (
-    <div className="w-fit bg-indigo-200 font-Josefin border border-indigo-100 shadow-inner relative rounded-xl">
-      <div
-        className={`p-2 bg-${color}-400 absolute top-0 w-full duration-300 rounded-t-xl`}
-      ></div>
+    <div className="w-fit  font-Josefin border-indigo-100 relative rounded-xl h-full">
       <div className="mt-4 p-2 flex flex-col">
         <p className="hidden border-b-4 border-yellow-300">N</p>
         <p className="hidden border-b-4 border-orange-300">N</p>
@@ -201,7 +198,7 @@ export default function UserStory() {
           </BlueOnGreenTooltip>
         </div>
         <button
-          className="mt-8  text-lg bg-indigo-800 shadow-inner p-1 text-indigo-200 rounded-lg"
+          className="mt-8  text-sm bg-indigo-800 shadow-inner p-1 text-green-300 rounded hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
           onClick={() => {
             if (!storyName) {
               toast.error("Story Name Required", {
@@ -225,7 +222,7 @@ export default function UserStory() {
             );
           }}
         >
-          Create
+          CREATE
         </button>
       </div>
       <ToastContainer></ToastContainer>

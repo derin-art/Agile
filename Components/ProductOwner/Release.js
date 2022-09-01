@@ -19,16 +19,16 @@ export default function Release({
           onClick={() => {
             setCurrentOpenReleaseData(id);
           }}
-          className="cursor-pointer border-l-4 border-indigo-400 text-gray-900 bg-green-100 rounded-sm border p-2 "
+          className="cursor-pointer border-l-4 border-green-300 text-white text-lg bg-indigo-800 rounded-sm border p-2 "
         >
-          <p className="text-xs font-italic text-gray-500">
+          <p className="text-xs italic text-green-300 font-serif ">
             {dateStart} - {dateEnd}
           </p>
           {name}
         </div>
       </Link>
       {deleteIcon(
-        "fill-green-400 absolute right-4 md:right-4 hover:fill-indigo-800 cursor-pointer mt-2",
+        "fill-indigo-800 absolute right-4 md:right-4 hover:fill-green-300 cursor-pointer mt-2",
         "24",
         "24",
         id,

@@ -255,7 +255,7 @@ export default function Team({
                       </div>
                     ))
                   ) : (
-                    <p className="my-rotate-y-180 text-green-400">
+                    <p className="my-rotate-y-180 text-green-400 mr-2">
                       No teams created yet
                     </p>
                   )

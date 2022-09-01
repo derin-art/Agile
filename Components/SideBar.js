@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "../Context/firebaseUserContext";
 import teamHeadsIcon from "../public/teamHeadsicon";
+import FolderAddIcon from "../public/folderAddIcon";
 
 export default function SideBar() {
   const router = useRouter();
@@ -12,6 +13,11 @@ export default function SideBar() {
 
   console.log("Test", router.pathname === "/Teams");
 
+  const isAccess =
+    router.pathname === "/Teams/[accessteam]" ||
+    router.pathname === "/Teams/[accessteam]/userstory";
+
+  console.log("acccess", isAccess);
   return (
     <div
       className={`flex flex-col bg-green-300 h-full font-Josefin text-indigo-600 z-20 ${
@@ -44,11 +50,52 @@ export default function SideBar() {
                 : ""
             }`}
           >
-            {openFolderIcon("fill-green-300")}
+            {openFolderIcon(
+              `${isAccess ? "fill-green-300" : "fill-indigo-800"} `
+            )}
 
-            <p className="text-green-300">Backlog</p>
+            <p
+              className={`${isAccess ? "text-green-300" : "text-indigo-800"} `}
+            >
+              Backlog
+            </p>
           </button>
         </Link>
+        <Link
+          href={`${
+            currentTeam
+              ? `/Teams/${currentTeam[0]._id}/[createDisplay]`
+              : "/Teams"
+          }  `}
+          className=""
+        >
+          <button
+            className={`flex flex-col items-center justify-center p-4 ${
+              router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                : ""
+            } `}
+          >
+            {FolderAddIcon(
+              `${
+                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                  ? "fill-green-300"
+                  : "fill-indigo-800"
+              }`
+            )}
+
+            <p
+              className={` w-14 ${
+                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                  ? "text-green-300"
+                  : "text-indigo-800"
+              }`}
+            >
+              Story Map
+            </p>
+          </button>
+        </Link>
+
         <Link href="/Teams">
           <button className="flex flex-col items-center justify-center p-4">
             {teamHeadsIcon("fill-indigo-800")}

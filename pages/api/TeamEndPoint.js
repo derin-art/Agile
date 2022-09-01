@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import multer from "multer";
 import bodyParser from "body-parser";
 import Release from "../../Components/ProductOwner/Release";
+import parseJson from "parse-json";
 
 const router = createRouter();
 
@@ -154,6 +155,40 @@ router
       if (UpdatedTeamWithUpdatedRelease) {
         return res.status(200).json(UpdatedTeamWithUpdatedRelease);
       }
+    } /*   { $pull: { Release: { _id: req.query.ReleaseId } } },
+        { new: true } */
+    if (req.query.updateTeamWithStories) {
+      const UpdatedTeamWithStoriesAndEpics = await AgileTeam.findById(
+        req.query.teamId
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      console.log("Latest", UpdatedTeamWithStoriesAndEpics);
+      const newReleases = UpdatedTeamWithStoriesAndEpics.Release.map(
+        (release) => {
+          if (release._id.toString() === req.query.releaseId) {
+            console.log("release", release);
+            release.agilePins = parseJson(req.body.newStories);
+            return release;
+          } else {
+            return release;
+          }
+        }
+      );
+      if (newReleases) {
+        const finalUpdatedTeam = await AgileTeam.findByIdAndUpdate(
+          req.query.teamId,
+          { Release: newReleases },
+          { new: true }
+        ).catch((err) => {
+          console.log(err);
+        });
+
+        if (finalUpdatedTeam) {
+          return res.status(200).json(finalUpdatedTeam);
+        }
+      }
     }
   })
   .delete(uploadImageMiddleWare, async (req, res) => {
@@ -180,7 +215,6 @@ router
         console.log(err);
       });
       if (newTeamAfterReleaseDelete) {
-        console.log("newTeamAfterRElease", newTeamAfterReleaseDelete);
         return res.status(200).json(newTeamAfterReleaseDelete);
       }
     }

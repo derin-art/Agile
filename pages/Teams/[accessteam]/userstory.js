@@ -6,23 +6,47 @@ import StoryTeamCard from "../../../Components/StoryTeamCard";
 import { useAuth } from "../../../Context/firebaseUserContext";
 import swordIcon from "../../../public/swordIcon";
 import { toast, ToastContainer } from "react-toastify";
+import { async, map } from "@firebase/util";
+import Logo from "../../../public/logo";
 
 export default function UserStory() {
   const {
+    setTheme: SetTheme,
+    themes: Themes,
+    saveStories,
     currentOpenRelease,
     setCurrentOpenRelease,
     setCurrentPinsOpen,
     currentPinsOpen,
     currentPinsOpenRevised,
     setCurrentPinsOpenRevised,
+    currentReleaseEpics,
   } = useAuth();
 
+  const allSaveThemes = [];
+
+  const [savedThemes, setSavedThemes] = useState([]);
+  const [currentEpic, setCurrentEpic] = useState("Notheme");
+  const [currentEpicRevised, setCurrentEpicRevised] = useState("allPins");
   const [themeColor, setThemeColor] = useState("");
   const [themeName, setThemeName] = useState("");
+  const [dataSaved, setDataSaved] = useState({ status: "", loading: false });
 
-  const [themes, setTheme] = useState([]);
+  const uniqueEpics = [
+    ...new Set(currentReleaseEpics.map((item) => item.name)),
+  ];
 
-  console.log(currentPinsOpenRevised, "finall");
+  uniqueEpics.forEach((name) => {
+    const found = currentReleaseEpics.find((item) => {
+      return name === item.name;
+    });
+
+    allSaveThemes.push(found);
+  });
+
+  const [themes, setTheme] = useState([...allSaveThemes]);
+
+  console.log("themes", themes, Themes);
 
   const colorArr = [];
 
@@ -57,115 +81,150 @@ export default function UserStory() {
     });
   }
 
-  const onDragEndMultiple = (result) => {
+  const onDragEndFinal = (result) => {
+    console.log(currentPinsOpen);
     if (!result.destination) {
       return;
     }
+    console.log("rann");
+    console.log("drop", result.source.droppableId);
+    const listCopy = { ...currentPinsOpen };
+    console.log("listcopy", listCopy);
+    const arrayKey = result.source.droppableId;
+    console.log("arr", arrayKey);
+    const sourceList = listCopy[arrayKey];
+    console.log("sourceList", sourceList);
+    const [removedElement, newSourceList] = removeFromList(
+      sourceList,
+      result.source.index
+    );
+    listCopy[result.source.droppableId] = newSourceList;
 
-    if (false) {
-      console.log(result.destination.type, "keey");
-      console.log(
-        "MMMM",
-        themes.includes((item) => {
-          return item.name != result.destination.droppableId;
-        })
-      );
-      const listCopy = { ...currentPinsOpenRevised.defaultArr };
+    const destinationList = listCopy[result.destination.droppableId];
+    console.log("destination", result.destination.droppableId);
+    listCopy[result.destination.droppableId] = addToList(
+      destinationList,
+      result.destination.index,
+      removedElement
+    );
 
-      console.log(currentPinsOpenRevised.defaultArr, "listCopyMm");
+    setCurrentPinsOpen(listCopy);
+  };
 
-      const sourceList = listCopy[result.source.droppableId];
-
-      const [removedElement, newSourceList] = removeFromList(
-        sourceList,
-        result.source.index
-      );
-      listCopy[result.source.droppableId] = newSourceList;
-
-      const destinationList = listCopy[result.destination.droppableId];
-      listCopy[result.destination.droppableId] = addToList(
-        destinationList,
-        result.destination.index,
-        removedElement
-      );
-      console.log(listCopy);
-      setCurrentPinsOpenRevised((prev) => {
-        return { ...prev, defaultArr: listCopy };
-      });
+  const onDragEndMultiple = (result) => {
+    if (!result.destination) {
       return;
     } else {
-      const listCopy = { ...currentPinsOpenRevised };
-      console.log("right one");
-      console.log(currentPinsOpenRevised, "right One");
+      if (
+        !(
+          themes.filter((e) => e.name === result.destination.droppableId)
+            .length > 0
+        )
+      ) {
+        console.log(result.destination.type, "keey");
+        console.log(
+          "MMMM",
+          themes.includes((item) => {
+            return item.name != result.destination.droppableId;
+          })
+        );
+        const listCopy = { ...currentPinsOpenRevised[currentEpic] };
 
-      const sourceList = listCopy.defaultArr[result.source.droppableId];
+        console.log(currentPinsOpenRevised.currentEpic, "listCopyMm");
 
-      const [removedElement, newSourceList] = removeFromList(
-        sourceList,
-        result.source.index
-      );
-      listCopy[result.source.droppableId] = newSourceList;
+        const sourceList = listCopy[result.source.droppableId];
 
-      const destinationList = listCopy[result.destination.droppableId];
-      const destinationListArr = [];
-      console.log("MM", destinationList);
-      Object.entries(destinationList).forEach((item) => {
-        if (item) {
-          destinationListArr.push(...item[1]);
-        }
-      });
-      listCopy[result.destination.droppableId] = addToList(
-        destinationListArr,
-        result.destination.index,
-        removedElement
-      );
-      console.log(
-        "allThedata",
-        listCopy[result.source.droppableId],
-        listCopy[result.destination.droppableId]
-      );
-      setCurrentPinsOpenRevised((prev) => {
-        const finalArr = {};
-        const defaultArr = {};
-        let arrNo = 0;
-        for (
-          let i = 0;
-          i < listCopy[result.destination.droppableId].length;
-          i += 1
-        ) {
-          if (i % 4 === 0) {
-            arrNo++;
-            defaultArr = { ...defaultArr, [arrNo.toString()]: [] };
-            console.log(arrNo, "No");
+        const [removedElement, newSourceList] = removeFromList(
+          sourceList,
+          result.source.index
+        );
+        listCopy[result.source.droppableId] = newSourceList;
+
+        const destinationList = listCopy[result.destination.droppableId];
+        listCopy[result.destination.droppableId] = addToList(
+          destinationList,
+          result.destination.index,
+          removedElement
+        );
+        console.log(listCopy);
+        setCurrentPinsOpenRevised((prev) => {
+          return { ...prev, [currentEpic]: listCopy };
+        });
+        return;
+      } else {
+        const listCopy = { ...currentPinsOpenRevised };
+        console.log("right one");
+        console.log(currentPinsOpenRevised, "right One");
+
+        console.log("EPiccQ", currentEpic, listCopy[currentEpic]);
+        const sourceList = listCopy[currentEpic][result.source.droppableId];
+
+        console.log("sourceList", sourceList);
+        const [removedElement, newSourceList] = removeFromList(
+          sourceList,
+          result.source.index
+        );
+        listCopy[result.source.droppableId] = newSourceList;
+
+        const destinationList = listCopy[result.destination.droppableId];
+        const destinationListArr = [];
+        console.log("MM", destinationList);
+        Object.entries(destinationList).forEach((item) => {
+          if (item) {
+            destinationListArr.push(...item[1]);
           }
+        });
+        listCopy[result.destination.droppableId] = addToList(
+          destinationListArr,
+          result.destination.index,
+          removedElement
+        );
+        console.log(
+          "allThedata",
+          listCopy[result.source.droppableId],
+          listCopy[result.destination.droppableId]
+        );
+        setCurrentPinsOpenRevised((prev) => {
+          const finalArr = {};
+          const defaultArr = {};
+          let arrNo = 0;
+          for (
+            let i = 0;
+            i < listCopy[result.destination.droppableId].length;
+            i += 1
+          ) {
+            if (i % 4 === 0) {
+              arrNo++;
+              defaultArr = { ...defaultArr, [arrNo.toString()]: [] };
+              console.log(arrNo, "No");
+            }
 
-          defaultArr[arrNo].push(listCopy[result.destination.droppableId][i]);
+            defaultArr[arrNo].push(listCopy[result.destination.droppableId][i]);
 
-          console.log(defaultArr, "default");
-        }
-        finalArr = {
-          ...finalArr,
-          [result.destination.droppableId]: defaultArr,
-        };
+            console.log(defaultArr, "default");
+          }
+          finalArr = {
+            ...finalArr,
+            [result.destination.droppableId]: defaultArr,
+          };
 
-        console.log("COdd", destinationListArr, finalArr, [
-          result.destination.droppableId,
-        ]);
+          console.log("COdd", destinationListArr, finalArr, [
+            result.destination.droppableId,
+          ]);
 
-        const newNew = {
-          ...prev,
-          defaultArr: {
-            ...prev.defaultArr,
-            [result.source.droppableId]: listCopy[result.source.droppableId],
-          },
-          ...finalArr,
-          /*   [result.destination.droppableId]:
-            listCopy[result.destination.droppableId] */
-        };
-        console.log("newNew", newNew);
-        /* { ...prev, [result.destination.droppableId]: listCopy } */
-        return newNew;
-      });
+          const newNew = {
+            ...prev,
+            [currentEpic]: {
+              ...prev.defaultArr,
+              [result.source.droppableId]: listCopy[result.source.droppableId],
+            },
+            ...finalArr,
+          };
+          console.log("newNew", newNew);
+
+          return newNew;
+        });
+      }
     }
   };
 
@@ -240,6 +299,77 @@ export default function UserStory() {
     );
   };
 
+  const purgeCSSSucksBorder = () => {
+    return (
+      <div>
+        <div className="border-gray-100"></div>
+        <div className="border-gray-200"></div>
+        <div className="border-gray-300"></div>
+        <div className="border-gray-400"></div>
+        <div className="border-gray-500"></div>
+        <div className="border-gray-600"></div>
+        <div className="border-gray-700"></div>
+        <div className="border-gray-800"></div>
+        <div className="border-orange-100"></div>
+        <div className="border-orange-200"></div>
+        <div className="border-orange-300"></div>
+        <div className="border-orange-400"></div>
+        <div className="border-orange-500"></div>
+        <div className="border-orange-600"></div>
+        <div className="border-orange-700"></div>
+        <div className="border-orange-800"></div>
+        <div className="border-indigo-100"></div>
+        <div className="border-indigo-200"></div>
+        <div className="border-indigo-300"></div>
+        <div className="border-indigo-400"></div>
+        <div className="border-indigo-500"></div>
+        <div className="border-indigo-600"></div>
+        <div className="border-indigo-700"></div>
+        <div className="border-indigo-800"></div>
+        <div className="border-green-100"></div>
+        <div className="border-green-200"></div>
+        <div className="border-green-300"></div>
+        <div className="border-green-400"></div>
+        <div className="border-green-500"></div>
+        <div className="border-green-600"></div>
+        <div className="border-green-700"></div>
+        <div className="border-green-800"></div>
+        <div className="border-red-100"></div>
+        <div className="border-red-200"></div>
+        <div className="border-red-300"></div>
+        <div className="border-red-400"></div>
+        <div className="border-red-500"></div>
+        <div className="border-red-600"></div>
+        <div className="border-red-700"></div>
+        <div className="border-red-800"></div>
+        <div className="border-blue-100"></div>
+        <div className="border-blue-200"></div>
+        <div className="border-blue-300"></div>
+        <div className="border-blue-400"></div>
+        <div className="border-blue-500"></div>
+        <div className="border-blue-600"></div>
+        <div className="border-blue-700"></div>
+        <div className="border-blue-800"></div>
+        <div className="border-yellow-100"></div>
+        <div className="border-yellow-200"></div>
+        <div className="border-yellow-300"></div>
+        <div className="border-yellow-400"></div>
+        <div className="border-yellow-500"></div>
+        <div className="border-yellow-600"></div>
+        <div className="border-yellow-700"></div>
+        <div className="border-yellow-800"></div>
+        <div className="border-purple-100"></div>
+        <div className="border-purple-200"></div>
+        <div className="border-purple-300"></div>
+        <div className="border-purple-400"></div>
+        <div className="border-purple-500"></div>
+        <div className="border-purple-600"></div>
+        <div className="border-purple-700"></div>
+        <div className="border-purple-800"></div>
+      </div>
+    );
+  };
+
   const colorCOdes = () => {
     const allColors = [];
     const colorNames = [
@@ -257,6 +387,7 @@ export default function UserStory() {
         allColors.push(
           <button
             className={`bg-${item}-${shades} w-8 min-h-8 mr-1 rounded my-2`}
+            key={`${item}-${shades}`}
             onClick={() => {
               setThemeColor(`${item}-${shades}`);
             }}
@@ -270,241 +401,223 @@ export default function UserStory() {
   };
 
   return (
-    <div className="mt-16 md:ml-4 flex -z-50">
-      <ToastContainer></ToastContainer>
-      <div className="">
-        <UserStoryCard></UserStoryCard>
-        <DragDropContext>
-          <Droppable droppableId="characters" direction="horizontal">
-            {(provided) => (
-              <ul
-                className="characters"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                <Draggable draggableId="2" index={1}>
-                  {(provided) => (
-                    <li
-                      index={1}
-                      className="bg-green-300 m-2 w-fit"
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      Heyyd
-                    </li>
-                  )}
-                </Draggable>
-                <Draggable draggableId="1" index={2}>
-                  {(provided) => (
-                    <li
-                      index={2}
-                      className="bg-green-300 m-2 w-fit"
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      Heyy
-                    </li>
-                  )}
-                </Draggable>
-              </ul>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </div>
+    <div className="mt-16 md:ml-4">
+      <p className="text-3xl mb-2 text-gray-300 border-b border-green-300 font-Josefin">
+        BackLog
+      </p>
+      <div className=" flex -z-50">
+        <ToastContainer></ToastContainer>
+        <div className="border rounded-xl shadow">
+          <UserStoryCard></UserStoryCard>
+        </div>
 
-      <div className="flex flex-col">
-        <div className="border w-full ml-2 mr-1 rounded-xl flex p-2">
-          <DragDropContext onDragEnd={onDragEndMultiple}>
-            <div className="flex-col mr-4 font-Josefin">
-              <button
-                style={{ transitionDuration: "3s" }}
-                onClick={() => {
-                  if (!themeColor || !themeName) {
-                    toast.error("Epic color and Name required for new Epic", {
-                      position: toast.POSITION.BOTTOM_CENTER,
-                      className: "text-sm",
+        <div className="flex flex-col">
+          <div className="border w-full ml-2 mr-1 rounded-xl flex p-2 shadow-lg">
+            <DragDropContext onDragEnd={onDragEndFinal}>
+              <div className="flex-col mr-4 font-Josefin relative">
+                <button
+                  style={{ transitionDuration: "3s" }}
+                  onClick={() => {
+                    if (!themeColor || !themeName) {
+                      toast.error("Epic color and Name required for new Epic", {
+                        position: toast.POSITION.BOTTOM_CENTER,
+                        className: "text-sm",
+                      });
+                      return;
+                    }
+                    if (themes.some((item) => item.name === themeName)) {
+                      toast.error("Epic name is already in Use", {
+                        position: toast.POSITION.BOTTOM_CENTER,
+                        className: "text-sm",
+                      });
+                      return;
+                    }
+                    SetTheme((prev) => {
+                      return [...prev, { name: themeName, color: themeColor }];
                     });
-                    return;
-                  }
-                  setTheme((prev) => {
-                    return [
-                      ...prev,
-                      { name: themeName, epicColor: themeColor },
-                    ];
-                  });
-                  setCurrentPinsOpenRevised((prev) => {
-                    return { ...prev, [themeName]: {} };
-                  });
-                }}
-                className="p-1 z-50 font-Josefin bg-gradient-to-r from-indigo-300 via-blue-300 to-green-300 text-white font-sm rounded-md hover:bg-gradient-to-r hover:from-green-300 hover:via-indigo-300 hover:to-blue-300"
-              >
-                Create a New Epic {swordIcon("fill-white inline")}
-              </button>
-              <div className="-z-50">
-                <input
-                  className="border p-1 -z-50 mb-2 mt-2 -z-50 border-green-300 rounded"
-                  placeholder="Epic Name"
-                  onChange={(e) => {
-                    setThemeName(e.target.value);
+                    setCurrentPinsOpen((prev) => {
+                      return { ...prev, [themeName]: [] };
+                    });
                   }}
-                ></input>
-                <div>Select Epic color</div>
-                <div className="w-44 scrollbar-thin border p-2 rounded border-green-300 scrollbar-thumb-indigo-800 scrollbar-track-green-300 overflow-y-scroll h-16 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
-                  {colorCOdes()}
+                  className="p-1 z-50 font-Josefin bg-indigo-800 text-sm text-green-300 rounded "
+                >
+                  Create a New Epic{" "}
+                  {swordIcon(
+                    "fill-green-300 inline group-hover:fill-indigo-800"
+                  )}
+                </button>
+                <div className="-z-50">
+                  <input
+                    className={`border p-1 -z-50 mb-2 mt-2 -z-50 border-${themeColor} rounded border-r-4`}
+                    placeholder="Epic Name"
+                    onChange={(e) => {
+                      setThemeName(e.target.value);
+                    }}
+                  ></input>
+                  <div className="flex flex-col mb-2 text-gray-500">
+                    <p>Select Epic color</p>
+                  </div>
+                  <div className="w-44 scrollbar-thin border p-2 rounded border-green-300 scrollbar-thumb-indigo-800 scrollbar-track-green-300 overflow-y-scroll h-16 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                    {colorCOdes()}
+                  </div>
+                </div>
+
+                <div className="absolute bottom-2 flex items-center">
+                  <button
+                    className="text-sm bg-indigo-800 p-2 text-green-300 rounded shadow hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
+                    onClick={async () => {
+                      setDataSaved((prev) => ({ ...prev, loading: true }));
+                      console.log("Mkk", currentPinsOpen);
+                      const editedPinsWithEpics = Object.entries(
+                        currentPinsOpen
+                      ).map((item, index) => {
+                        if (item) {
+                          return item[1].map((pins) => {
+                            if (pins) {
+                              console.log("checkingThemes", Themes);
+                              const itemColor = Themes.filter((theme) => {
+                                if (theme) {
+                                  return theme.name === item[0];
+                                }
+                              });
+                              console.log(
+                                "itemColor",
+                                itemColor,
+                                item[0],
+                                themes
+                              );
+
+                              const newTheme = {
+                                name: item[0],
+                                color: itemColor[0].color,
+                              };
+                              return { ...pins, theme: newTheme };
+                            }
+                          });
+                        } else {
+                          return;
+                        }
+                      });
+
+                      const response = await saveStories(
+                        editedPinsWithEpics.flat()
+                      );
+                      console.log("response", response);
+                      setDataSaved((prev) => ({
+                        loading: false,
+                        status: response.status,
+                      }));
+                    }}
+                  >
+                    Save current state
+                  </button>
+                  {dataSaved.loading &&
+                    Logo("ml-2 fill-green-400 animate-spin")}
                 </div>
               </div>
-              {/* scrollbar-thin scrollbar-thumb-green-700 scrollbar-track-green-300 h-32 overflow-y-scroll overflow-auto h-16 scrollbar-track-rounded-full scrollbar-thumb-rounded-full */}
-              {/* scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full */}
-            </div>
-            {/*  <Droppable droppableId="other1">
-            {(provided) => {
-              return (
-                <div
-                  className="names border border-green-300"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  name
-                  {currentOpenRelease.other1 &&
-                  currentPinsOpen.other1.length > 0 ? (
-                    currentPinsOpen.other1.map(item, (index) => {
-                      return <div>{index}</div>;
-                    })
-                  ) : (
-                    <p>No pins</p>
-                  )}
-                </div>
-              );
-              {
-                provided.placeholder;
-              }
-            }}
-          </Droppable>
-          <Droppable droppableId="allPins">
-            {(provided) => {
-              return (
-                <ul
-                  className="allPins"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {currentPinsOpen ? (
-                    currentPinsOpen.allPins.map((item, index) => {
-                      console.log(index, "index");
-                      if (item) {
-                        return (
-                          <Draggable
-                            draggableId={item._id}
-                            index={index}
-                            key={item._id}
-                          >
-                            {(provided) => (
-                              <li
-                                index={item._id}
-                                className="p-1"
-                                key={item._id}
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                id={item._id}
-                              >
-                                <StoryTeamCard
-                                  name={item.name}
-                                  criteria={item.AcceptanceCriteria}
-                                  points={item.storyPoints}
-                                  priority={item.PriorityRank}
-                                  key={item._id}
-                                ></StoryTeamCard>
-                              </li>
-                            )}
-                          </Draggable>
-                        );
-                      }
-                    })
-                  ) : (
-                    <p>No stories created yet</p>
-                  )}
-                  {provided.placeholder}
-                </ul>
-              );
-            }}
-          </Droppable> */}
-            {Object.entries(currentPinsOpenRevised.defaultArr).map((item) => {
-              console.log(item);
-              return (
-                <Droppable droppableId={item[0]}>
-                  {(provided) => {
-                    return (
-                      <ul
-                        className={item[0]}
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        {item[1].map((item, index) => {
-                          if (item) {
-                            console.log(item, "item");
+
+              <div className="flex max-w-[650px] h-96 overflow-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-green-300 shadow scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+                <div className="flex ml-2">
+                  {Object.entries(currentPinsOpen).map((epic) => {
+                    if (epic[0]) {
+                      console.log("dd", epic[0], themes);
+                      const themeObject = themes.filter(
+                        (item) => item.name === epic[0]
+                      );
+                      console.log("themeObject", themeObject);
+                      return (
+                        <Droppable droppableId={epic[0].toString()}>
+                          {(provided) => {
                             return (
-                              <Draggable
-                                draggableId={item._id}
-                                index={index}
-                                key={item._id}
+                              <ul
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                className={`h-96 overflow-auto shadow-lg w-48 flex-col flex items-center mr-2 rounded-t scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-green-300  ${
+                                  themeObject[0]
+                                    ? `border-${themeObject[0].color}`
+                                    : ""
+                                } border-t-4`}
                               >
-                                {(provided) => (
-                                  <li
-                                    index={item._id}
-                                    className="p-1"
-                                    key={item._id}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    id={item._id}
-                                  >
-                                    <StoryTeamCard
-                                      name={item.name}
-                                      criteria={item.AcceptanceCriteria}
-                                      points={item.storyPoints}
-                                      priority={item.PriorityRank}
-                                      key={item._id}
-                                    ></StoryTeamCard>
-                                  </li>
-                                )}
-                              </Draggable>
+                                {currentPinsOpen[epic[0]].map((item, index) => {
+                                  if (item) {
+                                    console.log(item, "item");
+                                    return (
+                                      <Draggable
+                                        draggableId={item._id}
+                                        index={index}
+                                        key={item._id}
+                                      >
+                                        {(provided) => (
+                                          <li
+                                            index={item._id}
+                                            className="p-1 mt-2 z-10"
+                                            key={item._id}
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            id={item._id}
+                                          >
+                                            <StoryTeamCard
+                                              name={item.name}
+                                              criteria={item.AcceptanceCriteria}
+                                              points={item.storyPoints}
+                                              priority={item.PriorityRank}
+                                              key={item._id}
+                                              color={item.theme.color}
+                                            ></StoryTeamCard>
+                                          </li>
+                                        )}
+                                      </Draggable>
+                                    );
+                                  }
+                                })}
+                              </ul>
                             );
+                          }}
+                        </Droppable>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col ml-4 max-h-[500px] overflow-auto scrollbar-thin items-center w-40 scrollbar-thumb-indigo-800 scrollbar-track-green-300">
+                {Themes.map((item) => {
+                  console.log("themes", Themes);
+                  if (item) {
+                    return (
+                      <Droppable droppableId={item.name} key={item.name}>
+                        {(provided, snapshot) => {
+                          return (
+                            <div
+                              className={`border border-${
+                                item.color
+                              } border-r-4 mb-8 p-6 rounded font-Josefin duration-200 mr-4 w-32 shadow ${
+                                snapshot.isDraggingOver ? "scale-110" : ""
+                              }`}
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              key={item.name}
+                              onClick={() => {
+                                setCurrentEpicRevised((prev) => {
+                                  if (item.name === "Notheme") return "allPins";
+                                  else return item.name;
+                                });
+                              }}
+                            >
+                              {item.name}
+                            </div>
+                          );
+                          {
+                            provided.placeholder;
                           }
-                        })}
-                      </ul>
+                        }}
+                      </Droppable>
                     );
-                  }}
-                </Droppable>
-              );
-            })}
-            <div className="flex flex-col ml-10">
-              {themes.map((item) => {
-                if (item) {
-                  return (
-                    <Droppable droppableId={item.name} key={item.name}>
-                      {(provided) => {
-                        return (
-                          <div
-                            className="border border-green-300 mt-2 p-4"
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                          >
-                            {item.name}
-                          </div>
-                        );
-                        {
-                          provided.placeholder;
-                        }
-                      }}
-                    </Droppable>
-                  );
-                }
-              })}
-            </div>
-          </DragDropContext>
+                  }
+                })}
+              </div>
+            </DragDropContext>
+          </div>
         </div>
       </div>
     </div>

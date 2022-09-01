@@ -10,6 +10,8 @@ import {
 } from "firebase/auth";
 import { async } from "@firebase/util";
 
+import stringify from "json-stringify";
+
 const formatAuthUser = (user) => ({
   uid: user.uid,
   email: user.email,
@@ -21,11 +23,15 @@ export default function usefirebaseAuthState() {
   const [userData, setUserData] = useState(null);
   const [userTeamData, setUserTeamData] = useState(null);
   const [currentTeam, setCurrentTeam] = useState(null);
+  const [currentReleaseEpics, setCurrentReleaseEpics] = useState([]);
   const [currentOpenRelease, setCurrentOpenRelease] = useState(null);
   const [currentPinsOpen, setCurrentPinsOpen] = useState(null);
   const [currentPinsOpenRevised, setCurrentPinsOpenRevised] = useState(null);
+  const [currentPinsEpics, setCurrentPinEpics] = useState(null);
 
-  console.log("id current", currentTeam, currentOpenRelease);
+  const [themes, setTheme] = useState([]);
+
+  console.log("id current", themes, currentTeam, currentOpenRelease);
   const clear = () => {
     setAuthUser(null);
     setLoading(false);
@@ -254,7 +260,76 @@ export default function usefirebaseAuthState() {
         (item) => item._id === releaseCurrentId
       );
       if (UpdatedReleaseWithStory) {
+        const EarlyUniqueEpics = UpdatedReleaseWithStory[0].agilePins.map(
+          (item) => {
+            if (item) {
+              return item.theme.name;
+            } else {
+              return;
+            }
+          }
+        );
+        const uniqueEpics = [...new Set(EarlyUniqueEpics)];
+
+        /*      setCurrentPinsOpen({
+        allPins: current[0].agilePins,
+      }); */
+
+        const finalObject = {};
+        uniqueEpics.forEach((name) => {
+          if (name) {
+            const filterPins = UpdatedReleaseWithStory[0].agilePins.filter(
+              (item) => {
+                if (item) {
+                  return item.theme.name === name;
+                }
+              }
+            );
+            finalObject = { ...finalObject, [name]: filterPins };
+          }
+        });
+        setCurrentPinsOpen(finalObject);
+
+        console.log(UpdatedReleaseWithStory, "Updated");
         setCurrentOpenRelease(UpdatedReleaseWithStory);
+
+        setCurrentReleaseEpics((prev) => {
+          const allCurrentEpics = [];
+          UpdatedReleaseWithStory[0].agilePins.forEach((item) => {
+            if (item) {
+              allCurrentEpics.push(item.theme);
+            }
+          });
+          console.log("allCUrenr", allCurrentEpics);
+          return allCurrentEpics;
+        });
+
+        const nonStateReleaseEpics = UpdatedReleaseWithStory[0].agilePins.map(
+          (item) => {
+            if (item) {
+              return item.theme;
+            }
+          }
+        );
+
+        const allSaveThemes = [];
+        console.log(
+          "currentReleaseEpic",
+          currentReleaseEpics,
+          nonStateReleaseEpics
+        );
+
+        uniqueEpics.forEach((name) => {
+          const found = nonStateReleaseEpics.find((item) => {
+            if (item) {
+              return name === item.name;
+            }
+          });
+
+          allSaveThemes.push(found);
+        });
+        setTheme(allSaveThemes);
+
         setCurrentTeam((prev) => {
           const Release = prev[0].Release.map((item) => {
             if (item._id === releaseCurrentId) {
@@ -301,23 +376,74 @@ export default function usefirebaseAuthState() {
   };
 
   const setCurrentOpenReleaseData = (id) => {
+    setTheme((prev) => []);
     const current = currentTeam[0].Release.filter((item) => {
       if (item) {
         return item._id === id;
       }
     });
+    setCurrentReleaseEpics((prev) => {
+      const allCurrentEpics = [];
+      current[0].agilePins.forEach((item) => {
+        if (item) {
+          allCurrentEpics.push(item.theme);
+        }
+      });
+      return allCurrentEpics;
+    });
     console.log("set", current, id);
     if (current) {
       setCurrentOpenRelease(current);
-      setCurrentPinsOpen({
-        allPins: current[0].agilePins,
-        other1: [],
-        other2: [],
+      const EarlyUniqueEpics = current[0].agilePins.map((item) => {
+        if (item) {
+          return item.theme.name;
+        } else {
+          return;
+        }
       });
+      const uniqueEpics = [...new Set(EarlyUniqueEpics)];
+      uniqueEpics.forEach((name) => {});
+      /*      setCurrentPinsOpen({
+        allPins: current[0].agilePins,
+      }); */
+
+      const allSaveThemes = [];
+      console.log("currentReleaseEpic", currentReleaseEpics);
+
+      uniqueEpics.forEach((name) => {
+        const found = currentReleaseEpics.find((item) => {
+          return name === item.name;
+        });
+
+        allSaveThemes.push(found);
+      });
+      setTheme(allSaveThemes);
+
+      const finalObject = {};
+      uniqueEpics.forEach((name) => {
+        if (name) {
+          const filterPins = current[0].agilePins.filter((item) => {
+            if (item) {
+              return item.theme.name === name;
+            }
+          });
+          finalObject = { ...finalObject, [name]: filterPins };
+        }
+      });
+
+      console.log("finalHeaven", finalObject);
+      setCurrentPinsOpen(finalObject);
+
       setCurrentPinsOpenRevised((prev) => {
+        const currentReleaseEpicsNames = currentReleaseEpics.map((item) => {
+          return item.name;
+        });
+
         const finalArr = {};
         const defaultArr = {};
+        const finalModefiedArr = {};
         let arrNo = 0;
+        console.log("coulde", current[0].agilePins);
         for (let i = 0; i < current[0].agilePins.length; i += 1) {
           if (i % 4 === 0) {
             arrNo++;
@@ -329,10 +455,40 @@ export default function usefirebaseAuthState() {
 
           console.log(defaultArr, "default");
         }
+
         finalArr = { ...finalArr, defaultArr };
 
+        uniqueEpics.forEach((name) => {
+          const defaultArrMod = {};
+          let arrNo = 0;
+          const filteredAgilePins = current[0].agilePins.filter((item) => {
+            if (item) {
+              if (item.theme.name === name) {
+                return item;
+              }
+            }
+          });
+
+          for (let i = 0; i < filteredAgilePins.length; i += 1) {
+            if (i % 4 === 0) {
+              arrNo++;
+              defaultArrMod = { ...defaultArrMod, [arrNo.toString()]: [] };
+              console.log(arrNo, "No");
+            }
+
+            defaultArrMod[arrNo].push(filteredAgilePins[i]);
+
+            console.log(defaultArrMod, "defaultM");
+          }
+
+          finalModefiedArr = { ...finalModefiedArr, [name]: defaultArrMod };
+        });
+        console.log("Modefied", finalModefiedArr);
+        finalArr = { ...finalArr, ...finalModefiedArr };
+        console.log("finalFor", finalArr);
         return finalArr;
       });
+
       console.log(currentPinsOpenRevised, "lets gooo");
       console.log(currentPinsOpen, "msms");
     }
@@ -387,7 +543,96 @@ export default function usefirebaseAuthState() {
     }
   };
 
+  const saveStories = async (newRelease) => {
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    const formdata = new FormData();
+    formdata.append("newStories", stringify(newRelease));
+    console.log("dataSent", newRelease);
+    const UpdatedTeamWithStories = await axios
+      .patch(
+        `${
+          process.env.NEXT_PUBLIC_API_TEAM_ROUTE
+        }?updateTeamWithStories=${true}&teamId=${
+          currentTeam[0]._id
+        }&releaseId=${currentOpenRelease[0]._id}&newStories=${newRelease}`,
+        formdata,
+        config
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+
+    if (UpdatedTeamWithStories) {
+      console.log("dtaa", UpdatedTeamWithStories.data);
+      const newRelease1 = UpdatedTeamWithStories.data.Release.filter(
+        (release) => {
+          return currentOpenRelease[0]._id === release._id;
+        }
+      );
+      const EarlyUniqueEpics = newRelease1[0].agilePins.map((item) => {
+        if (item) {
+          return item.theme.name;
+        } else {
+          return;
+        }
+      });
+      const uniqueEpics = [...new Set(EarlyUniqueEpics)];
+      const finalObject = {};
+      uniqueEpics.forEach((name) => {
+        if (name) {
+          const filterPins = newRelease1[0].agilePins.filter((item) => {
+            if (item) {
+              return item.theme.name === name;
+            }
+          });
+          finalObject = { ...finalObject, [name]: filterPins };
+        }
+      });
+      setCurrentReleaseEpics((prev) => {
+        const allCurrentEpics = [];
+        newRelease1[0].agilePins.forEach((item) => {
+          if (item) {
+            allCurrentEpics.push(item.theme);
+          }
+        });
+        const allSaveThemes = [];
+
+        const uniqueEpics = [
+          ...new Set(allCurrentEpics.map((item) => item.name)),
+        ];
+
+        uniqueEpics.forEach((name) => {
+          const found = allCurrentEpics.find((item) => {
+            return name === item.name;
+          });
+
+          allSaveThemes.push(found);
+        });
+        setTheme(allSaveThemes);
+        console.log("ccynic", allCurrentEpics, newRelease1[0]);
+        return allCurrentEpics;
+      });
+      setCurrentPinsOpen(finalObject);
+      setCurrentOpenRelease((prev) => {
+        const newRelease = UpdatedTeamWithStories.data.Release.filter(
+          (release) => {
+            return prev[0]._id === release._id;
+          }
+        );
+        console.log("Newww", newRelease);
+        return newRelease;
+      });
+
+      setCurrentTeam([UpdatedTeamWithStories.data]);
+    }
+
+    return UpdatedTeamWithStories;
+  };
+
   return {
+    saveStories,
     currentPinsOpenRevised,
     setCurrentPinsOpenRevised,
     deleteRelease,
@@ -411,5 +656,8 @@ export default function usefirebaseAuthState() {
     setCurrentOpenRelease,
     setCurrentPinsOpen,
     currentPinsOpen,
+    currentReleaseEpics,
+    themes,
+    setTheme,
   };
 }
