@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "../Context/firebaseUserContext";
 import teamHeadsIcon from "../public/teamHeadsicon";
 import FolderAddIcon from "../public/folderAddIcon";
+import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
 
 export default function SideBar() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function SideBar() {
   console.log("acccess", isAccess);
   return (
     <div
-      className={`flex flex-col bg-green-300 h-full font-Josefin text-indigo-600 z-20 ${
+      className={`flex flex-col bg-green-300 shadow h-full font-Josefin text-indigo-600 z-20 ${
         router.pathname === "/"
           ? "md:hidden hidden"
           : "md:block md:fixed hidden"
@@ -95,7 +96,40 @@ export default function SideBar() {
             </p>
           </button>
         </Link>
+        <Link
+          href={`${
+            currentTeam
+              ? `/Teams/${currentTeam[0]._id}/[createDisplay]`
+              : "/Teams"
+          }  `}
+          className=""
+        >
+          <button
+            className={`flex flex-col items-center justify-center p-4 ${
+              router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                : ""
+            } `}
+          >
+            {CommunicateIcon(
+              `${
+                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                  ? "fill-green-300"
+                  : "fill-indigo-800"
+              }`
+            )}
 
+            <p
+              className={` w-14 ${
+                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+                  ? "text-green-300"
+                  : "text-indigo-800"
+              }`}
+            >
+              <p className="text-center">Team and contact</p>
+            </p>
+          </button>
+        </Link>
         <Link href="/Teams">
           <button className="flex flex-col items-center justify-center p-4">
             {teamHeadsIcon("fill-indigo-800")}

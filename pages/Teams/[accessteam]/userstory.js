@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Release from "../../../Components/ProductOwner/Release";
 import UserStoryCard from "../../../Components/ProductOwner/UserStory";
@@ -48,7 +48,11 @@ export default function UserStory() {
 
   console.log("themes", themes, Themes);
 
-  const colorArr = [];
+  useEffect(() => {
+    if (!Themes[0]) {
+      SetTheme(themes);
+    }
+  }, []);
 
   const removeFromList = (list, index) => {
     console.log(list, "liut");

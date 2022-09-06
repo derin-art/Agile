@@ -7,9 +7,9 @@ import SprintCardDisplay from "./SprintCardDisplay";
 export default function SprintCard({ name, duration, stories }) {
   console.log(name, duration, "mmmd");
   return (
-    <div className={`h-[128px] border`}>
+    <div className={`h-[128px] border p-1 rounded-lg border-l-4`}>
       <div className="h-fit">
-        <Droppable droppableId="Sprint">
+        <Droppable droppableId={name}>
           {(provided) => {
             return (
               <div {...provided.droppableProps} ref={provided.innerRef}>

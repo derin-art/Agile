@@ -78,12 +78,16 @@ router
       name: name,
       teamOwner: email,
       teamSummary: Summary,
+      teamData: {
+        sprints: {},
+      },
     });
     console.log(createdTeam);
     return res.status(201).json(createdTeam);
   })
   .patch(uploadImageMiddleWare, async (req, res) => {
     console.log("Sent");
+
     if (req.body.newRelease) {
       console.log("IDD", req.body.newRelease);
       console.log(req.body.dateEnd, req.body.dateStart, "dates");
@@ -155,8 +159,22 @@ router
       if (UpdatedTeamWithUpdatedRelease) {
         return res.status(200).json(UpdatedTeamWithUpdatedRelease);
       }
-    } /*   { $pull: { Release: { _id: req.query.ReleaseId } } },
-        { new: true } */
+    }
+    if (req.query.updateTeamWithSprints) {
+      console.log("parse", parseJson(req.body.Sprint));
+
+      const id = req.query.releaseId;
+      const teamUpdatedwithSprints = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        {
+          $set: {
+            teamData: { sprints: { [id]: parseJson(req.body.Sprint) } },
+          },
+        },
+        { new: true }
+      );
+      return res.status(200).json(teamUpdatedwithSprints);
+    }
     if (req.query.updateTeamWithStories) {
       const UpdatedTeamWithStoriesAndEpics = await AgileTeam.findById(
         req.query.teamId

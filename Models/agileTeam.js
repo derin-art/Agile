@@ -5,26 +5,33 @@ import { agileRelease } from "./agileRelease";
 
 const Schema = mongoose.Schema;
 
-const agileTeam = new Schema({
-  name: { type: String, required: [true, "Team Name is required"] },
-  teamOwner: {
-    type: String,
-    required: [true, "Team owner is required"],
-  },
-  members: [agileUser],
-  BackLog: [agilePin],
-  sprint: { type: Number },
-  Release: [agileRelease],
-  chatHistory: [
-    {
-      sender: { type: String },
-      time: { type: Date },
-      message: { type: String },
+const agileTeam = new Schema(
+  {
+    name: { type: String, required: [true, "Team Name is required"] },
+    teamOwner: {
+      type: String,
+      required: [true, "Team owner is required"],
     },
-  ],
-  teamData: {},
-  teamSummary: { type: String },
-});
+    members: [agileUser],
+    BackLog: [agilePin],
+    sprint: { type: Number },
+    Release: [agileRelease],
+    chatHistory: {
+      Chats: [
+        {
+          sender: { type: String },
+          time: { type: Date },
+          message: { type: String },
+        },
+      ],
+    },
+    teamData: {
+      sprints: { type: Schema.Types.Mixed, default: {} },
+    },
+    teamSummary: { type: String },
+  },
+  { minimize: false }
+);
 
 mongoose.models = {};
 const AgileTeam = mongoose.model("AgileTeam", agileTeam);

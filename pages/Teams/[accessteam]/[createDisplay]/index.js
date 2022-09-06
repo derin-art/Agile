@@ -22,7 +22,7 @@ export default function CreateDisplay() {
   }, [authUser, loading]);
 
   return (
-    <div className="mt-14 ml-2">
+    <div className="mt-14 ml-6">
       <div className="text-3xl font-Josefin border-b border-green-300 text-gray-300 mb-2">
         Story Map
       </div>
@@ -31,6 +31,7 @@ export default function CreateDisplay() {
           return (
             <ReleaseDraggable
               key={release._id}
+              currentTeam={currentTeam}
               agilePins={release.agilePins}
               dateStart={release.dateStart}
               dateEnd={release.dateEnd}

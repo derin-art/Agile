@@ -4,14 +4,14 @@ import { useState } from "react";
 export default function SprintCardDisplay({ id, index }) {
   const [infoOpen, setInfoOpen] = useState(true);
   return (
-    <div className="h-fit rounded-lg w-fit font-Josefin relative overflow-x-hidden bg-gray-300 rounded-sm">
+    <div className="h-fit rounded-lg w-fit font-Josefin relative overflow-x-hidden border bg-indigo-200 rounded-sm border-t-4 border-green-300">
       <Draggable draggableId={id} index={index}>
         {(provided) => {
           return (
             <div>
               <div
                 index={index}
-                className="p-1 mt-2 overflow-x-hidden bg-gray-300 rounded-sm h-full w-full"
+                className="p-1 mt-2 overflow-x-hidden rounded-sm h-full w-full"
                 key={id}
                 ref={provided.innerRef}
                 {...provided.draggableProps}
@@ -29,7 +29,7 @@ export default function SprintCardDisplay({ id, index }) {
                     }}
                     className="z-30 p-2"
                   >
-                    M
+                    close
                   </button>
                 </div>
                 <button
@@ -38,16 +38,9 @@ export default function SprintCardDisplay({ id, index }) {
                   }}
                   className="z-30"
                 >
-                  M
+                  open
                 </button>
-                <button
-                  className="bg-blue-300 hover:bg-blue-500 p-2"
-                  onClick={() => {
-                    console.log("clicked");
-                  }}
-                >
-                  Heyyyy
-                </button>
+                <div>U1</div>
                 <input></input>
                 Matttttt
               </div>

@@ -1,6 +1,6 @@
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import StoryTeamCard from "./StoryTeamCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import SprintCard from "./SprintsCard";
 import { useAuth } from "../Context/firebaseUserContext";
@@ -11,14 +11,22 @@ export default function ReleaseDraggable({
   dateStart,
   name,
   id,
+  currentTeam,
 }) {
-  const [Sprints, setSprints] = useState([
-    { name: "Sprint", duration: 3, stories: [] },
-  ]);
-  const [RealSprints, setRealSprints] = useState({
-    Sprint: { duration: 3, stories: [] },
-  });
+  const prevSprints = Object.entries(currentTeam[0].teamData.sprints).filter(
+    (item) => {
+      return item[0] === id;
+    }
+  );
+
+  console.log(prevSprints[0], "preb");
+
+  const [Sprints, setSprints] = useState(
+    prevSprints.length > 0 ? prevSprints[0][1].sprints : []
+  );
   const finalRealSprints = {};
+
+  const { saveSprints } = useAuth();
 
   const obj = {};
 
@@ -36,6 +44,7 @@ export default function ReleaseDraggable({
 
   const [sprintDuration, setSprintDuration] = useState("");
   const [sprintName, setSprintName] = useState("");
+  const [sprintStart, setSprintStart] = useState("");
 
   const purgeCSSSucksBorder = () => {
     return (
@@ -108,18 +117,32 @@ export default function ReleaseDraggable({
     );
   };
 
-  const SprintsObjectNames = Sprints.map((item) => {
-    return item.name;
-  });
-
-  const SprintsObjected = Object.assign({}, Sprints);
-
   const [testArray, setTestArray] = useState({
-    ye: [...agilePins],
+    unSelected: [...agilePins],
     ...obj,
   });
 
+  useEffect(() => {
+    Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
+      if (item[0] === id) {
+        console.log("saySpm", item);
+        setTestArray((prev) => {
+          console.log("testCouldbe", {
+            ...prev,
+            unSelected: item[1].unSelected,
+          });
+          return {
+            ...prev,
+            unSelected: item[1].unSelected,
+          };
+        });
+      }
+    });
+  }, []);
+
   console.log(Object.entries(testArray));
+
+  console.log(Sprints, "allSprints");
 
   const removeFromList = (list, index) => {
     console.log(list, "liut");
@@ -163,13 +186,6 @@ export default function ReleaseDraggable({
     setTestArray(listCopy);
   };
 
-  const allDisplaycolor = agilePins.map((pins) => {
-    if (pins.theme.color === "indigo") {
-      return "green-300";
-    }
-    return pins.theme.color;
-  });
-
   const finalArr = [];
 
   agilePins.forEach((item) => {
@@ -183,9 +199,9 @@ export default function ReleaseDraggable({
   });
 
   return (
-    <div className="border w-full shadow rounded p-2 border-l-8 border-green-300">
+    <div className="border w-full shadow rounded p-3 border-l-8 border-green-300">
       {
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4 p-2">
           {" "}
           <div className="mr-4 font-Josefin text-sm">Epics/Themes:</div>
           {finalArr.map((item) => {
@@ -200,51 +216,89 @@ export default function ReleaseDraggable({
         </div>
       }
       <DragDropContext onDragEnd={onDragEndFinal}>
-        <div className="flex ">
+        <div className="flex border relative">
           <div className="flex justify-center">
-            <div className="-rotate-90 text-4xl ml-20 font-Josefin text-gray-500">
-              <p className="text-sm ml-1">Release</p>
+            <div className="-top-[50px] -left-[1px] text-2xl font-Josefin text-indigo-800 rounded-lg absolute flex p-1 border-b-2">
+              <p className="ml-1 text-2xl">Release</p>
               {name}
             </div>
-            <div>
+            <div className="flex flex-col mr-2">
+              <button
+                className="p-1 border border-green-300 font-Josefin mb-2 text-green-300 text-sm bg-indigo-800 rounded"
+                onClick={() => {
+                  Object.entries(testArray).forEach((val) => {
+                    Sprints.forEach((item) => {
+                      if (item.name === val[0]) {
+                        item.stories = val[1];
+                      }
+                    });
+                  });
+                  console.log({
+                    unSelected: testArray.unSelected,
+                    sprints: [...Sprints],
+                  });
+
+                  saveSprints(
+                    {
+                      unSelected: testArray.unSelected,
+                      sprints: [...Sprints],
+                    },
+                    id
+                  );
+                }}
+              >
+                save release story map
+              </button>
               <input
                 className="border p-1 text-sm placeholder:text-sm font-Josefin border-green-300"
                 placeholder="SprintName"
                 onChange={(e) => {
-                  setSprintName(e.target.name);
+                  setSprintName(e.target.value);
                 }}
+              ></input>
+              <input
+                className="border p-1 text-sm placeholder:text-sm font-Josefin border-green-300 mt-4"
+                placeholder="SprintStart"
               ></input>
               <div className="font-Josefin mt-2">
                 <div className="text-sm">Sprint duration (weeks)</div>
                 <div>
                   <button
-                    className="border h-8 w-8 text-white bg-green-300 rounded-sm mr-2"
+                    className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                      sprintDuration === "1" ? "bg-indigo-800" : "bg-green-300"
+                    }`}
                     onClick={() => {
-                      setSprintDuration(1);
+                      setSprintDuration("1");
                     }}
                   >
                     1
                   </button>
                   <button
-                    className="border h-8 w-8 text-white bg-green-300 rounded-sm mr-2"
+                    className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                      sprintDuration === "2" ? "bg-indigo-800" : "bg-green-300"
+                    }`}
                     onClick={() => {
-                      setSprintDuration(2);
+                      setSprintDuration("2");
                     }}
                   >
                     2
                   </button>
                   <button
-                    className="border h-8 w-8 text-white bg-green-300 rounded-sm mr-2"
+                    className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                      sprintDuration === "3" ? "bg-indigo-800" : "bg-green-300"
+                    }`}
                     onClick={() => {
-                      setSprintDuration(3);
+                      setSprintDuration("3");
                     }}
                   >
                     3
                   </button>
                   <button
-                    className="border h-8 w-8 text-white bg-green-300 rounded-sm mr-2"
+                    className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                      sprintDuration === "4" ? "bg-indigo-800" : "bg-green-300"
+                    }`}
                     onClick={() => {
-                      setSprintDuration(4);
+                      setSprintDuration("4");
                     }}
                   >
                     4
@@ -254,6 +308,7 @@ export default function ReleaseDraggable({
               <button
                 className="text-sm border border-green-300 font-Josefin p-2 mt-2 bg-indigo-800 text-green-300 rounded"
                 onClick={() => {
+                  console.log(sprintDuration, "sprint");
                   if (!sprintName) {
                     toast.error("sprint name required to create sprint", {
                       position: toast.POSITION.BOTTOM_CENTER,
@@ -268,12 +323,32 @@ export default function ReleaseDraggable({
                     });
                     return;
                   }
-                  setSprints((prev) => {
-                    return {
+
+                  const newSprintObject = [
+                    {
                       name: sprintName,
                       duration: sprintDuration,
                       stories: [],
-                    };
+                    },
+                  ];
+                  const obj = {};
+
+                  newSprintObject.forEach((elem, i) => {
+                    obj[elem.name] = elem.stories;
+                  });
+
+                  console.log(obj, "flat");
+                  setTestArray((prev) => ({ ...prev, ...obj }));
+
+                  setSprints((prev) => {
+                    return [
+                      ...prev,
+                      {
+                        name: sprintName,
+                        duration: sprintDuration,
+                        stories: [],
+                      },
+                    ];
                   });
                 }}
               >
@@ -286,9 +361,9 @@ export default function ReleaseDraggable({
             {Object.entries(testArray).map((story) => {
               console.log(story, "story");
               console.log(Object.entries(testArray));
-              if (story[0] === "ye") {
+              if (story[0] === "unSelected") {
                 return (
-                  <Droppable direction="horizontal" droppableId="ye">
+                  <Droppable direction="horizontal" droppableId="unSelected">
                     {(provided) => {
                       return (
                         <div
@@ -341,7 +416,7 @@ export default function ReleaseDraggable({
                 const Sprint = Sprints.filter((item) => item.name === story[0]);
                 console.log(Sprint, "sprint");
                 return (
-                  <div>
+                  <div className="mt-8">
                     <SprintCard
                       name={Sprint[0].name}
                       duration={Sprint[0].duration}

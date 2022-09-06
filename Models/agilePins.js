@@ -15,6 +15,7 @@ const agilePin = new Schema({
     name: { type: String, default: "Notheme" },
   },
   Release: { type: String },
+  Details: { type: String, default: "No details yet" },
   PriorityRank: { type: String, default: "green" },
 });
 

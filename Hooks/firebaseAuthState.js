@@ -631,7 +631,33 @@ export default function usefirebaseAuthState() {
     return UpdatedTeamWithStories;
   };
 
+  const saveSprints = async (Sprint, releaseId) => {
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    const formdata = new FormData();
+    formdata.append("Sprint", stringify(Sprint));
+    const teamAfterSavedSprint = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${
+          currentTeam[0]._id
+        }&updateTeamWithSprints=${true}&releaseId=${releaseId}`,
+        formdata,
+        config
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    if (teamAfterSavedSprint) {
+      console.log("teamAfTERS", teamAfterSavedSprint);
+      setCurrentTeam([teamAfterSavedSprint.data]);
+    }
+
+    return teamAfterSavedSprint;
+  };
+
   return {
+    saveSprints,
     saveStories,
     currentPinsOpenRevised,
     setCurrentPinsOpenRevised,
