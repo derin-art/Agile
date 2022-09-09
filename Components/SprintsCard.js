@@ -7,7 +7,7 @@ import SprintCardDisplay from "./SprintCardDisplay";
 export default function SprintCard({ name, duration, stories }) {
   console.log(name, duration, "mmmd");
   return (
-    <div className={`h-[128px] border p-1 rounded-lg border-l-4`}>
+    <div className={`h-[128px] border p-1 rounded-2xl shadow-sm`}>
       <div className="h-fit">
         <Droppable droppableId={name}>
           {(provided) => {
@@ -15,7 +15,7 @@ export default function SprintCard({ name, duration, stories }) {
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {stories.length > 0 ? (
                   <div className="flex">
-                    <div className="font-Josefin border w-fit h-full flex flex-col items-center justify-center">
+                    <div className="font-Josefin border w-fit h-full ml-1 mt-2 flex flex-col items-center justify-center">
                       <p> {name}</p>
                     </div>
                     {stories.map((item, index) => {

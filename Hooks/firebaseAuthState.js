@@ -246,6 +246,7 @@ export default function usefirebaseAuthState() {
     formdata.append("name", data.name);
     formdata.append("newStory", true);
     formdata.append("storyPoints", data.storyPoints);
+    formdata.append("id", data._id);
 
     const result = await axios
       .patch(
@@ -259,6 +260,8 @@ export default function usefirebaseAuthState() {
       const UpdatedReleaseWithStory = result.data.Release.filter(
         (item) => item._id === releaseCurrentId
       );
+      const UpdatedTeamDataWithStory = result.data.teamData;
+
       if (UpdatedReleaseWithStory) {
         const EarlyUniqueEpics = UpdatedReleaseWithStory[0].agilePins.map(
           (item) => {
@@ -338,7 +341,13 @@ export default function usefirebaseAuthState() {
               return item;
             }
           });
-          return [{ ...prev[0], Release: Release[0] }];
+          return [
+            {
+              ...prev[0],
+              Release: Release[0],
+              teamData: UpdatedTeamDataWithStory,
+            },
+          ];
         });
       }
     }

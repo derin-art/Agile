@@ -96,7 +96,13 @@ export default function Home() {
         toast.success("Login Successful!", {
           position: toast.POSITION.BOTTOM_CENTER,
           className: "text-sm",
-          onClose: () => router.push("/Teams"),
+          onClose: () => {
+            if (teamRole === "TeamMember") {
+              router.push("/User");
+            } else {
+              router.push("/Teams");
+            }
+          },
         });
       })
       .catch((err) => {

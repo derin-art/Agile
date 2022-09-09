@@ -48,7 +48,7 @@ export default function UserStory() {
         <div className="flex flex-col">
           <input
             placeholder="Story Name"
-            className="p-2 bg-indigo-800 text-green-300 rounded-sm"
+            className="p-2 rounded border"
             onChange={(e) => {
               setStoryName(e.target.value);
             }}
@@ -58,7 +58,7 @@ export default function UserStory() {
             onChange={(e) => {
               setAcceptanceCriteria(e.target.value);
             }}
-            className="placeholder:text-sm mt-2 mb-2 p-2 bg-indigo-800 text-green-300 placeholder:text-gray-400 rounded-sm"
+            className="placeholder:text-sm mt-2 mb-2 p-2  placeholder:text-gray-400 rounded border"
           ></textarea>
           <div className="flex items-center">
             <p className="text-sm text-indigo-800">Priority Rank</p>

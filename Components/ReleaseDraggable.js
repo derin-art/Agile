@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import SprintCard from "./SprintsCard";
 import { useAuth } from "../Context/firebaseUserContext";
+import { motion } from "framer-motion";
 
 export default function ReleaseDraggable({
   agilePins,
@@ -20,7 +21,7 @@ export default function ReleaseDraggable({
   );
 
   console.log(prevSprints[0], "preb");
-
+  const [openSprintCreate, setOpenSprintCreate] = useState(false);
   const [Sprints, setSprints] = useState(
     prevSprints.length > 0 ? prevSprints[0][1].sprints : []
   );
@@ -140,6 +141,8 @@ export default function ReleaseDraggable({
     });
   }, []);
 
+  console.log("testArrayRel", testArray);
+
   console.log(Object.entries(testArray));
 
   console.log(Sprints, "allSprints");
@@ -199,32 +202,216 @@ export default function ReleaseDraggable({
   });
 
   return (
-    <div className="border w-full shadow rounded p-3 border-l-8 border-green-300">
+    <div className="border w-11/12 shadow rounded-2xl pb-3">
+      <div>
+        <button
+          onClick={() => {
+            setOpenSprintCreate((prev) => !prev);
+          }}
+          className="p-2 bg-indigo-800 text-white px-4 absolute top-[52px] font-Josefin text-sm rounded hover:bg-indigo-900 duration-300 right-2"
+        >
+          Add New Sprint
+        </button>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={openSprintCreate ? { translateY: 20, opacity: 1 } : {}}
+          transition={{ duration: 0.4 }}
+          className={`flex flex-col absolute rounded-2xl shadow top-20 p-4 px-6 right-4 bg-white z-30 border ${
+            openSprintCreate ? "" : "hidden"
+          }`}
+        >
+          <button
+            className="p-1 px-2 hidden font-Josefin mb-2 text-white text-sm bg-indigo-800 rounded"
+            onClick={() => {
+              Object.entries(testArray).forEach((val) => {
+                Sprints.forEach((item) => {
+                  if (item.name === val[0]) {
+                    item.stories = val[1];
+                  }
+                });
+              });
+              console.log({
+                unSelected: testArray.unSelected,
+                sprints: [...Sprints],
+              });
+
+              saveSprints(
+                {
+                  unSelected: testArray.unSelected,
+                  sprints: [...Sprints],
+                },
+                id
+              );
+            }}
+          >
+            save release story map
+          </button>
+          <div>
+            <div className="font-Josefin mb-1">Please Input Sprint Name</div>
+            <input
+              className="border p-1 text-sm w-full placeholder:text-sm font-Josefin rounded"
+              placeholder="Sprint Name"
+              onChange={(e) => {
+                setSprintName(e.target.value);
+              }}
+            ></input>
+          </div>
+          <div>
+            <div className="font-Josefin mt-2">
+              Please Input Sprint Start Date
+            </div>
+            <input
+              type="date"
+              className="border p-1 w-full text-sm placeholder:text-sm font-Josefin rounded"
+              placeholder="Sprint Start"
+            ></input>
+          </div>
+          <div className="font-Josefin mt-2">
+            <div className="text-sm">Sprint duration (weeks)</div>
+            <div>
+              <button
+                className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                  sprintDuration === "1" ? "bg-indigo-800" : "bg-green-300"
+                }`}
+                onClick={() => {
+                  setSprintDuration("1");
+                }}
+              >
+                1
+              </button>
+              <button
+                className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                  sprintDuration === "2" ? "bg-indigo-800" : "bg-green-300"
+                }`}
+                onClick={() => {
+                  setSprintDuration("2");
+                }}
+              >
+                2
+              </button>
+              <button
+                className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                  sprintDuration === "3" ? "bg-indigo-800" : "bg-green-300"
+                }`}
+                onClick={() => {
+                  setSprintDuration("3");
+                }}
+              >
+                3
+              </button>
+              <button
+                className={`border h-8 w-8 text-white rounded-sm mr-2 ${
+                  sprintDuration === "4" ? "bg-indigo-800" : "bg-green-300"
+                }`}
+                onClick={() => {
+                  setSprintDuration("4");
+                }}
+              >
+                4
+              </button>
+            </div>
+          </div>
+          <button
+            className="text-sm font-Josefin p-2 mt-2 relative bg-indigo-800 text-white rounded"
+            onClick={() => {
+              console.log(sprintDuration, "sprint");
+              if (!sprintName) {
+                toast.error("sprint name required to create sprint", {
+                  position: toast.POSITION.BOTTOM_CENTER,
+                  className: "text-sm",
+                });
+                return;
+              }
+              if (!sprintDuration) {
+                toast.error("sprint duration not set", {
+                  position: toast.POSITION.BOTTOM_CENTER,
+                  className: "text-sm",
+                });
+                return;
+              }
+
+              const newSprintObject = [
+                {
+                  name: sprintName,
+                  duration: sprintDuration,
+                  stories: [],
+                },
+              ];
+              const obj = {};
+
+              newSprintObject.forEach((elem, i) => {
+                obj[elem.name] = elem.stories;
+              });
+
+              console.log(obj, "flat");
+              setTestArray((prev) => ({ ...prev, ...obj }));
+
+              setSprints((prev) => {
+                return [
+                  ...prev,
+                  {
+                    name: sprintName,
+                    duration: sprintDuration,
+                    stories: [],
+                  },
+                ];
+              });
+            }}
+          >
+            Create Sprint
+          </button>
+        </motion.div>
+      </div>
       {
-        <div className="flex justify-center mb-4 p-2">
+        <div className="flex justify-center relative mb-4 p-2 border bg-gradient-to-r from-indigo-900 to-indigo-600  py-6 rounded-t-2xl">
           {" "}
-          <div className="mr-4 font-Josefin text-sm">Epics/Themes:</div>
+          <div className="mr-4 font-Josefin text-sm text-white">
+            Epics/Themes:
+          </div>
           {finalArr.map((item) => {
             return (
               <div
-                className={`border-${item.color} border-l-4 font-Josefin rounded text-sm mr-4`}
+                className={`duration-200 border-${item.color} bg-indigo-900 w-20 px-1 truncate border-l-4 border font-Josefin rounded hover:w-64 text-center text-sm mr-4 text-white`}
               >
                 {item.name}
               </div>
             );
           })}
+          <button
+            className="p-4 px-2 ml-4 font-Josefin absolute right-2 top-2 text-white text-sm bg-indigo-800 rounded-xl duration-300 hover:bg-indigo-900"
+            onClick={() => {
+              Object.entries(testArray).forEach((val) => {
+                Sprints.forEach((item) => {
+                  if (item.name === val[0]) {
+                    item.stories = val[1];
+                  }
+                });
+              });
+              console.log({
+                unSelected: testArray.unSelected,
+                sprints: [...Sprints],
+              });
+
+              saveSprints(
+                {
+                  unSelected: testArray.unSelected,
+                  sprints: [...Sprints],
+                },
+                id
+              );
+            }}
+          >
+            save release story map
+          </button>
         </div>
       }
       <DragDropContext onDragEnd={onDragEndFinal}>
-        <div className="flex border relative">
+        <div className="flex relative">
           <div className="flex justify-center">
-            <div className="-top-[50px] -left-[1px] text-2xl font-Josefin text-indigo-800 rounded-lg absolute flex p-1 border-b-2">
-              <p className="ml-1 text-2xl">Release</p>
-              {name}
-            </div>
-            <div className="flex flex-col mr-2">
+            <div className="-top-[64px] -left-[1px] text-2xl font-Josefin text-white absolute flex p-1">
+              <p className="ml-1 text-2xl -mt-1 uppercase">Release {name}</p>
               <button
-                className="p-1 border border-green-300 font-Josefin mb-2 text-green-300 text-sm bg-indigo-800 rounded"
+                className="p-1 px-2 ml-4 font-Josefin hidden -mt-3 border text-indigo-800 text-sm bg-white rounded"
                 onClick={() => {
                   Object.entries(testArray).forEach((val) => {
                     Sprints.forEach((item) => {
@@ -249,17 +436,56 @@ export default function ReleaseDraggable({
               >
                 save release story map
               </button>
-              <input
-                className="border p-1 text-sm placeholder:text-sm font-Josefin border-green-300"
-                placeholder="SprintName"
-                onChange={(e) => {
-                  setSprintName(e.target.value);
+            </div>
+            <div className="flex flex-col mr-2 absolute top-0 right-4 hidden">
+              <button
+                className="p-1 px-2 font-Josefin mb-2 text-white text-sm bg-indigo-800 rounded"
+                onClick={() => {
+                  Object.entries(testArray).forEach((val) => {
+                    Sprints.forEach((item) => {
+                      if (item.name === val[0]) {
+                        item.stories = val[1];
+                      }
+                    });
+                  });
+                  console.log({
+                    unSelected: testArray.unSelected,
+                    sprints: [...Sprints],
+                  });
+
+                  saveSprints(
+                    {
+                      unSelected: testArray.unSelected,
+                      sprints: [...Sprints],
+                    },
+                    id
+                  );
                 }}
-              ></input>
-              <input
-                className="border p-1 text-sm placeholder:text-sm font-Josefin border-green-300 mt-4"
-                placeholder="SprintStart"
-              ></input>
+              >
+                save release story map
+              </button>
+              <div>
+                <div className="font-Josefin mb-1">
+                  Please Input Sprint Name
+                </div>
+                <input
+                  className="border p-1 text-sm placeholder:text-sm font-Josefin border-indigo-800"
+                  placeholder="Sprint Name"
+                  onChange={(e) => {
+                    setSprintName(e.target.value);
+                  }}
+                ></input>
+              </div>
+              <div>
+                <div className="font-Josefin mt-2">
+                  Please Input Sprint Start Date
+                </div>
+                <input
+                  type="date"
+                  className="border p-1 text-sm placeholder:text-sm font-Josefin border-indigo-800"
+                  placeholder="Sprint Start"
+                ></input>
+              </div>
               <div className="font-Josefin mt-2">
                 <div className="text-sm">Sprint duration (weeks)</div>
                 <div>
@@ -306,7 +532,7 @@ export default function ReleaseDraggable({
                 </div>
               </div>
               <button
-                className="text-sm border border-green-300 font-Josefin p-2 mt-2 bg-indigo-800 text-green-300 rounded"
+                className="text-sm font-Josefin p-2 mt-2 bg-indigo-800 text-white rounded"
                 onClick={() => {
                   console.log(sprintDuration, "sprint");
                   if (!sprintName) {
@@ -357,7 +583,7 @@ export default function ReleaseDraggable({
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col ml-4">
             {Object.entries(testArray).map((story) => {
               console.log(story, "story");
               console.log(Object.entries(testArray));
@@ -371,7 +597,7 @@ export default function ReleaseDraggable({
                           ref={provided.innerRef}
                           className="flex h-full w-full"
                         >
-                          <div className="flex-col flex border font-Josefin">
+                          <div className="flex-col flex font-Josefin">
                             <div className="flex">
                               {story[1].map((item, index) => {
                                 if (item) {

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import addIcon from "../../../public/addIcon";
+import { motion } from "framer-motion";
 
 export default function AccessTeam() {
   const {
@@ -21,6 +22,7 @@ export default function AccessTeam() {
   const [releaseStartDate, setReleaseStartDate] = useState("");
   const [releaseStopDate, setReleaseStopDate] = useState("");
   const [smallMenuOpen, setSmallMenuOpen] = useState(false);
+  const [isReleaseCreateOpen, setIsReleaseCreateOpen] = useState(false);
 
   console.log("CHecking", currentTeam);
   return (
@@ -29,107 +31,109 @@ export default function AccessTeam() {
         <p></p>
       ) : (
         <div>
-          <div className="flex hidden md:block md:flex">
-            {" "}
+          <div className="flex border relative">
             <button
-              className="border border-indigo-800 rounded-sm bg-indigo-100 text-indigo-700 flex text-sm p-1 items-center justify-center md:p-2 hover:text-indigo-900"
               onClick={() => {
-                if (!releaseName) {
-                  toast.error("Name input required", {
-                    position: toast.POSITION.BOTTOM_CENTER,
-                    className: "text-sm",
-                  });
-                  return;
-                }
-                if (!releaseStartDate) {
-                  toast.error("Release Start date required", {
-                    position: toast.POSITION.BOTTOM_CENTER,
-                    className: "text-sm",
-                  });
-                  return;
-                }
-                if (!releaseStopDate) {
-                  toast.error("Release End date required", {
-                    position: toast.POSITION.BOTTOM_CENTER,
-                    className: "text-sm",
-                  });
-                  return;
-                }
-                console.log(currentTeam, userData);
-                console.log("Yams");
-                if (currentTeam && userData) {
-                  const newCreatedRelease = CreateRelease(
-                    userData.email,
-                    currentTeam[0]._id,
-                    releaseName,
-                    releaseStartDate,
-                    releaseStopDate
-                  );
-                  console.log(newCreatedRelease);
-                }
+                setIsReleaseCreateOpen((prev) => !prev);
               }}
+              className="absolute top-2 right-2 rounded hover:bg-indigo-900 duration-300 bg-indigo-800 text-white p-2 px-6"
             >
-              {addIcon("fill-green-400 md:mr-2 hidden md:block")}
-              <p> Create a new Release</p>
+              Add Release
             </button>
-            <div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={
+                isReleaseCreateOpen ? { translateY: 20, opacity: 1 } : {}
+              }
+              transition={{ duration: 0.4 }}
+              className={`flex flex-col-reverse z-50 bg-white text-sm border absolute top-10 right-2 w-fit p-2 rounded px-4 shadow ${
+                isReleaseCreateOpen ? "" : "hidden"
+              }`}
+            >
               {" "}
-              <input
-                onChange={(e) => {
-                  setReleaseName(e.target.value);
+              <button
+                className="border duration-300 border-indigo-800 rounded-sm bg-indigo-800 text-white flex text-sm p-1 items-center justify-center md:p-2 hover:bg-indigo-900"
+                onClick={() => {
+                  if (!releaseName) {
+                    toast.error("Name input required", {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                      className: "text-sm",
+                    });
+                    return;
+                  }
+                  if (!releaseStartDate) {
+                    toast.error("Release Start date required", {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                      className: "text-sm",
+                    });
+                    return;
+                  }
+                  if (!releaseStopDate) {
+                    toast.error("Release End date required", {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                      className: "text-sm",
+                    });
+                    return;
+                  }
+                  console.log(currentTeam, userData);
+                  console.log("Yams");
+                  if (currentTeam && userData) {
+                    const newCreatedRelease = CreateRelease(
+                      userData.email,
+                      currentTeam[0]._id,
+                      releaseName,
+                      releaseStartDate,
+                      releaseStopDate
+                    );
+                    console.log(newCreatedRelease);
+                  }
                 }}
-                placeholder="Name"
-                className="border ml-2 p-3 md:p-2 border-indigo-400 text-indigo-800 rounded-sm"
-                value={releaseName}
-              ></input>
-            </div>
-            <div className="flex ml-4 hidden md:block">
-              <input
-                type={"date"}
-                onChange={(e) => {
-                  setReleaseStartDate(e.target.value);
-                }}
-                value={releaseStartDate}
-                className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 rounded-sm text-indigo-700"
-              ></input>
-              <input
-                type={"date"}
-                onChange={(e) => {
-                  setReleaseStopDate(e.target.value);
-                }}
-                value={releaseStopDate}
-                className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 ml-2 rounded-sm text-indigo-700"
-              ></input>
-            </div>
-          </div>
-          <div className="flex mt-4 hidden">
-            <input
-              type={"date"}
-              onChange={(e) => {
-                setReleaseStartDate(e.target.value);
-              }}
-              value={releaseStartDate}
-              className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 rounded-sm text-indigo-700"
-            ></input>
-            <input
-              type={"date"}
-              onChange={(e) => {
-                setReleaseStopDate(e.target.value);
-              }}
-              value={releaseStopDate}
-              className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 ml-2 rounded-sm text-indigo-700"
-            ></input>
+              >
+                {addIcon("fill-green-400 md:mr-2")}
+                <p> Create a new Release</p>
+              </button>
+              <div className="flex flex-col w-fit mb-2 mt-2">
+                Input Estimated Start Date and End Date
+                <input
+                  type={"date"}
+                  onChange={(e) => {
+                    setReleaseStartDate(e.target.value);
+                  }}
+                  value={releaseStartDate}
+                  className="border mb-1 border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 rounded-sm text-indigo-700"
+                ></input>
+                <input
+                  type={"date"}
+                  onChange={(e) => {
+                    setReleaseStopDate(e.target.value);
+                  }}
+                  value={releaseStopDate}
+                  className="border border-indigo-700 bg-indigo-100 placeholder:text-indigo-700 p-1 rounded-sm text-indigo-700"
+                ></input>
+              </div>
+              <div className="flex flex-col">
+                Input Name
+                <input
+                  onChange={(e) => {
+                    setReleaseName(e.target.value);
+                  }}
+                  placeholder="Name"
+                  className="border p-3 md:p-2 border-indigo-400 text-indigo-800 rounded-sm"
+                  value={releaseName}
+                ></input>
+              </div>
+            </motion.div>
           </div>
 
           <div className="mt-4">
-            <div className="text-xl p-1 pb-0 tracking-wide font-bold border-b-4 border-indigo-400 w-fit mb-2">
+            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-lg mb-2 text-gray-300">
               RELEASES
             </div>
             {currentTeam[0].Release.length > 0 ? (
               currentTeam[0].Release.map((item) => {
                 if (item) {
                   return (
-                    <div key={item._id} className="p-1">
+                    <div key={item._id} className="p-1 z-10">
                       <Release
                         deleteRelease={deleteRelease}
                         setCurrentOpenReleaseData={setCurrentOpenReleaseData}

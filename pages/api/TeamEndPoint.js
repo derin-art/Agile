@@ -135,6 +135,7 @@ router
             color: req.body.themeColor,
           },
           name: req.body.name,
+          _id: req.body.id,
         };
         console.log(item._id, req.query.releaseCurrentId);
         if (item) {
@@ -148,9 +149,34 @@ router
           }
         }
       });
+
+      Object.entries(TeamData.teamData.sprints).forEach((item) => {
+        const sentStory = {
+          AcceptanceCriteria: req.body.AcceptanceCriteria,
+          AssignedTo: req.body.AssignedTo,
+          DateCreated: req.body.DateCreated,
+          PriorityRank: req.body.PriorityRank,
+          Release: req.body.Release,
+          completed: req.body.completed,
+          inProgress: req.body.inProgress,
+          storyPoints: req.body.storyPoints,
+          theme: {
+            name: req.body.themeName,
+            color: req.body.themeColor,
+          },
+          name: req.body.name,
+          _id: req.body.id,
+        };
+        if (item[0] === req.query.releaseCurrentId) {
+          item[1].unSelected = [...item[1].unSelected, sentStory];
+        }
+      });
+
+      console.log("teamSPIRTS", TeamData.teamData.sprints);
+
       const UpdatedTeamWithUpdatedRelease = await AgileTeam.findByIdAndUpdate(
         req.query.teamCurrentId,
-        { Release: UpdatedRelease },
+        { Release: UpdatedRelease, teamData: TeamData.teamData },
         { new: true }
       ).catch((err) => {
         console.log(err);
@@ -194,10 +220,57 @@ router
           }
         }
       );
+
+      /* 
+      const newTeamDataSprints = Object.entries(
+        UpdatedTeamWithStoriesAndEpics.teamData.sprints
+      ).forEach(sprint =>{
+        const newStories = [...parseJson(req.body.newStories)];
+     if(sprint[0] === req.query.releaseId){
+          sprint[1].forEach(item => {
+            item.
+          })
+     }
+      }) */
+
+      const targetedSprint =
+        UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId];
+      const newStories = [...parseJson(req.body.newStories)];
+      if (targetedSprint) {
+        if (targetedSprint.sprints) {
+          targetedSprint.sprints.forEach((item) => {
+            item.stories.forEach((story) => {
+              newStories.find((releaseStory) => {
+                if (releaseStory._id === story._id) {
+                  story.theme = releaseStory.theme;
+                }
+              });
+            });
+          });
+        }
+        if (targetedSprint.unSelected) {
+          targetedSprint.unSelected.forEach((story) => {
+            newStories.find((releaseStory) => {
+              if (releaseStory._id === story._id) {
+                story.theme = releaseStory.theme;
+              }
+            });
+          });
+        }
+      }
+
+      console.log(
+        "newNew",
+        UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId]
+      );
+
       if (newReleases) {
         const finalUpdatedTeam = await AgileTeam.findByIdAndUpdate(
           req.query.teamId,
-          { Release: newReleases },
+          {
+            Release: newReleases,
+            teamData: UpdatedTeamWithStoriesAndEpics.teamData,
+          },
           { new: true }
         ).catch((err) => {
           console.log(err);

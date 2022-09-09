@@ -8,6 +8,7 @@ import swordIcon from "../../../public/swordIcon";
 import { toast, ToastContainer } from "react-toastify";
 import { async, map } from "@firebase/util";
 import Logo from "../../../public/logo";
+import { motion } from "framer-motion";
 
 export default function UserStory() {
   const {
@@ -25,6 +26,7 @@ export default function UserStory() {
 
   const allSaveThemes = [];
 
+  const [createStoryMenu, setCreateStoryMenu] = useState(false);
   const [savedThemes, setSavedThemes] = useState([]);
   const [currentEpic, setCurrentEpic] = useState("Notheme");
   const [currentEpicRevised, setCurrentEpicRevised] = useState("allPins");
@@ -409,14 +411,33 @@ export default function UserStory() {
       <p className="text-3xl mb-2 text-gray-300 border-b border-green-300 font-Josefin">
         BackLog
       </p>
-      <div className=" flex -z-50">
-        <ToastContainer></ToastContainer>
-        <div className="border rounded-xl shadow">
-          <UserStoryCard></UserStoryCard>
+      <div className="w-full relative">
+        <div className="">
+          <button
+            onClick={() => {
+              setCreateStoryMenu((prev) => !prev);
+            }}
+            className="p-2 px-6 bg-indigo-800 text-white text-sm font-Josefin absolute right-2 -top-14 rounded"
+          >
+            Add User Story
+          </button>
         </div>
 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={createStoryMenu ? { translateY: 20, opacity: 1 } : {}}
+          transition={{ duration: 0.4 }}
+          className={`border rounded-2xl shadow z-30 pb-2 bg-white absolute  -top-8 right-2 ${
+            createStoryMenu ? "" : "hidden"
+          }`}
+        >
+          <UserStoryCard></UserStoryCard>
+        </motion.div>
+      </div>
+      <div className=" flex -z-50">
         <div className="flex flex-col">
-          <div className="border w-full ml-2 mr-1 rounded-xl flex p-2 shadow-lg">
+          <ToastContainer></ToastContainer>
+          <div className="border bg-white shadow w-full ml-2 mr-1 rounded-2xl flex p-2">
             <DragDropContext onDragEnd={onDragEndFinal}>
               <div className="flex-col mr-4 font-Josefin relative">
                 <button
@@ -443,14 +464,13 @@ export default function UserStory() {
                       return { ...prev, [themeName]: [] };
                     });
                   }}
-                  className="p-1 z-50 font-Josefin bg-indigo-800 text-sm text-green-300 rounded "
+                  className="p-1 px-2 z-50 font-Josefin bg-indigo-800 text-sm text-white rounded "
                 >
                   Create a New Epic{" "}
-                  {swordIcon(
-                    "fill-green-300 inline group-hover:fill-indigo-800"
-                  )}
+                  {swordIcon("fill-white inline group-hover:fill-indigo-800")}
                 </button>
                 <div className="-z-50">
+                  <p className="-mb-2 mt-2 text-gray-500">Input Epic Name</p>
                   <input
                     className={`border p-1 -z-50 mb-2 mt-2 -z-50 border-${themeColor} rounded border-r-4`}
                     placeholder="Epic Name"
@@ -459,7 +479,7 @@ export default function UserStory() {
                     }}
                   ></input>
                   <div className="flex flex-col mb-2 text-gray-500">
-                    <p>Select Epic color</p>
+                    <p>Select Epic Color</p>
                   </div>
                   <div className="w-44 scrollbar-thin border p-2 rounded border-green-300 scrollbar-thumb-indigo-800 scrollbar-track-green-300 overflow-y-scroll h-16 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                     {colorCOdes()}
@@ -468,7 +488,7 @@ export default function UserStory() {
 
                 <div className="absolute bottom-2 flex items-center">
                   <button
-                    className="text-sm bg-indigo-800 p-2 text-green-300 rounded shadow hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
+                    className="text-sm bg-indigo-800 p-2 text-white rounded shadow hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
                     onClick={async () => {
                       setDataSaved((prev) => ({ ...prev, loading: true }));
                       console.log("Mkk", currentPinsOpen);
@@ -520,7 +540,7 @@ export default function UserStory() {
                 </div>
               </div>
 
-              <div className="flex max-w-[650px] h-96 overflow-auto scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-green-300 shadow scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+              <div className="flex max-w-[650px] h-96 overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                 <div className="flex ml-2">
                   {Object.entries(currentPinsOpen).map((epic) => {
                     if (epic[0]) {
@@ -536,7 +556,7 @@ export default function UserStory() {
                               <ul
                                 {...provided.droppableProps}
                                 ref={provided.innerRef}
-                                className={`h-96 overflow-auto shadow-lg w-48 flex-col flex items-center mr-2 rounded-t scrollbar-thin scrollbar-thumb-indigo-800 scrollbar-track-green-300  ${
+                                className={`h-96 overflow-auto shadow-lg w-48 flex-col flex items-center mr-2 rounded-t   ${
                                   themeObject[0]
                                     ? `border-${themeObject[0].color}`
                                     : ""
@@ -584,7 +604,7 @@ export default function UserStory() {
                   })}
                 </div>
               </div>
-              <div className="flex flex-col ml-4 max-h-[500px] overflow-auto scrollbar-thin items-center w-40 scrollbar-thumb-indigo-800 scrollbar-track-green-300">
+              <div className="flex flex-col ml-4 max-h-[500px] overflow-auto scrollbar-thin items-center w-40 ">
                 {Themes.map((item) => {
                   console.log("themes", Themes);
                   if (item) {
@@ -595,7 +615,7 @@ export default function UserStory() {
                             <div
                               className={`border border-${
                                 item.color
-                              } border-r-4 mb-8 p-6 rounded font-Josefin duration-200 mr-4 w-32 shadow ${
+                              } border-r-4 mb-8 p-6  rounded font-Josefin duration-200 mr-4 w-32 shadow truncate ${
                                 snapshot.isDraggingOver ? "scale-110" : ""
                               }`}
                               {...provided.droppableProps}

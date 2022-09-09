@@ -4,24 +4,48 @@ import { useRouter } from "next/router";
 import { useAuth } from "../Context/firebaseUserContext";
 import teamHeadsIcon from "../public/teamHeadsicon";
 import FolderAddIcon from "../public/folderAddIcon";
+import { useEffect } from "react";
 import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
+import { io } from "socket.io-client";
+
+let socket;
 
 export default function SideBar() {
   const router = useRouter();
   const { currentTeam } = useAuth();
 
-  console.log("routerName", router.pathname);
+  useEffect(() => {
+    socket = io();
+  }, []);
 
-  console.log("Test", router.pathname === "/Teams");
+  const socketIntiallizer = async () => {
+    await fetch("../pages/api/Socket");
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+    socket.on("update-input", (msg) => {
+      setTypedInput(msg);
+    });
+    socket.on("joinedroom", () => {
+      console.log("Joined room");
+    });
+    socket.on("sendMembers", (msg) => {
+      setRoomInput(msg);
+    });
+  };
+  useEffect(() => {
+    socketIntiallizer();
+  }, []);
 
   const isAccess =
     router.pathname === "/Teams/[accessteam]" ||
     router.pathname === "/Teams/[accessteam]/userstory";
 
   console.log("acccess", isAccess);
+  console.log("cayendo", router.pathname.includes("/User"), router.pathname);
   return (
     <div
-      className={`flex flex-col bg-green-300 shadow h-full font-Josefin text-indigo-600 z-20 ${
+      className={`flex flex-col bg-indigo-900 shadow h-full font-Josefin text-indigo-600 z-20 ${
         router.pathname === "/"
           ? "md:hidden hidden"
           : "md:block md:fixed hidden"
@@ -31,6 +55,8 @@ export default function SideBar() {
           ? "hidden md:hidden"
           : "hidden md:block md:fixed"
       }
+
+      ${router.pathname.includes("/User") ? "hidden md:hidden" : ""}
       
 
       `}
@@ -41,9 +67,9 @@ export default function SideBar() {
           className=""
         >
           <button
-            className={`flex flex-col items-center justify-center p-4 ${
+            className={`flex flex-col items-center justify-center p-4 duration-300 ${
               router.pathname === "/Teams/[accessteam]"
-                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                ? "bg-indigo-800 border-r-4 border-indigo-700"
                 : ""
             }  ${
               router.pathname === "/Teams/[accessteam]/userstory"
@@ -52,11 +78,13 @@ export default function SideBar() {
             }`}
           >
             {openFolderIcon(
-              `${isAccess ? "fill-green-300" : "fill-indigo-800"} `
+              `${isAccess ? "fill-green-300" : "fill-indigo-600"} duration-300 `
             )}
 
             <p
-              className={`${isAccess ? "text-green-300" : "text-indigo-800"} `}
+              className={`${
+                isAccess ? "text-green-300" : "text-indigo-500"
+              } duration-300`}
             >
               Backlog
             </p>
@@ -65,15 +93,15 @@ export default function SideBar() {
         <Link
           href={`${
             currentTeam
-              ? `/Teams/${currentTeam[0]._id}/[createDisplay]`
+              ? `/Teams/${currentTeam[0]._id}/createDisplay`
               : "/Teams"
           }  `}
           className=""
         >
           <button
-            className={`flex flex-col items-center justify-center p-4 ${
+            className={`flex flex-col items-center justify-center p-4 duration-300 ${
               router.pathname === "/Teams/[accessteam]/[createDisplay]"
-                ? "bg-indigo-800 border-r-4 border-indigo-900"
+                ? "bg-indigo-800 border-r-4 border-indigo-700"
                 : ""
             } `}
           >
@@ -81,59 +109,67 @@ export default function SideBar() {
               `${
                 router.pathname === "/Teams/[accessteam]/[createDisplay]"
                   ? "fill-green-300"
-                  : "fill-indigo-800"
-              }`
+                  : "fill-indigo-600"
+              } duration-300`
             )}
 
             <p
-              className={` w-14 ${
+              className={`duration-300 w-14 ${
                 router.pathname === "/Teams/[accessteam]/[createDisplay]"
                   ? "text-green-300"
-                  : "text-indigo-800"
+                  : "text-indigo-500"
               }`}
             >
               Story Map
             </p>
           </button>
         </Link>
+
         <Link
           href={`${
             currentTeam
-              ? `/Teams/${currentTeam[0]._id}/[createDisplay]`
+              ? `/Teams/${currentTeam[0]._id}/createDisplay/communication`
               : "/Teams"
           }  `}
           className=""
         >
           <button
-            className={`flex flex-col items-center justify-center p-4 ${
-              router.pathname === "/Teams/[accessteam]/[createDisplay]"
-                ? "bg-indigo-800 border-r-4 border-indigo-900"
+            onClick={() => {
+              socket.emit("join", "room1");
+            }}
+            className={`flex duration-300 flex-col items-center justify-center p-4 ${
+              router.pathname ===
+              "/Teams/[accessteam]/[createDisplay]/[communication]"
+                ? "bg-indigo-800 border-r-4 border-indigo-700"
                 : ""
             } `}
           >
             {CommunicateIcon(
-              `${
-                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+              `duration-300 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]"
                   ? "fill-green-300"
-                  : "fill-indigo-800"
+                  : "fill-indigo-600"
               }`
             )}
 
             <p
-              className={` w-14 ${
-                router.pathname === "/Teams/[accessteam]/[createDisplay]"
+              className={`duration-300 w-14 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]"
                   ? "text-green-300"
-                  : "text-indigo-800"
+                  : "text-indigo-500"
               }`}
             >
               <p className="text-center">Team and contact</p>
             </p>
           </button>
         </Link>
+
         <Link href="/Teams">
           <button className="flex flex-col items-center justify-center p-4">
-            {teamHeadsIcon("fill-indigo-800")}
-            <p className="w-16 text-xs text-indigo-800">
+            {teamHeadsIcon("fill-indigo-600")}
+            <p className="w-16 text-xs text-indigo-500">
               Navigate to Team Menu
             </p>
           </button>

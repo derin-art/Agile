@@ -13,22 +13,22 @@ export default function Release({
   console.log("ReleaseId", id);
 
   return (
-    <div className="relative flex md:w-1/2">
+    <div className="relative flex md:w-1/2 border-b">
       <Link href={`/Teams/${currentTeam[0]._id}/userstory`}>
         <div
           onClick={() => {
             setCurrentOpenReleaseData(id);
           }}
-          className="cursor-pointer border-l-4 border-green-300 text-white text-lg bg-indigo-800 rounded-sm border p-2 "
+          className="cursor-pointer text-gray-900 text-sm rounded-sm  p-2 "
         >
-          <p className="text-xs italic text-green-300 font-serif ">
+          <p className="text-xs text-gray-600 ">
             {dateStart} - {dateEnd}
           </p>
           {name}
         </div>
       </Link>
       {deleteIcon(
-        "fill-indigo-800 absolute right-4 md:right-4 hover:fill-green-300 cursor-pointer mt-2",
+        "fill-red-500 absolute right-4 md:right-4 hover:fill-red-700 cursor-pointer duration-300 mt-5",
         "24",
         "24",
         id,

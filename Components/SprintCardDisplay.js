@@ -11,7 +11,7 @@ export default function SprintCardDisplay({ id, index }) {
             <div>
               <div
                 index={index}
-                className="p-1 mt-2 overflow-x-hidden rounded-sm h-full w-full"
+                className="p-1 mt-2 overflow-x-hidden rounded-sm h-full w-full bg-indigo-200"
                 key={id}
                 ref={provided.innerRef}
                 {...provided.draggableProps}

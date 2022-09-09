@@ -25,7 +25,9 @@ export default function Wrapper(props) {
         <SideBar></SideBar>
         <div
           className={`w-screen ${router.pathname != "/" ? "md:ml-24" : ""}
-        ${router.pathname === "/Teams" ? "md:ml-0 ml-0" : ""}`}
+        ${router.pathname === "/Teams" ? "md:ml-0 ml-0" : ""}
+        ${router.pathname.includes("/User") ? "md:ml-0" : ""}
+        `}
         >
           {props.children}
         </div>

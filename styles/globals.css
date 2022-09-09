@@ -60,3 +60,30 @@ a {
   backdrop-filter: blur(4px);
   border: 1px solid rgb(134 239 172);
 }
+
+@-moz-document url-prefix() {
+  .scrollbar {
+    overflow: auto;
+    width: 0.5em !important;
+    scroll-behavior: smooth !important;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+    background-color: darkgrey !important;
+    outline: 1px solid slategrey !important;
+    border-radius: 10px !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.5em !important;
+  scroll-behavior: smooth !important;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 20, 20, 0.695) !important;
+  outline: 1px solid rgba(112, 128, 144, 0) !important;
+  border-radius: 10px !important;
+}
