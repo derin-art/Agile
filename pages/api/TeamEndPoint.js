@@ -35,10 +35,21 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
 
     if (req.query.email) {
       const data = await AgileTeam.find({ teamOwner: req.query.email });
+      return res.status(200).json(data);
+    }
+
+    if (req.query.teamMemberId) {
+      const data = await AgileTeam.find({
+        "members._id": req.query.teamMemberId,
+      }).catch((err) => {
+        console.log(err);
+      });
+
       return res.status(200).json(data);
     }
 
@@ -67,6 +78,7 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
 
     const name = req.body.name;
@@ -86,8 +98,6 @@ router
     return res.status(201).json(createdTeam);
   })
   .patch(uploadImageMiddleWare, async (req, res) => {
-    console.log("Sent");
-
     if (req.body.newRelease) {
       console.log("IDD", req.body.newRelease);
       console.log(req.body.dateEnd, req.body.dateStart, "dates");
@@ -188,13 +198,32 @@ router
     }
     if (req.query.updateTeamWithSprints) {
       console.log("parse", parseJson(req.body.Sprint));
+      const UpdatedTeamWithStoriesAndEpics = await AgileTeam.findById(
+        req.query.teamId
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      console.log("dataFRom", UpdatedTeamWithStoriesAndEpics.teamData.sprints);
+
+      const newSprints = UpdatedTeamWithStoriesAndEpics.teamData.sprints;
 
       const id = req.query.releaseId;
+      console.log("thedata", {
+        [id]: parseJson(req.body.Sprint),
+        ...newSprints,
+      });
+      newSprints[id] = parseJson(req.body.Sprint);
+      const updatedFinalSprints = {
+        ...newSprints,
+      };
       const teamUpdatedwithSprints = await AgileTeam.findByIdAndUpdate(
         req.query.teamId,
         {
           $set: {
-            teamData: { sprints: { [id]: parseJson(req.body.Sprint) } },
+            teamData: {
+              sprints: updatedFinalSprints,
+            },
           },
         },
         { new: true }
@@ -220,18 +249,6 @@ router
           }
         }
       );
-
-      /* 
-      const newTeamDataSprints = Object.entries(
-        UpdatedTeamWithStoriesAndEpics.teamData.sprints
-      ).forEach(sprint =>{
-        const newStories = [...parseJson(req.body.newStories)];
-     if(sprint[0] === req.query.releaseId){
-          sprint[1].forEach(item => {
-            item.
-          })
-     }
-      }) */
 
       const targetedSprint =
         UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId];
@@ -281,8 +298,84 @@ router
         }
       }
     }
+    if (req.body.userFields) {
+      const acceptedTeam = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        {
+          $addToSet: { members: parseJson(req.body.userFields) },
+        },
+        { new: true }
+      ).catch((err) => {
+        console.log("accepterr", err);
+      });
+
+      return res.status(200).json(acceptedTeam);
+    }
+    if (req.query.deletingPin) {
+      const teamToBeUpdated = await AgileTeam.findById(req.query.teamId).catch(
+        (err) => {
+          console.log(err);
+        }
+      );
+      teamToBeUpdated.Release.forEach((item) => {
+        console.log("rann", item._id);
+        if (item._id.toString() === req.query.releaseId) {
+          const newAgilePins = item.agilePins.filter((pins) => {
+            console.log(pins._id, req.query.pinId);
+            return pins._id != req.query.pinId;
+          });
+          item.agilePins = newAgilePins;
+        }
+      });
+      if (teamToBeUpdated.teamData.sprints) {
+        if (teamToBeUpdated.teamData.sprints[req.query.releaseId]) {
+          teamToBeUpdated.teamData.sprints[req.query.releaseId].sprints.forEach(
+            (sprint) => {
+              const newStories = sprint.stories.filter((story) => {
+                return story._id != req.query.pinId;
+              });
+              sprint.stories = newStories;
+            }
+          );
+
+          if (teamToBeUpdated.teamData.sprints[req.query.releaseId]) {
+            const newStories = teamToBeUpdated.teamData.sprints[
+              req.query.releaseId
+            ].unSelected.filter((pin) => {
+              return pin._id != req.query.pinId;
+            });
+            teamToBeUpdated.teamData.sprints[req.query.releaseId].unSelected =
+              newStories;
+          }
+        }
+      }
+      console.log("ss", teamToBeUpdated);
+      const newUpdatedTeam = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        teamToBeUpdated,
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+      return res.status(200).json(newUpdatedTeam);
+    }
   })
   .delete(uploadImageMiddleWare, async (req, res) => {
+    await mongoose
+      .connect(
+        "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      )
+      .then(() => {
+        console.log("Connected to server");
+      })
+      .catch((err) => {
+        console.log("Mongo ERR", err);
+        return;
+      });
     console.log("iddddd", req.query.id, req.query.teamDelete);
     if (req.query.teamDelete) {
       console.log("deleting team");

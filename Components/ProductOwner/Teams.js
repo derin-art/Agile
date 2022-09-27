@@ -69,6 +69,13 @@ export default function Team({
 
   const fetchTeamFunction = async () => {
     console.log("mmm", userData);
+    if (userData === null) {
+      toast.error("User data unavailable due to poor internet connection", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        className: "text-sm",
+      });
+      return;
+    }
     if (!userData.email) {
       console.log("warn");
       toast.warn("User data still being fetched", {

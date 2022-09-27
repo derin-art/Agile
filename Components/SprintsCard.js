@@ -6,23 +6,46 @@ import SprintCardDisplay from "./SprintCardDisplay";
 
 export default function SprintCard({ name, duration, stories }) {
   console.log(name, duration, "mmmd");
+  let totalStoryPoints = 0;
+  stories.forEach((item) => {
+    if (item) {
+      totalStoryPoints = item.storyPoints + totalStoryPoints;
+    }
+  });
   return (
-    <div className={`h-[128px] border p-1 rounded-2xl shadow-sm`}>
+    <div
+      className={`h-[165px] border  relative border-t-[20px]  bg-gray-100 bg-opacity-25 `}
+    >
+      <div className="absolute text-gray-700 -top-[19px] left-4 text-sm font-Josefin flex">
+        <p className="mr-4">Sprint {name}</p>
+        <p className="text-xs mt-1">
+          Add to the sprint by dragging stories over it
+        </p>
+        <div className="ml-8">
+          {" "}
+          <p>{totalStoryPoints} Total Points</p>
+        </div>
+      </div>
+      <p className="absolute right-16 -top-[20px] text-gray-700 text-sm font-Josefin">
+        {duration}
+        weeks
+      </p>
       <div className="h-fit">
-        <Droppable droppableId={name}>
+        <Droppable droppableId={name} key={name} direction="horizontal">
           {(provided) => {
             return (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="min-w-[1000px]  max-w-[1000px] h-[154px] overflow-x-auto"
+              >
                 {stories.length > 0 ? (
-                  <div className="flex">
-                    <div className="font-Josefin border w-fit h-full ml-1 mt-2 flex flex-col items-center justify-center">
-                      <p> {name}</p>
-                    </div>
+                  <div className="flex h-full">
                     {stories.map((item, index) => {
                       return (
-                        <div key={index} className="ml-2 h-8 w-56">
+                        <div key={index} className="ml-2  w-54">
                           <SprintCardDisplay
-                            id={`${item._id}`}
+                            id={item._id}
                             index={index}
                             AcceptanceCriteria={item.AcceptanceCriteria}
                             PriorityRank={item.PriorityRank}
@@ -37,10 +60,11 @@ export default function SprintCard({ name, duration, stories }) {
                     })}
                   </div>
                 ) : (
-                  <div className="border h-8 font-Josefin mt-4">
+                  <div className="ml-4 h-8 font-Josefin mt-4 w-96">
                     No stories added
                   </div>
                 )}
+                {provided.placeholder}
               </div>
             );
           }}

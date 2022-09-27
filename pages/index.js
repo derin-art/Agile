@@ -89,7 +89,7 @@ export default function Home() {
       });
       return;
     }
-    SignInWithEmailAndPassword(email, password, teamRole)
+    await SignInWithEmailAndPassword(email, password, teamRole)
       .then((authUser) => {
         console.log("Login successful");
 
@@ -132,6 +132,7 @@ export default function Home() {
               position: toast.POSITION.BOTTOM_CENTER,
               className: "text-sm",
             });
+            break;
         }
       });
   };

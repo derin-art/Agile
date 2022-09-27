@@ -6,43 +6,15 @@ import teamHeadsIcon from "../public/teamHeadsicon";
 import FolderAddIcon from "../public/folderAddIcon";
 import { useEffect } from "react";
 import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
-import { io } from "socket.io-client";
-
-let socket;
 
 export default function SideBar() {
   const router = useRouter();
   const { currentTeam } = useAuth();
 
-  useEffect(() => {
-    socket = io();
-  }, []);
-
-  const socketIntiallizer = async () => {
-    await fetch("../pages/api/Socket");
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-    socket.on("update-input", (msg) => {
-      setTypedInput(msg);
-    });
-    socket.on("joinedroom", () => {
-      console.log("Joined room");
-    });
-    socket.on("sendMembers", (msg) => {
-      setRoomInput(msg);
-    });
-  };
-  useEffect(() => {
-    socketIntiallizer();
-  }, []);
-
   const isAccess =
     router.pathname === "/Teams/[accessteam]" ||
     router.pathname === "/Teams/[accessteam]/userstory";
 
-  console.log("acccess", isAccess);
-  console.log("cayendo", router.pathname.includes("/User"), router.pathname);
   return (
     <div
       className={`flex flex-col bg-indigo-900 shadow h-full font-Josefin text-indigo-600 z-20 ${
@@ -134,9 +106,6 @@ export default function SideBar() {
           className=""
         >
           <button
-            onClick={() => {
-              socket.emit("join", "room1");
-            }}
             className={`flex duration-300 flex-col items-center justify-center p-4 ${
               router.pathname ===
               "/Teams/[accessteam]/[createDisplay]/[communication]"

@@ -7,6 +7,11 @@ export default function StoryTeamCard({
   criteria,
   points,
   color,
+  id,
+  teamId,
+  releaseId,
+  deleteVisible = false,
+  deleteFunction,
 }) {
   console.log(priority, "pri");
   const purgeCSSSucks = () => {
@@ -168,7 +173,11 @@ export default function StoryTeamCard({
       <span className="text-xs absolute bottom-2 left-2">{points} Points</span>
       <button className="group">
         {deleteIcon(
-          "fill-white absolute bottom-2 right-1 group-hover:fill-green-300"
+          "fill-white absolute bottom-2 right-1 group-hover:fill-green-300",
+          "24",
+          "24",
+          id,
+          deleteFunction
         )}
       </button>
     </div>

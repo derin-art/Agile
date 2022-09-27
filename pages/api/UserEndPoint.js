@@ -32,7 +32,21 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
+
+    if (req.query.userName) {
+      const getRequest = async () => {
+        const data = await AgileUser.find({
+          name: { $regex: req.query.userName },
+        });
+        if (!data) {
+          return res.status(404).json({ message: "Item does not exist" });
+        }
+        return res.status(200).json(data);
+      };
+      return getRequest();
+    }
     if (req.query.email) {
       const getRequest = async () => {
         const data = await AgileUser.findOne({ email: req.query.email });
@@ -69,6 +83,7 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
     if (req.file) {
       const img = fs.readFileSync(req.file.path);
@@ -109,18 +124,56 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
-    console.log("sent", req.query.email, "role", req.body.TeamRole);
-    const patchedUser = await AgileUser.findOneAndUpdate(
-      { email: req.query.email },
-      { role: req.body.TeamRole },
-      {
-        new: true,
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-    return res.status(200).json(patchedUser);
+    if (req.query.Teamemail) {
+      const userEdited = await AgileUser.findOneAndUpdate(
+        { email: req.query.Teamemail },
+        {
+          $addToSet: {
+            teamRequests: {
+              accepted: false,
+              teamId: req.query.teamId,
+              teamName: req.query.teamName,
+              fromEmail: req.query.fromEmail,
+            },
+          },
+        },
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      return res.status(200).json(userEdited);
+    }
+
+    if (req.body.TeamRole) {
+      console.log("sent", req.query.email, "role", req.body.TeamRole);
+      const patchedUser = await AgileUser.findOneAndUpdate(
+        { email: req.query.email },
+        { role: req.body.TeamRole },
+        {
+          new: true,
+        }
+      ).catch((err) => {
+        console.log(err);
+      });
+      return res.status(200).json(patchedUser);
+    }
+
+    if (req.query.userId) {
+      const updatedUser = await AgileUser.findByIdAndUpdate(
+        req.query.userId,
+        {
+          $pull: { teamRequests: { teamId: req.query.rejectTeamId } },
+        },
+        { new: true }
+      ).catch((err) => {
+        console.log("rejectErr", err);
+      });
+
+      return res.status(200).json(updatedUser);
+    }
   })
   .delete(async (req, res) => {});
 /* export default async function handler(req, res) {

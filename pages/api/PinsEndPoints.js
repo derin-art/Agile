@@ -29,6 +29,7 @@ router.post(uploadImageMiddleWare, async (req, res) => {
     })
     .catch((err) => {
       console.log("Mongo ERR", err);
+      return;
     });
 
   console.log("Story point", req.body.StoryPoints);

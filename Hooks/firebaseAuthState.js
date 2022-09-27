@@ -18,6 +18,8 @@ const formatAuthUser = (user) => ({
 });
 
 export default function usefirebaseAuthState() {
+  const [currentJoinedTeam, setCurrentJoinedTeam] = useState(null);
+  const [allCurrentJoinedTeam, setAllCurrentJoinedTeam] = useState(null);
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
@@ -334,17 +336,23 @@ export default function usefirebaseAuthState() {
         setTheme(allSaveThemes);
 
         setCurrentTeam((prev) => {
-          const Release = prev[0].Release.map((item) => {
+          const newRelease = prev[0].Release.map((item) => {
             if (item._id === releaseCurrentId) {
-              return UpdatedReleaseWithStory;
+              return UpdatedReleaseWithStory[0];
             } else {
               return item;
             }
           });
+          console.log("teamDataBefore", {
+            ...prev[0],
+            Release: newRelease,
+            teamData: UpdatedTeamDataWithStory,
+          });
+
           return [
             {
               ...prev[0],
-              Release: Release[0],
+              Release: newRelease,
               teamData: UpdatedTeamDataWithStory,
             },
           ];
@@ -645,6 +653,7 @@ export default function usefirebaseAuthState() {
       headers: { "content-type": "multipart/form-data" },
     };
     const formdata = new FormData();
+    console.log("sprintData", Sprint);
     formdata.append("Sprint", stringify(Sprint));
     const teamAfterSavedSprint = await axios
       .patch(
@@ -665,7 +674,117 @@ export default function usefirebaseAuthState() {
     return teamAfterSavedSprint;
   };
 
+  const teamRequest = async (email, teamId, teamName, fromEmail) => {
+    const data = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?Teamemail=${email}&teamId=${teamId}&teamName=${teamName}&fromEmail=${fromEmail}`
+      )
+      .catch((err) => {
+        console.log("teamRequestErr", err);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log("datatRq", data);
+  };
+
+  const teamRequestAccepted = async (teamId, userFields) => {
+    const userFieldsString = stringify(userFields);
+    console.log("ddd", userFieldsString);
+    const formdata = new FormData();
+    formdata.append("userFields", userFieldsString);
+    const data = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${teamId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("teamAcceptErr", err);
+      });
+    console.log("teamAccepth", data);
+  };
+
+  const teamRequestRejected = async (teamId, userId) => {
+    const formdata = new FormData();
+
+    console.log(teamId, userId, "mmmd");
+    const data = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?rejectTeamId=${teamId}&userId=${userId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("teamRejectedErr", err);
+      });
+    if (data) {
+      console.log(data.data);
+      setUserData(data.data);
+    }
+  };
+
+  const getTeamsWithUser = async (userId) => {
+    const formdata = new FormData();
+    const data = await axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamMemberId=${userId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("teamMemeberIderr", err);
+      });
+    console.log("dataWho", data);
+    if (data) {
+      setAllCurrentJoinedTeam(data.data);
+    }
+  };
+
+  const setCurrentJoinedTeamFunction = (teamId) => {
+    console.log("based", allCurrentJoinedTeam);
+    const team = allCurrentJoinedTeam.filter((item) => item._id === teamId);
+    console.log(team, "fold");
+    setCurrentJoinedTeam(team);
+  };
+
+  const deletePin = async ({ pinId, pinThemeName }) => {
+    console.log("idddsss", currentTeam[0]._id, currentOpenRelease[0]._id);
+    console.log("hh", pinId, pinThemeName);
+
+    const formdata = new FormData();
+    const newTeamAfterPinDelete = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${
+          currentTeam[0]._id
+        }&releaseId=${
+          currentOpenRelease[0]._id
+        }&pinId=${pinId}&deletingPin=${true}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("deletingPinerr", err);
+      });
+    console.log("Mmm", newTeamAfterPinDelete);
+
+    if (newTeamAfterPinDelete) {
+      setCurrentTeam([newTeamAfterPinDelete.data]);
+      setCurrentPinsOpen((prev) => {
+        const newThemeArr = prev[pinThemeName].filter((pin) => {
+          return pin._id != pinId;
+        });
+        return { ...prev, [pinThemeName]: newThemeArr };
+      });
+    }
+  };
+
   return {
+    deletePin,
+    currentJoinedTeam,
+    setCurrentJoinedTeamFunction,
+    allCurrentJoinedTeam,
+    getTeamsWithUser,
+    teamRequestRejected,
+    teamRequestAccepted,
+    teamRequest,
     saveSprints,
     saveStories,
     currentPinsOpenRevised,

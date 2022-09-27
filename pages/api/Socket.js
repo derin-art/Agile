@@ -7,7 +7,6 @@ export default function SocketHandler(req, res) {
     console.log("Socket is initializing");
     const io = new Server(res.socket.server);
     res.socket.server.io = io;
-
     io.on("connection", (socket) => {
       socket.on("input-change", (msg) => {
         socket.broadcast.emit("update-input", msg);
@@ -18,7 +17,9 @@ export default function SocketHandler(req, res) {
         console.log(`${socket.id} joined ${room}`);
       });
       socket.on("roomMessage", (message) => {
-        socket.to("room1").emit("sendMembers", message);
+        console.log(message);
+        socket.to("room1").emit("recieveMessage", "jsjs");
+        socket.to("room1").emit("recieveMessage", message);
       });
     });
   }

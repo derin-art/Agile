@@ -33,6 +33,7 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
     const getRequest = async () => {
       const data = await AgileRelease.find({});
@@ -58,6 +59,7 @@ router
       })
       .catch((err) => {
         console.log("Mongo ERR", err);
+        return;
       });
     const newRelease = await AgileRelease.create({
       owner: req.body.owner,

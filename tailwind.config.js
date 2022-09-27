@@ -19,6 +19,7 @@ module.exports = {
       fontFamily: {
         Josefin: ["Josefin", "san-serif"],
         Rampart: ["Rampart", "san-serif"],
+        Rubik: ["Rubik", "san-serif"],
       },
     },
   },

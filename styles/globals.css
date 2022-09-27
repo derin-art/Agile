@@ -28,6 +28,11 @@ a {
   src: url("../public/Fonts/Rampart_One/RampartOne-Regular.ttf");
 }
 
+@font-face {
+  font-family: "Rubik";
+  src: url("../public/Fonts/Rubik_Mono_One/RubikMonoOne-Regular.ttf");
+}
+
 @layer utilities {
   .scrollbar-medium::-webkit-scrollbar {
     width: 6px;

@@ -85,55 +85,43 @@ export default function SprintCardDisplay({
     );
   };
   return (
-    <Draggable draggableId={ID} index={index} key={id}>
-      {(provided) => {
-        return (
-          <div
-            index={id}
-            className={`p-1 mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[6px] border-${
-              theme.color === "indigo" ? "green-300" : theme.color
-            }`}
-            key={`${id}`}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            id={id}
-          >
-            <div
-              className={`h-24 w-full absolute bg-red-400 duration-300 ${
-                infoOpen ? "left-full" : "left-0"
-              }`}
-            >
-              <button
-                onClick={() => {
-                  setInfoOpen((prev) => !prev);
-                }}
-                className="z-30 p-2"
-              >
-                close
-              </button>
-            </div>
-            <button
-              onClick={() => {
-                setInfoOpen((prev) => !prev);
-              }}
-              className="z-30"
-            >
-              open
-            </button>
-            <div className="text-3xl font-bold flex items-center w-full relative">
-              {name}
-              <p className="text-lg font-light absolute right-1 top-1 font-Josefin">
-                {storyPoints} points
-              </p>
-            </div>
+    <div
+      index={id}
+      className={`p-1 mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[6px] border-${
+        theme.color === "indigo" ? "green-300" : theme.color
+      }`}
+      key={`${id}`}
+    >
+      <div
+        className={`h-24 w-full absolute bg-red-400 duration-300 ${
+          infoOpen ? "left-full" : "left-0"
+        }`}
+      >
+        <button
+          onClick={() => {
+            setInfoOpen((prev) => !prev);
+          }}
+          className="z-30 p-2"
+        >
+          close
+        </button>
+      </div>
+      <button
+        onClick={() => {
+          setInfoOpen((prev) => !prev);
+        }}
+        className="z-30"
+      >
+        open
+      </button>
+      <div className="text-3xl font-bold flex items-center w-full relative">
+        {name}
+        <p className="text-lg font-light absolute right-1 top-1 font-Josefin">
+          {storyPoints} points
+        </p>
+      </div>
 
-            <div className="w-56 text-xs font-Josefin">
-              {AcceptanceCriteria}
-            </div>
-          </div>
-        );
-      }}
-    </Draggable>
+      <div className="w-56 text-xs font-Josefin">{AcceptanceCriteria}</div>
+    </div>
   );
 }
