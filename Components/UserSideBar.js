@@ -14,7 +14,7 @@ export default function UserSideBar() {
     >
       <button className="mt-[51px] p-2 flex flex-col items-center justify-center bg-indigo-800">
         {FolderAddIcon("fill-indigo-600")}
-        <p className="font-Josefin text-indigo-500">Team Story Map</p>
+        <p className="font-Josefin text-indigo-500">Team Sprint</p>
       </button>
     </div>
   );

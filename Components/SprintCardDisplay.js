@@ -1,5 +1,6 @@
 import { Draggable } from "react-beautiful-dnd";
 import { useState } from "react";
+import alertIcon from "../public/alertIcon";
 
 export default function SprintCardDisplay({
   id,
@@ -90,7 +91,7 @@ export default function SprintCardDisplay({
         return (
           <div
             index={id}
-            className={`p-1 mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[6px] border-${
+            className={`p-1 rounded mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[6px] border-${
               theme.color === "indigo" ? "green-300" : theme.color
             }`}
             key={`${id}`}
@@ -121,6 +122,14 @@ export default function SprintCardDisplay({
             >
               open
             </button>
+            <div className="hidden fill-orange-400"></div>
+            <div className="hidden fill-red-400"></div>
+            <div className="hidden fill-yellow-400"></div>
+            {alertIcon(
+              `fill-${PriorityRank}-400 absolute right-2 top-2 bg-white rounded`,
+              "24",
+              "24"
+            )}
             <div className="text-3xl font-bold flex items-center w-full relative">
               {name}
               <p className="text-lg font-light absolute right-1 top-1 font-Josefin">

@@ -417,7 +417,10 @@ export default function UserStory() {
       <p className="text-3xl mb-2 text-gray-300 border-b border-green-300 font-Josefin">
         BackLog
       </p>
-      <div className="w-full relative">
+      <div className="md:hidden font-Josefin">
+        Please Switch to a bigger screen to access this feature
+      </div>
+      <div className="w-full relative  hidden md:block">
         <div className="">
           <button
             onClick={() => {
@@ -440,7 +443,7 @@ export default function UserStory() {
           <UserStoryCard></UserStoryCard>
         </motion.div>
       </div>
-      <div className=" flex -z-50">
+      <div className=" flex -z-50  hidden md:flex">
         <div className="flex flex-col">
           <ToastContainer></ToastContainer>
           <div className=" border-b-2 border-l-2 w-full ml-2 mr-1 rounded-bl-2xl flex p-8">
@@ -550,7 +553,7 @@ export default function UserStory() {
                 </div>
               </div>
 
-              <div className="flex lg:w-[650px] max-w-[650px] h-96 overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+              <div className="flex lg:w-[650px] max-w-[650px] h-[500px] overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                 <div className="flex ml-2">
                   {Object.entries(currentPinsOpen).map((epic) => {
                     if (epic[0]) {
@@ -560,61 +563,71 @@ export default function UserStory() {
                       );
                       console.log("themeObject", themeObject);
                       return (
-                        <Droppable droppableId={epic[0].toString()}>
-                          {(provided) => {
-                            return (
-                              <ul
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                className={`h-96 overflow-auto  w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
-                                  themeObject[0]
-                                    ? `border-${themeObject[0].color}`
-                                    : ""
-                                } border-l border-b `}
-                              >
-                                {currentPinsOpen[epic[0]].map((item, index) => {
-                                  if (item) {
-                                    console.log(item, "item");
-                                    return (
-                                      <Draggable
-                                        draggableId={item._id}
-                                        index={index}
-                                        key={item._id}
-                                      >
-                                        {(provided) => (
-                                          <li
-                                            index={item._id}
-                                            className="p-1 mt-2 z-10"
+                        <div key={epic[0].toString()} className="relative">
+                          <div className="absolute -top-0 z-40 bg-white h-8 truncate border-b border-l w-full font-Josefin">
+                            <div className="w-48 truncate px-2">{epic[0]}</div>
+                          </div>
+                          <Droppable droppableId={epic[0].toString()}>
+                            {(provided) => {
+                              return (
+                                <ul
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                  className={`h-96 overflow-auto pt-8 w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
+                                    themeObject[0]
+                                      ? `border-${themeObject[0].color}`
+                                      : ""
+                                  } border-l border-b `}
+                                >
+                                  {currentPinsOpen[epic[0]].map(
+                                    (item, index) => {
+                                      if (item) {
+                                        console.log(item, "item");
+                                        return (
+                                          <Draggable
+                                            draggableId={item._id}
+                                            index={index}
                                             key={item._id}
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            id={item._id}
                                           >
-                                            <StoryTeamCard
-                                              deleteFunction={deletePin}
-                                              deleteVisible={true}
-                                              id={{
-                                                pinId: item._id,
-                                                pinThemeName: item.theme.name,
-                                              }}
-                                              name={item.name}
-                                              criteria={item.AcceptanceCriteria}
-                                              points={item.storyPoints}
-                                              priority={item.PriorityRank}
-                                              key={item._id}
-                                              color={item.theme.color}
-                                            ></StoryTeamCard>
-                                          </li>
-                                        )}
-                                      </Draggable>
-                                    );
-                                  }
-                                })}
-                              </ul>
-                            );
-                          }}
-                        </Droppable>
+                                            {(provided) => (
+                                              <li
+                                                index={item._id}
+                                                className="p-1 mt-2 z-10"
+                                                key={item._id}
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                id={item._id}
+                                              >
+                                                <StoryTeamCard
+                                                  deleteFunction={deletePin}
+                                                  deleteVisible={true}
+                                                  id={{
+                                                    pinId: item._id,
+                                                    pinThemeName:
+                                                      item.theme.name,
+                                                  }}
+                                                  name={item.name}
+                                                  criteria={
+                                                    item.AcceptanceCriteria
+                                                  }
+                                                  points={item.storyPoints}
+                                                  priority={item.PriorityRank}
+                                                  key={item._id}
+                                                  color={item.theme.color}
+                                                ></StoryTeamCard>
+                                              </li>
+                                            )}
+                                          </Draggable>
+                                        );
+                                      }
+                                    }
+                                  )}
+                                </ul>
+                              );
+                            }}
+                          </Droppable>
+                        </div>
                       );
                     }
                   })}
@@ -623,6 +636,9 @@ export default function UserStory() {
               <div className="flex flex-col ml-4 border-l max-h-[500px] overflow-auto scrollbar-thin items-center w-40 ">
                 <div className="mb-2 font-Josefin self-start ml-2 text-xl ">
                   EPICS
+                  <div className="text-xs">
+                    Drag the stories over an epic to add them to it
+                  </div>
                 </div>
                 {Themes.map((item) => {
                   console.log("themes", Themes);
@@ -632,7 +648,7 @@ export default function UserStory() {
                         {(provided, snapshot) => {
                           return (
                             <div
-                              className={`border border-${
+                              className={`border py-8 flex items-center border-${
                                 item.color
                               } border-r-8 mb-8 p-6 border-2 text-gray-800 rounded font-Josefin duration-200 mr-4 w-32 truncate ${
                                 snapshot.isDraggingOver ? "scale-110" : ""
@@ -647,7 +663,7 @@ export default function UserStory() {
                                 });
                               }}
                             >
-                              {item.name}
+                              <div className="w-20 truncate">{item.name}</div>
                             </div>
                           );
                           {

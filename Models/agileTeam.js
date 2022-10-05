@@ -28,6 +28,8 @@ const agileTeam = new Schema(
     teamData: {
       sprints: { type: Schema.Types.Mixed, default: {} },
     },
+    Map: { type: Schema.Types.Mixed, default: false },
+
     teamSummary: { type: String },
   },
   { minimize: false }

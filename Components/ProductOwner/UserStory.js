@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tooltip } from "@material-ui/core";
-import { withStyles, makeStyles } from "@material-ui/styles";
+import { withStyles } from "@material-ui/styles";
 import infoIcon from "../../public/infoIcon";
 import StoryTeamCard from "../StoryTeamCard";
 import { useAuth } from "../../Context/firebaseUserContext";
@@ -24,6 +24,9 @@ export default function UserStory() {
   const fibonnaciScale = [1, 2, 3, 5, 8, 13, 21];
 
   const [storyPoints, setStoryPoints] = useState(1);
+
+  const [rankHovered, setRankHovered] = useState("");
+  const [explainHovered, setExplainedHovered] = useState(false);
 
   const [storyName, setStoryName] = useState("");
   const [acceptanceCriteria, setAcceptanceCriteria] = useState("");
@@ -60,48 +63,43 @@ export default function UserStory() {
             }}
             className="placeholder:text-sm mt-2 mb-2 p-2  placeholder:text-gray-400 rounded border"
           ></textarea>
-          <div className="flex items-center">
-            <p className="text-sm text-indigo-800">Priority Rank</p>
-            <BlueOnGreenTooltip
-              title={<p className="text-xs">low risk, high value</p>}
+          <p className="text-sm text-indigo-800">Select Priority Rank</p>
+          <div className="flex flex-col">
+            <button
+              className={` bg-green-400 mb-1 hover:bg-green-500 duration-300 text-xs p-1 rounded text-white`}
+              onClick={() => {
+                setColor("green");
+              }}
             >
-              <button
-                className={`w-4 h-4 bg-green-400 ml-2`}
-                onClick={() => {
-                  setColor("green");
-                }}
-              ></button>
-            </BlueOnGreenTooltip>
-            <BlueOnGreenTooltip
-              title={<p className="text-xs">high risk, high value</p>}
+              low risk, high value
+            </button>
+
+            <button
+              className="bg-yellow-400 text-xs mb-1 rounded p-1 hover:bg-yellow-500 duration-300 text-white"
+              onClick={() => {
+                setColor("yellow");
+              }}
             >
-              <button
-                className="w-4 h-4 bg-yellow-400 ml-2"
-                onClick={() => {
-                  setColor("yellow");
-                }}
-              ></button>
-            </BlueOnGreenTooltip>
-            <BlueOnGreenTooltip
-              title={<p className="text-xs">low value, low risk</p>}
+              high risk, high value
+            </button>
+
+            <button
+              className="p-1 rounded text-xs text-white bg-orange-400 mb-1  text-white hover:bg-orange-500 duration-300"
+              onClick={() => {
+                setColor("orange");
+              }}
             >
-              <button
-                className="w-4 h-4 bg-orange-400 ml-2"
-                onClick={() => {
-                  setColor("orange");
-                }}
-              ></button>
-            </BlueOnGreenTooltip>
-            <BlueOnGreenTooltip
-              title={<p className="text-xs">high risk, low value</p>}
+              low risk, low value
+            </button>
+
+            <button
+              className="rounded text-xs bg-red-400 mb-1 text-white p-1 hover:bg-red-500 duration-300"
+              onClick={() => {
+                setColor("red");
+              }}
             >
-              <button
-                className="w-4 h-4 bg-red-400 ml-2"
-                onClick={() => {
-                  setColor("red");
-                }}
-              ></button>
-            </BlueOnGreenTooltip>
+              high risk, low value
+            </button>
           </div>
         </div>
         <div className="mt-2 flex text-sm text-indigo-800 items-center">

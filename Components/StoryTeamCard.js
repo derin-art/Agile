@@ -1,3 +1,4 @@
+import { useState } from "react";
 import alertIcon from "../public/alertIcon";
 import deleteIcon from "../public/deleteIcon";
 
@@ -154,6 +155,25 @@ export default function StoryTeamCard({
       </div>
     );
   };
+
+  const [hovered, setHovered] = useState(false);
+  const [priorityHover, setProtityHover] = useState(false);
+
+  let New = "";
+
+  if (priority === "red") {
+    New = "high risk, low value";
+  }
+  if (priority === "orange") {
+    New = "low risk, low value";
+  }
+  if (priority === "yellow") {
+    New = "high risk, high value";
+  }
+  if (priority === "green") {
+    New = "low risk, high value";
+  }
+
   return (
     <div
       className={`bg-gradient-to-r from-indigo-700 to-indigo-800 relative duration-75  text-white w-32 h-24 font-Josefin p-2 rounded-lg shadow-inner border-b-8 border-${
@@ -164,22 +184,53 @@ export default function StoryTeamCard({
       <div className="hidden fill-orange-400"></div>
       <div className="hidden fill-red-400"></div>
       <div className="hidden fill-yellow-400"></div>
-      {alertIcon(
-        `fill-${priority}-400 absolute top-0 border-indigo-500 rounded-lg rounded-tr-lg border p-1 bg-white right-0`,
-        "30",
-        "30"
-      )}
-      <p className="truncate text-xs hover:text-clip h-20">{criteria}</p>
-      <span className="text-xs absolute bottom-2 left-2">{points} Points</span>
-      <button className="group">
-        {deleteIcon(
-          "fill-white absolute bottom-2 right-1 group-hover:fill-green-300",
-          "24",
-          "24",
-          id,
-          deleteFunction
+      <div
+        className="absolute right-0 top-0"
+        onMouseLeave={() => {
+          setProtityHover(false);
+        }}
+        onMouseOver={() => {
+          setProtityHover(true);
+        }}
+      >
+        {alertIcon(
+          `fill-${priority}-400  border-indigo-500 rounded-lg rounded-tr-lg border p-1 bg-white `,
+          "30",
+          "30"
         )}
-      </button>
+      </div>
+      <div
+        className={`${
+          priorityHover ? "opacity-100" : "opacity-0"
+        } absolute -top-4  z-50 right-0 text-gray-600 bg-gray-100 rounded shadow-md text-sm duration-300`}
+      >
+        {New}
+      </div>
+      <p
+        onMouseLeave={() => {
+          setHovered(false);
+        }}
+        onMouseOver={() => {
+          setHovered(true);
+        }}
+        className={`${
+          hovered ? "" : "truncate"
+        } text-xs hover:text-clip h-8 overflow-auto`}
+      >
+        {criteria}
+      </p>
+      <span className="text-xs absolute bottom-2 left-2">{points} Points</span>
+      {deleteVisible && (
+        <button className="group">
+          {deleteIcon(
+            "fill-white absolute bottom-2 right-1 group-hover:fill-green-300",
+            "24",
+            "24",
+            id,
+            deleteFunction
+          )}
+        </button>
+      )}
     </div>
   );
 }

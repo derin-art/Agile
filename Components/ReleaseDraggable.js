@@ -205,7 +205,7 @@ export default function ReleaseDraggable({
 
     setTestArray(listCopy);
   };
-
+  console.log("heqwHOSee", testArray);
   const finalArr = [];
 
   agilePins.forEach((item) => {
@@ -389,10 +389,8 @@ export default function ReleaseDraggable({
       {
         <div className="flex bg-gray-100 justify-center border-b-2 relative mb-4 p-2  py-6 rounded-t-2xl">
           {" "}
-          <div className="mr-4 font-Josefin text-sm text-gray-800">
-            Epics/Themes:
-          </div>
-          <div className="max-x-l flex">
+          <div className="mr-4 font-Josefin text-sm text-gray-800">Epics:</div>
+          <div className="max-x-l flex w-[450px]">
             {finalArr.map((item) => {
               return (
                 <div
@@ -428,7 +426,7 @@ export default function ReleaseDraggable({
               );
               if (data.status === 200) {
                 setSaveSuccessful(false);
-                toast.success("Entire Story Map Saved", {
+                toast.success("Release Sprint State Saved", {
                   position: toast.POSITION.BOTTOM_CENTER,
                   className: "text-sm",
                 });

@@ -11,6 +11,7 @@ import {
 import { async } from "@firebase/util";
 
 import stringify from "json-stringify";
+import { KeyboardReturnRounded } from "@material-ui/icons";
 
 const formatAuthUser = (user) => ({
   uid: user.uid,
@@ -345,6 +346,7 @@ export default function usefirebaseAuthState() {
           });
           console.log("teamDataBefore", {
             ...prev[0],
+            Map: result.data.Map,
             Release: newRelease,
             teamData: UpdatedTeamDataWithStory,
           });
@@ -352,6 +354,7 @@ export default function usefirebaseAuthState() {
           return [
             {
               ...prev[0],
+              Map: result.data.Map,
               Release: newRelease,
               teamData: UpdatedTeamDataWithStory,
             },
@@ -566,6 +569,7 @@ export default function usefirebaseAuthState() {
     };
     const formdata = new FormData();
     formdata.append("newStories", stringify(newRelease));
+    formdata.append("newMaps", stringify(currentTeam[0].Map));
     console.log("dataSent", newRelease);
     const UpdatedTeamWithStories = await axios
       .patch(
@@ -776,7 +780,51 @@ export default function usefirebaseAuthState() {
     }
   };
 
+  const UserStoryInteractions = async (entireObject, releaseId) => {
+    console.log("dd", currentJoinedTeam[0]._id);
+    const formdata = new FormData();
+    formdata.append("pinInteraction", stringify(entireObject));
+    const UpdatedTeamWithInteractions = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?interaction=${true}&teamId=${
+          currentJoinedTeam[0]._id
+        }&releaseId=${releaseId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("interactionErr", err);
+      });
+
+    if (UpdatedTeamWithInteractions) {
+      console.log("mmm", UpdatedTeamWithInteractions.data);
+      setCurrentJoinedTeam([UpdatedTeamWithInteractions.data]);
+    }
+
+    console.log("fij", UpdatedTeamWithInteractions);
+  };
+
+  const saveMap = async (map) => {
+    const formdata = new FormData();
+    formdata.append("Map", stringify(map));
+
+    const savedMap = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?currentMapTeam=${currentTeam[0]._id}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("mapErr", err);
+      });
+    console.log("savedMap", savedMap);
+    if (savedMap) {
+      setCurrentTeam([savedMap.data]);
+      return savedMap;
+    }
+  };
+
   return {
+    saveMap,
+    UserStoryInteractions,
     deletePin,
     currentJoinedTeam,
     setCurrentJoinedTeamFunction,

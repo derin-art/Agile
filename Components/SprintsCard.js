@@ -9,12 +9,12 @@ export default function SprintCard({ name, duration, stories }) {
   let totalStoryPoints = 0;
   stories.forEach((item) => {
     if (item) {
-      totalStoryPoints = item.storyPoints + totalStoryPoints;
+      totalStoryPoints = parseInt(item.storyPoints) + totalStoryPoints;
     }
   });
   return (
     <div
-      className={`h-[165px] border  relative border-t-[20px]  bg-gray-100 bg-opacity-25 `}
+      className={`h-[165px] border rounded relative border-t-[20px]  bg-gray-100 bg-opacity-25 `}
     >
       <div className="absolute text-gray-700 -top-[19px] left-4 text-sm font-Josefin flex">
         <p className="mr-4">Sprint {name}</p>

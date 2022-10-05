@@ -6,6 +6,7 @@ import teamHeadsIcon from "../public/teamHeadsicon";
 import FolderAddIcon from "../public/folderAddIcon";
 import { useEffect } from "react";
 import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
+import MapIcon from "../public/SideBarIcons/mapIcon";
 
 export default function SideBar() {
   const router = useRouter();
@@ -92,7 +93,7 @@ export default function SideBar() {
                   : "text-indigo-500"
               }`}
             >
-              Story Map
+              Sprint Planning
             </p>
           </button>
         </Link>
@@ -131,6 +132,45 @@ export default function SideBar() {
               }`}
             >
               <p className="text-center">Team and contact</p>
+            </p>
+          </button>
+        </Link>
+
+        <Link
+          href={`${
+            currentTeam
+              ? `/Teams/${currentTeam[0]._id}/createDisplay/communication/Story`
+              : "Teams"
+          }`}
+        >
+          <button
+            className={`flex duration-300 flex-col items-center justify-center p-4 ${
+              router.pathname ===
+              "/Teams/[accessteam]/[createDisplay]/[communication]/Story"
+                ? "bg-indigo-800 border-r-4 border-indigo-700"
+                : ""
+            } `}
+          >
+            {MapIcon(
+              `duration-300 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]/Story"
+                  ? "fill-green-300"
+                  : "fill-indigo-600"
+              }`,
+              "24",
+              "24"
+            )}
+
+            <p
+              className={`duration-300 w-14 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]/Story"
+                  ? "text-green-300"
+                  : "text-indigo-500"
+              }`}
+            >
+              <p className="text-center"> Map</p>
             </p>
           </button>
         </Link>

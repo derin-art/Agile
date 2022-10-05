@@ -3,13 +3,15 @@ import { useAuth } from "../../Context/firebaseUserContext";
 import UserSprintCardDisplay from "../../Components/UserSprintCardDisplay";
 import StoryTeamCard from "../../Components/StoryTeamCard";
 import { data } from "autoprefixer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UserTeam() {
   const { currentJoinedTeam } = useAuth();
   console.log("coule", Object.entries(currentJoinedTeam[0].teamData.sprints));
   return (
-    <div className="h-screen w-fit pt-12 ml-32">
-      <div className="font-Josefin mt-4 ml-2 text-2xl">
+    <div className="h-screen w-fit pt-12 ml-32 pb-12">
+      <div className="font-Josefin mt-4 ml-0 mb-4 text-2xl">
         Team {currentJoinedTeam[0].name}
       </div>
       {currentJoinedTeam[0].teamData.sprints &&
@@ -20,6 +22,13 @@ export default function UserTeam() {
               return release._id === item[0];
             })
           );
+
+          if (
+            !currentJoinedTeam[0].Release.find((release) => {
+              return release._id === item[0];
+            })
+          )
+            return;
 
           const release = currentJoinedTeam[0].Release.filter((release) => {
             return release._id === item[0];
@@ -39,9 +48,11 @@ export default function UserTeam() {
           console.log("filTHHEN", finalFilteredThemes);
 
           return (
-            <div className="bg-gray-100 mb-8 border border-red-500">
-              {release[0].name}
-              <div className="flex">
+            <div className="bg-gray-100 mb-8 border font-Josefin rounded">
+              <div className="text-lg border-b p-2">
+                Release {release[0].name}
+              </div>
+              <div className="flex p-2">
                 {finalFilteredThemes.map((theme) => {
                   return (
                     <div
@@ -58,14 +69,14 @@ export default function UserTeam() {
                 if (data[0] === "unSelected") {
                   console.log(data[1]);
                   return (
-                    <div>
-                      unSelected
-                      <div className="mb-4 flex">
+                    <div className="mt-4 p-2">
+                      Un-Selected
+                      <div className="mb-4 flex mt-2">
                         {data[1].map((unSelected) => {
                           if (unSelected) {
                             console.log(unSelected.name);
                             return (
-                              <div key={unSelected._id}>
+                              <div key={unSelected._id} className="mr-2">
                                 <StoryTeamCard
                                   color={unSelected.theme.color}
                                   criteria={unSelected.AcceptanceCriteria}
@@ -86,25 +97,33 @@ export default function UserTeam() {
                   return data[1].map((sprints) => {
                     if (sprints.stories) {
                       return (
-                        <div className="border mt-4 mb-4 flex">
-                          {sprints.name}
-                          {sprints.stories.map((selected) => {
-                            return (
-                              <div key={selected._id}>
-                                <UserSprintCardDisplay
-                                  AcceptanceCriteria={
-                                    selected.AcceptanceCriteria
-                                  }
-                                  PriorityRank={selected.PriorityRank}
-                                  id={selected._id}
-                                  name={selected.name}
-                                  storyPoints={selected.storyPoints}
-                                  theme={selected.theme}
-                                  key={selected._id}
-                                ></UserSprintCardDisplay>
-                              </div>
-                            );
-                          })}
+                        <div className="p-2 border-t">
+                          Sprint {sprints.name}{" "}
+                          <div>{sprints.duration} Week(s)</div>
+                          <div className=" mt-2 mb-4 flex">
+                            {sprints.stories.map((selected) => {
+                              return (
+                                <div key={selected._id} className="mr-2">
+                                  <UserSprintCardDisplay
+                                    AcceptanceCriteria={
+                                      selected.AcceptanceCriteria
+                                    }
+                                    PriorityRank={selected.PriorityRank}
+                                    id={selected._id}
+                                    name={selected.name}
+                                    storyPoints={selected.storyPoints}
+                                    theme={selected.theme}
+                                    key={selected._id}
+                                    entireObject={selected}
+                                    releaseId={release[0]._id}
+                                    inProgress={selected.inProgress}
+                                    completed={selected.completed}
+                                    AssignedTo={selected.AssignedTo}
+                                  ></UserSprintCardDisplay>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       );
                     }
@@ -114,6 +133,7 @@ export default function UserTeam() {
             </div>
           );
         })}
+      <ToastContainer></ToastContainer>
     </div>
   );
 }

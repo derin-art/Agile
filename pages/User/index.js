@@ -127,7 +127,7 @@ export default function User() {
       </div>
       <div className="w-full items-center justify-center">
         <motion.div
-          animate={openTeamMenu ? { height: 350 } : { height: 40 }}
+          animate={openTeamMenu ? { height: 350 } : { height: 48 }}
           transition={{ duration: 0.4 }}
           className={`w-9/12 bg-indigo-800 text-white ml-2 p-2 font-Josefin rounded-2xl `}
           onClick={() => {
@@ -139,6 +139,7 @@ export default function User() {
             onClick={() => {
               setOpenTeamMenu((prev) => !prev);
             }}
+            className="pt-1"
           >
             {openTeamMenu ? (
               <p className="text-red-500">Close</p>
@@ -164,7 +165,7 @@ export default function User() {
                   );
                 })
               ) : (
-                <p>No teams created</p>
+                <p>No Teams Joined</p>
               )
             ) : (
               logo("animate-spin fill-white", "50", "50")
