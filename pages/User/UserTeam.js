@@ -106,6 +106,19 @@ export default function UserTeam() {
                           <div className="text-sm text-gray-600">
                             {sprints.duration} Week(s)
                           </div>
+                          <div className="text-sm text-gray-600">
+                            {sprints.sprintEndDate ? (
+                              <div className="flex">
+                                <p className="mr-2">
+                                  {sprints.sprintStartDate}
+                                </p>
+                                <p className="mr-2">to</p>
+                                <p>{sprints.sprintEndDate}</p>
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                          </div>
                           <div className=" mt-2 mb-4 flex">
                             {sprints.stories.map((selected) => {
                               return (

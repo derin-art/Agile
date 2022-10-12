@@ -20,6 +20,7 @@ export default function SprintCardDisplay({
   completed,
   AssignedTo,
 }) {
+  const [priorityHover, setProtityHover] = useState(false);
   const [infoOpen, setInfoOpen] = useState(true);
   const [assginedHovered, setAssignedHovered] = useState(false);
   const [assginedUserHovered, setAssignedUserUserHovered] = useState({
@@ -54,6 +55,20 @@ export default function SprintCardDisplay({
       <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z" />
     </svg>
   );
+  let New = "";
+
+  if (PriorityRank === "red") {
+    New = "high risk, low value";
+  }
+  if (PriorityRank === "orange") {
+    New = "low risk, low value";
+  }
+  if (PriorityRank === "yellow") {
+    New = "high risk, high value";
+  }
+  if (PriorityRank === "green") {
+    New = "low risk, high value";
+  }
   const purgeCSSSucksBorder = () => {
     return (
       <div>
@@ -270,7 +285,7 @@ export default function SprintCardDisplay({
                     }}
                     className={` ${
                       assginedHovered ? "ml-1" : "-ml-2"
-                    } h-6 w-6 relative rounded-full border border-gray-600 duration-300 capitalize flex items-center justify-center bg-gray-400 text-gray-600`}
+                    } h-6 w-6 relative rounded-full font-mono border border-gray-600 duration-300 capitalize flex items-center justify-center bg-gray-400 text-gray-600`}
                   >
                     {" "}
                     <div
@@ -300,14 +315,30 @@ export default function SprintCardDisplay({
       >
         {infoIcon}
       </button>
+      <div
+        className={`${
+          priorityHover ? "opacity-100" : "opacity-0"
+        } absolute top-2 font-Josefin  z-50 right-10 text-gray-600 bg-gray-100 rounded shadow-md text-sm duration-300`}
+      >
+        {New}
+      </div>
       <div className="hidden fill-orange-400"></div>
       <div className="hidden fill-red-400"></div>
       <div className="hidden fill-yellow-400"></div>
-      {alertIcon(
-        `fill-${PriorityRank}-400 absolute right-2 top-2 bg-white rounded`,
-        "24",
-        "24"
-      )}
+      <div
+        onMouseLeave={() => {
+          setProtityHover(false);
+        }}
+        onMouseOver={() => {
+          setProtityHover(true);
+        }}
+      >
+        {alertIcon(
+          `fill-${PriorityRank}-400 absolute right-2 top-2 bg-white rounded`,
+          "24",
+          "24"
+        )}
+      </div>
       <div className="text-3xl font-bold font-Josefin flex items-center w-full relative">
         {name}
         <p className="text-lg font-light absolute right-1 top-1 font-Josefin">

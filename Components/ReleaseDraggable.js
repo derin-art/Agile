@@ -565,6 +565,8 @@ export default function ReleaseDraggable({
                       name={Sprint[0].name}
                       duration={Sprint[0].duration}
                       stories={story[1]}
+                      sprintEndDate={Sprint[0].sprintEndDate}
+                      sprintStartDate={Sprint[0].sprintStartDate}
                     ></SprintCard>
                     <div className="text-white bg-transparent -ml-12 z-30 font-Josefin text-xs">
                       <button
