@@ -91,7 +91,7 @@ export default function SprintCardDisplay({
         return (
           <div
             index={id}
-            className={`p-1 rounded mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[6px] border-${
+            className={`p-1 rounded mt-2 overflow-x-hidden w-56 h-32 w-full relative bg-gradient-to-b from-indigo-700 to-indigo-900 text-white border-l-[10px] border-${
               theme.color === "indigo" ? "green-300" : theme.color
             }`}
             key={`${id}`}

@@ -564,8 +564,8 @@ export default function UserStory() {
                       console.log("themeObject", themeObject);
                       return (
                         <div key={epic[0].toString()} className="relative">
-                          <div className="absolute -top-0 z-40 bg-white h-8 truncate border-b border-l w-full font-Josefin">
-                            <div className="w-48 truncate px-2">{epic[0]}</div>
+                          <div className="absolute -top-0 z-40 text-gray-700 bg-gray-100 bg-white h-8 truncate border-b border-l w-full font-Josefin">
+                            <div className="w-48 truncate px-2 ">{epic[0]}</div>
                           </div>
                           <Droppable droppableId={epic[0].toString()}>
                             {(provided) => {
@@ -634,7 +634,7 @@ export default function UserStory() {
                 </div>
               </div>
               <div className="flex flex-col ml-4 border-l max-h-[500px] overflow-auto scrollbar-thin items-center w-40 ">
-                <div className="mb-2 font-Josefin self-start ml-2 text-xl ">
+                <div className="mb-2 font-Josefin self-start ml-2 text-xl text-gray-700">
                   EPICS
                   <div className="text-xs">
                     Drag the stories over an epic to add them to it

@@ -17,13 +17,7 @@ const agileTeam = new Schema(
     sprint: { type: Number },
     Release: [agileRelease],
     chatHistory: {
-      Chats: [
-        {
-          sender: { type: String },
-          time: { type: Date },
-          message: { type: String },
-        },
-      ],
+      Chats: [],
     },
     teamData: {
       sprints: { type: Schema.Types.Mixed, default: {} },

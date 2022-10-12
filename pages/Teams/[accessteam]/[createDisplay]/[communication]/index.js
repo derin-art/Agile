@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
-
+import dynamic from "next/dynamic";
 import { toast, ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -8,11 +8,86 @@ import addIcon from "../../../../../public/addIcon";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../../../../Context/firebaseUserContext";
 
+const AblyChatComponent = dynamic(
+  () => import("../../../../../Components/AlbyChatComponent"),
+  { ssr: false }
+);
+
 let socket;
 
 /* (email, teamId, teamName, fromEmail) */
 
 export default function Communication() {
+  const purgeCSSSucksBorder = () => {
+    return (
+      <div>
+        <div className="border-gray-100"></div>
+        <div className="border-gray-200"></div>
+        <div className="border-gray-300"></div>
+        <div className="border-gray-400"></div>
+        <div className="border-gray-500"></div>
+        <div className="border-gray-600"></div>
+        <div className="border-gray-700"></div>
+        <div className="border-gray-800"></div>
+        <div className="border-orange-100"></div>
+        <div className="border-orange-200"></div>
+        <div className="border-orange-300"></div>
+        <div className="border-orange-400"></div>
+        <div className="border-orange-500"></div>
+        <div className="border-orange-600"></div>
+        <div className="border-orange-700"></div>
+        <div className="border-orange-800"></div>
+        <div className="border-indigo-100"></div>
+        <div className="border-indigo-200"></div>
+        <div className="border-indigo-300"></div>
+        <div className="border-indigo-400"></div>
+        <div className="border-indigo-500"></div>
+        <div className="border-indigo-600"></div>
+        <div className="border-indigo-700"></div>
+        <div className="border-indigo-800"></div>
+        <div className="border-green-100"></div>
+        <div className="border-green-200"></div>
+        <div className="border-green-300"></div>
+        <div className="border-green-400"></div>
+        <div className="border-green-500"></div>
+        <div className="border-green-600"></div>
+        <div className="border-green-700"></div>
+        <div className="border-green-800"></div>
+        <div className="border-red-100"></div>
+        <div className="border-red-200"></div>
+        <div className="border-red-300"></div>
+        <div className="border-red-400"></div>
+        <div className="border-red-500"></div>
+        <div className="border-red-600"></div>
+        <div className="border-red-700"></div>
+        <div className="border-red-800"></div>
+        <div className="border-blue-100"></div>
+        <div className="border-blue-200"></div>
+        <div className="border-blue-300"></div>
+        <div className="border-blue-400"></div>
+        <div className="border-blue-500"></div>
+        <div className="border-blue-600"></div>
+        <div className="border-blue-700"></div>
+        <div className="border-blue-800"></div>
+        <div className="border-yellow-100"></div>
+        <div className="border-yellow-200"></div>
+        <div className="border-yellow-300"></div>
+        <div className="border-yellow-400"></div>
+        <div className="border-yellow-500"></div>
+        <div className="border-yellow-600"></div>
+        <div className="border-yellow-700"></div>
+        <div className="border-yellow-800"></div>
+        <div className="border-purple-100"></div>
+        <div className="border-purple-200"></div>
+        <div className="border-purple-300"></div>
+        <div className="border-purple-400"></div>
+        <div className="border-purple-500"></div>
+        <div className="border-purple-600"></div>
+        <div className="border-purple-700"></div>
+        <div className="border-purple-800"></div>
+      </div>
+    );
+  };
   const { teamRequest, userData, currentTeam } = useAuth();
   console.log("pretty important", teamRequest, userData, currentTeam);
   const [roomInput, setRoomInput] = useState("");
@@ -44,6 +119,74 @@ export default function Communication() {
   const [message, setMessage] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [teamMenuOpen, setTeamMenuOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState("User");
+
+  const kanBamData = [];
+
+  Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
+    if (currentTeam[0].Release.find((release) => release._id === item[0])) {
+      item[1].sprints.forEach((sprint) => {
+        sprint.stories.forEach((pin) => {
+          kanBamData.push({ ...pin, sprintName: sprint.name });
+        });
+      });
+
+      item[1].unSelected.forEach((pin) => {
+        kanBamData.push({ ...pin, sprintName: "No Sprint" });
+      });
+    }
+  });
+
+  console.log("kan", kanBamData);
+
+  const DumpStory = ({
+    name,
+    theme,
+    sprintName,
+    storyPoints,
+    AssignedTo,
+    priorityRank,
+    showAssigned = false,
+  }) => {
+    let ValRank = "";
+    if (priorityRank === "red") {
+      ValRank = "high risk, low value";
+    }
+    if (priorityRank === "green") {
+      ValRank = "low risk, high value";
+    }
+    if (priorityRank === "orange") {
+      ValRank = "low risk, low value";
+    }
+    if (priorityRank === "yellow") {
+      ValRank = "high risk, high value";
+    }
+    return (
+      <div
+        className={`h-24 w-32 bg-indigo-800 text-white rounded p-1 border-t-8 border-${
+          theme.color === "indigo" ? "green-300" : theme.color
+        }`}
+      >
+        <div className="flex relative">
+          {name} <div className="absolute right-1">{storyPoints} points</div>
+        </div>
+        <div>
+          {sprintName === "No Sprint" ? `No Sprint` : `Sprint ${sprintName}`}
+        </div>
+        <div className="text-xs text-indigo-400">{ValRank}</div>
+        {showAssigned && (
+          <div className="flex text-sm w-24 overflow-x-auto -mt-1">
+            {Array.isArray(AssignedTo)
+              ? AssignedTo.map((user) => (
+                  <div className="mr-1">{user.name},</div>
+                ))
+              : ""}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="flex w-10/11 h-screen overflow-x-hidden relative">
       <ToastContainer></ToastContainer>
@@ -51,16 +194,142 @@ export default function Communication() {
         onClick={() => {
           setTeamMenuOpen((prev) => !prev);
         }}
-        className="absolute right-5 top-16 z-50 font-Josefin border text-sm p-1 flex items-center"
+        className={`absolute right-5 duration-300 rounded ${
+          teamMenuOpen ? "bg-red-500" : "bg-indigo-800"
+        } text-white top-16 z-50 font-Josefin border text-sm p-1 flex items-center`}
       >
-        Team Add
-        {addIcon("ml-2")}
+        {teamMenuOpen ? "Close" : "Team Add"}
+        {addIcon(
+          `${teamMenuOpen ? "rotate-45" : ""} ml-2 fill-white duration-300`
+        )}
       </button>
-      <div className="h-full w-full flex flex-col items-center justify-center">
-        <div className="h-3/4 w-3/4 bg-white rounded-lg border bg-gray-100 relative">
+      <div className="h-full w-full flex flex-col  justify-center">
+        <div className="h-full   border bg-gray-100 relative">
           {" "}
-          {chats}
-          <div className="w-full flex items-center justify-center absolute bottom-0">
+          <div className="mt-12 flex font-Josefin w-full bg-indigo-900 text-green-400 p-2">
+            <button
+              onClick={() => {
+                setShowMenu("User");
+              }}
+              className="border-r px-1 hover:text-green-600 duration-300"
+            >
+              Team
+            </button>
+            <button
+              onClick={() => {
+                setShowMenu("KanBam");
+              }}
+              className="ml-1 border-r px-1 hover:text-green-600 duration-300"
+            >
+              KanBam Board
+            </button>
+            <button
+              onClick={() => {
+                setShowMenu("Chat");
+              }}
+              className="ml-1 border-r px-1 hover:text-green-600 duration-300"
+            >
+              Chat
+            </button>
+          </div>
+          <div className={`ml-2 ${showMenu === "User" ? "" : "hidden"}`}>
+            <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-lg text-gray-500">
+              Team
+            </div>
+            {currentTeam[0].members.map((item) => {
+              return (
+                <div className="flex font-Josefin border-b bg-gray-200 mb-1 pl-2 rounded-l">
+                  <div className=" flex flex-col w-8 mr-2 h-8 mt-2 p-1 items-center justify-center bg-indigo-900 text-green-400 uppercase rounded-full pt-1 font-mono">
+                    {item.name[0]}
+                  </div>
+                  <div>
+                    <div className="text-lg capitalize text-gray-600">
+                      {item.name}
+                    </div>
+                    <div className="text-gray-400">{item.email}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className={`${showMenu === "Chat" ? "" : "hidden"}`}>
+            <AblyChatComponent></AblyChatComponent>
+          </div>
+          <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
+            <div className="p-2 border-b font-Josefin">KanBam Board</div>
+            <div className="flex font-Josefin">
+              <div className="p-1 ">
+                <div className="ml-1">Not Started</div>
+                <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
+                  {kanBamData.map((item) => {
+                    if (!item.completed && !item.inProgress) {
+                      return (
+                        <div key={item._id} className="mb-2">
+                          <DumpStory
+                            AssignedTo={item.AssignedTo}
+                            name={item.name}
+                            sprintName={item.sprintName}
+                            storyPoints={item.storyPoints}
+                            theme={item.theme}
+                            key={item._id}
+                            priorityRank={item.PriorityRank}
+                          ></DumpStory>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+              <div className="p-1">
+                <div className="ml-1">In Progress</div>
+                <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
+                  {kanBamData.map((item) => {
+                    if (!item.completed && item.inProgress) {
+                      return (
+                        <div className="mb-2" key={item._id}>
+                          <DumpStory
+                            AssignedTo={item.AssignedTo}
+                            name={item.name}
+                            sprintName={item.sprintName}
+                            storyPoints={item.storyPoints}
+                            theme={item.theme}
+                            key={item._id}
+                            priorityRank={item.PriorityRank}
+                            showAssigned={true}
+                          ></DumpStory>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+              <div className="p-1">
+                <div className="ml-1">Completed</div>
+
+                <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
+                  {kanBamData.map((item) => {
+                    if (item.completed && item.inProgress) {
+                      return (
+                        <div className="mb-2" key={item._id}>
+                          <DumpStory
+                            AssignedTo={item.AssignedTo}
+                            name={item.name}
+                            sprintName={item.sprintName}
+                            storyPoints={item.storyPoints}
+                            theme={item.theme}
+                            key={item._id}
+                            priorityRank={item.PriorityRank}
+                            showAssigned={true}
+                          ></DumpStory>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex items-center justify-center hidden absolute bottom-0">
             <textarea
               className="w-3/4 border max-h-[60px]"
               onChange={(e) => {
@@ -79,22 +348,22 @@ export default function Communication() {
         </div>
       </div>
       <div
-        className={`bg-green-100 h-full w-[360px] duration-300 z-30 ${
+        className={`bg-white shadow-lg h-full w-[360px] duration-300 z-30 ${
           teamMenuOpen ? "translate-x-0" : "translate-x-96"
         }`}
       >
         <div className="flex flex-col mt-20 p-1 font-Josefin">
-          <div className="text-lg border-b">Add To Your Team</div>
+          <div className="text-lg border-b text-gray-800">Add To Your Team</div>
           <div className="text-xs mb-4">Send a team request to a user </div>
           <input
             onChange={(e) => {
               setEmailSearch(e.target.value);
             }}
-            placeholder="Email"
-            className="border p-1"
+            placeholder="Name"
+            className="border p-1 mt-2 mb-2 rounded"
           ></input>
           <button
-            className="border p-2"
+            className="border p-2 bg-indigo-800 text-white rounded"
             onClick={async () => {
               const data = await axios
                 .get(
@@ -120,13 +389,16 @@ export default function Communication() {
             {allUsers.length > 0 &&
               allUsers.map((item) => {
                 return (
-                  <div className="mb-2 flex mt-2 relative">
+                  <div
+                    key={item.email}
+                    className="mb-2 flex mt-2 relative bg-gray-100 p-1 rounded"
+                  >
                     <div className="flex flex-col">
                       <p className="text-xs text-gray-500">{item.email}</p>
                       <p className="font-bold">{item.name}</p>
                     </div>
                     <button
-                      className="text-sm p-1 border absolute right-0"
+                      className="text-sm p-1 border absolute right-0 bg-indigo-800 text-white rounded"
                       onClick={() => {
                         teamRequest(
                           item.email,

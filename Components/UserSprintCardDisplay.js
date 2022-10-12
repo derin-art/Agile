@@ -141,14 +141,24 @@ export default function SprintCardDisplay({
           onClick={() => {
             setInfoOpen((prev) => !prev);
           }}
-          className="z-30 p-2"
+          className="z-30 p-1"
         >
           {closeIcon}
         </button>
         <div className="mt-[27px] ml-1 flex relative">
           {" "}
           <button
-            className="text-sm border font-Josefin rounded px-1 bg-gray-700"
+            className={`text-sm text-green-400 ${
+              Array.isArray(entireObject.AssignedTo)
+                ? entireObject.AssignedTo.find(
+                    (item) => item.email === userData.email
+                  )
+                  ? "hidden"
+                  : ""
+                : ""
+            } font-Josefin rounded hover:bg-gray-900 duration-300 px-1 bg-gray-700 mt-2 ${
+              completed ? "hidden" : ""
+            }`}
             onClick={async () => {
               entireObject.inProgress = true;
               if (Array.isArray(entireObject.AssignedTo)) {
@@ -175,32 +185,70 @@ export default function SprintCardDisplay({
               UserStoryInteractions(entireObject, releaseId);
             }}
           >
-            Pick Up
+            Pick Up Story
+          </button>
+          <button
+            className={` ${
+              Array.isArray(entireObject.AssignedTo)
+                ? entireObject.AssignedTo.find(
+                    (item) => item.email === userData.email
+                  )
+                  ? ""
+                  : "hidden"
+                : "hidden"
+            } text-sm text-green-400 font-Josefin rounded hover:bg-gray-900 duration-300 px-1 bg-gray-700 mt-2 ${
+              completed ? "hidden" : ""
+            }`}
+            onClick={async () => {
+              entireObject.completed = true;
+
+              /*    if (Array.isArray(entireObject.AssignedTo)) {
+                entireObject.AssignedTo.push(userData);
+              } else {
+                entireObject.AssignedTo = [userData];
+              } */
+              console.log(entireObject, releaseId);
+
+              UserStoryInteractions(entireObject, releaseId);
+            }}
+          >
+            Complete Story
           </button>
           <div className="absolute right-2 font-Josefin flex-col">
-            {typeof inProgress === "boolean" && inProgress
-              ? "In progress"
-              : "Not started"}
-            <div className="w-full rounded border h-2">
-              <div
-                className={` ${
-                  inProgress ? "hidden" : ""
-                } h-full w-1/4 bg-green-400 rounded ${
-                  inProgress === "false" ? "block" : ""
-                }`}
-              ></div>
-              <div
-                className={`${
-                  !inProgress ? "hidden" : ""
-                } h-full w-3/4 bg-green-400 rounded ${
-                  typeof inProgress === "string" && "hidden"
-                }`}
-              ></div>
-            </div>
+            {completed ? (
+              <div className="text-green-400">Completed</div>
+            ) : (
+              <div>
+                {" "}
+                {typeof inProgress === "boolean" && inProgress
+                  ? "In Progress"
+                  : "Not Started"}
+                <div className="w-full rounded border border-gray-500 h-2">
+                  <div
+                    className={` ${
+                      inProgress ? "hidden" : ""
+                    } h-full w-1/4 bg-green-400 rounded ${
+                      inProgress === "false" ? "block" : ""
+                    }`}
+                  ></div>
+                  <div
+                    className={`${
+                      !inProgress ? "hidden" : ""
+                    } h-full w-3/4 bg-green-400 rounded ${
+                      typeof inProgress === "string" && "hidden"
+                    }`}
+                  ></div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="h-8 text-sm font-Josefin mt-2 flex oveflow-x-auto w-full">
+        <div
+          className={`h-8 text-sm font-Josefin ${
+            completed ? "mt-9" : "mt-2"
+          } flex oveflow-x-auto w-full`}
+        >
           {Array.isArray(AssignedTo) ? (
             <div
               className="h-full flex ml-3"
@@ -222,7 +270,7 @@ export default function SprintCardDisplay({
                     }}
                     className={` ${
                       assginedHovered ? "ml-1" : "-ml-2"
-                    } h-6 w-6 relative rounded-full border duration-300 capitalize flex items-center justify-center bg-white text-black`}
+                    } h-6 w-6 relative rounded-full border border-gray-600 duration-300 capitalize flex items-center justify-center bg-gray-400 text-gray-600`}
                   >
                     {" "}
                     <div
@@ -240,7 +288,7 @@ export default function SprintCardDisplay({
               })}
             </div>
           ) : (
-            <p className="ml-1">Not Active</p>
+            <p className="ml-1 text-sm text-gray-400">Not Active</p>
           )}
         </div>
       </div>

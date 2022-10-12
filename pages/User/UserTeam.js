@@ -3,6 +3,7 @@ import { useAuth } from "../../Context/firebaseUserContext";
 import UserSprintCardDisplay from "../../Components/UserSprintCardDisplay";
 import StoryTeamCard from "../../Components/StoryTeamCard";
 import { data } from "autoprefixer";
+import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,7 +12,7 @@ export default function UserTeam() {
   console.log("coule", Object.entries(currentJoinedTeam[0].teamData.sprints));
   return (
     <div className="h-screen w-fit pt-12 ml-32 pb-12">
-      <div className="font-Josefin mt-4 ml-0 mb-4 text-2xl">
+      <div className="font-Josefin mt-4 ml-0 mb-4 bg-gray-200 p-2 border-green-400 text-3xl text-gray-600 border-b">
         Team {currentJoinedTeam[0].name}
       </div>
       {currentJoinedTeam[0].teamData.sprints &&
@@ -48,8 +49,8 @@ export default function UserTeam() {
           console.log("filTHHEN", finalFilteredThemes);
 
           return (
-            <div className="bg-gray-100 mb-8 border font-Josefin rounded">
-              <div className="text-lg border-b p-2">
+            <div className="bg-gray-100 mb-8 border font-Josefin rounded-b-lg border-t-8">
+              <div className="text-2xl bg-gray-100 border-green-400 border-b p-2 text-gray-400">
                 Release {release[0].name}
               </div>
               <div className="flex p-2">
@@ -70,7 +71,7 @@ export default function UserTeam() {
                   console.log(data[1]);
                   return (
                     <div className="mt-4 p-2">
-                      Un-Selected
+                      <div className="text-gray-500 border-b ">Un-Selected</div>
                       <div className="mb-4 flex mt-2">
                         {data[1].map((unSelected) => {
                           if (unSelected) {
@@ -98,8 +99,13 @@ export default function UserTeam() {
                     if (sprints.stories) {
                       return (
                         <div className="p-2 border-t">
-                          Sprint {sprints.name}{" "}
-                          <div>{sprints.duration} Week(s)</div>
+                          <div className="text-gray-600 text-lg">
+                            {" "}
+                            Sprint {sprints.name}{" "}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {sprints.duration} Week(s)
+                          </div>
                           <div className=" mt-2 mb-4 flex">
                             {sprints.stories.map((selected) => {
                               return (
@@ -133,6 +139,7 @@ export default function UserTeam() {
             </div>
           );
         })}
+
       <ToastContainer></ToastContainer>
     </div>
   );

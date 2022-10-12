@@ -528,9 +528,11 @@ router
       newUpdatedTeam.teamData.sprints[req.query.releaseId].sprints.forEach(
         (sprint) => {
           const newSprintStories = sprint.stories.map((story) => {
-            if (parseJson(req.body.pinInteraction)._id === story._id) {
-              return parseJson(req.body.pinInteraction);
-            } else return story;
+            if (story) {
+              if (parseJson(req.body.pinInteraction)._id === story._id) {
+                return parseJson(req.body.pinInteraction);
+              } else return story;
+            }
           });
           sprint.stories = newSprintStories;
         }
@@ -555,6 +557,31 @@ router
       });
 
       return res.status(200).json(teamWithSavedMap);
+    }
+    if (req.body.Message) {
+      const teamAfterMessage = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        { $push: { "chatHistory.Chats": parseJson(req.body.Message) } },
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+      if (teamAfterMessage) {
+        res.status(200).json(teamAfterMessage);
+      }
+    }
+    if (req.query.deleteTeamMessages) {
+      const team = parseJson(req.body.emptyChatTeam);
+      const teamAfterUpdate = await AgileTeam.findByIdAndUpdate(
+        req.query.teamId,
+        team,
+        { new: true }
+      ).catch((err) => {
+        console.log(err);
+      });
+      if (teamAfterUpdate) {
+        return res.status(200).json(teamAfterUpdate);
+      }
     }
   })
   .delete(uploadImageMiddleWare, async (req, res) => {
@@ -594,13 +621,21 @@ router
         }
       );
       const newMap = {};
+      const newSprint = {};
       if (TeamFound) {
         Object.entries(TeamFound.Map).map((item) => {
           if (item[0] != req.query.ReleaseId) {
             newMap[item[0]] = item[1];
           }
         });
+
+        Object.entries(TeamFound.teamData.sprints).map((item) => {
+          if (item[0] != req.query.ReleaseId) {
+            newSprint[item[0]] = item[1];
+          }
+        });
       }
+
       const newRelease = TeamFound.Release.filter((release) => {
         return release._id != req.query.ReleaseId;
       });
@@ -614,7 +649,7 @@ router
 
       const newTeamAfterReleaseDelete = await AgileTeam.findByIdAndUpdate(
         req.query.teamId,
-        { Map: newMap, Release: newRelease },
+        { Map: newMap, Release: newRelease, teamData: { sprints: newSprint } },
         { new: true }
       ).catch((err) => {
         console.log(err);

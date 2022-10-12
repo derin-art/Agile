@@ -19,6 +19,7 @@ const formatAuthUser = (user) => ({
 });
 
 export default function usefirebaseAuthState() {
+  const [messagesBeforeUpdate, setMessagesBeforeUpdate] = useState([]);
   const [currentJoinedTeam, setCurrentJoinedTeam] = useState(null);
   const [allCurrentJoinedTeam, setAllCurrentJoinedTeam] = useState(null);
   const [authUser, setAuthUser] = useState(null);
@@ -31,7 +32,6 @@ export default function usefirebaseAuthState() {
   const [currentPinsOpen, setCurrentPinsOpen] = useState(null);
   const [currentPinsOpenRevised, setCurrentPinsOpenRevised] = useState(null);
   const [currentPinsEpics, setCurrentPinEpics] = useState(null);
-
   const [themes, setTheme] = useState([]);
 
   console.log("id current", themes, currentTeam, currentOpenRelease);
@@ -121,6 +121,7 @@ export default function usefirebaseAuthState() {
     const current = userTeamData.filter((item) => item._id === id);
     if (current) {
       setCurrentTeam(current);
+      setMessagesBeforeUpdate(current[0].chatHistory);
     }
   };
 
@@ -693,22 +694,6 @@ export default function usefirebaseAuthState() {
     console.log("datatRq", data);
   };
 
-  const teamRequestAccepted = async (teamId, userFields) => {
-    const userFieldsString = stringify(userFields);
-    console.log("ddd", userFieldsString);
-    const formdata = new FormData();
-    formdata.append("userFields", userFieldsString);
-    const data = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${teamId}`,
-        formdata
-      )
-      .catch((err) => {
-        console.log("teamAcceptErr", err);
-      });
-    console.log("teamAccepth", data);
-  };
-
   const teamRequestRejected = async (teamId, userId) => {
     const formdata = new FormData();
 
@@ -725,6 +710,23 @@ export default function usefirebaseAuthState() {
       console.log(data.data);
       setUserData(data.data);
     }
+  };
+
+  const teamRequestAccepted = async (teamId, userFields) => {
+    const userFieldsString = stringify(userFields);
+    console.log("ddd", userFieldsString);
+    const formdata = new FormData();
+    formdata.append("userFields", userFieldsString);
+    const data = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${teamId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log("teamAcceptErr", err);
+      });
+    console.log("teamAccepth", data);
+    teamRequestRejected(teamId, userFields._id);
   };
 
   const getTeamsWithUser = async (userId) => {
@@ -822,7 +824,62 @@ export default function usefirebaseAuthState() {
     }
   };
 
+  const sendMessage = async (Object) => {
+    const formdata = new FormData();
+    formdata.append("Message", stringify(Object));
+    let TeamId;
+    if (userData.role === "TeamMember") {
+      TeamId = currentJoinedTeam[0]._id;
+    } else {
+      TeamId = currentTeam[0]._id;
+    }
+    const savedTeamAfterMessage = await axios
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${TeamId}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(savedTeamAfterMessage);
+    if (savedTeamAfterMessage) {
+      setMessagesBeforeUpdate(savedTeamAfterMessage.data.chatHistory);
+    }
+  };
+
+  const setCurrentMessages = () => {
+    let Team = currentTeam;
+    console.log("uia", messagesBeforeUpdate, Team);
+
+    Team[0].chatHistory = messagesBeforeUpdate;
+    console.log(Team);
+
+    setCurrentTeam(Team);
+  };
+
+  const deleteAllTeamMessages = async () => {
+    const formdata = new FormData();
+    const dataTobeSent = currentTeam[0];
+    dataTobeSent.chatHistory.Chats = [];
+    formdata.append("emptyChatTeam", stringify(dataTobeSent));
+    const dataAfterDeleted = await axios
+      .patch(
+        `${
+          process.env.NEXT_PUBLIC_API_TEAM_ROUTE
+        }?deleteTeamMessages=${true}&teamId=${currentTeam[0]._id}`,
+        formdata
+      )
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log("sss", dataAfterDeleted);
+  };
+
   return {
+    deleteAllTeamMessages,
+    setCurrentMessages,
+    sendMessage,
     saveMap,
     UserStoryInteractions,
     deletePin,

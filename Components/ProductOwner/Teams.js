@@ -139,7 +139,7 @@ export default function Team({
         <motion.div
           animate={isDataMenuOpen ? { height: 350 } : { height: 60 }}
           transition={{ duration: 0.4 }}
-          className="p-4 bg-indigo-800 rounded-2xl text-white"
+          className="p-4 bg-indigo-800 rounded-2xl text-white border-r-8 border-green-300"
         >
           <div>
             <button

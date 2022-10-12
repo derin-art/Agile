@@ -27,9 +27,9 @@ export default function ReleaseDraggable({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        width="15"
-        height="15"
-        className="fill-black hover:fill-red-600 duration-300 mt-[2px]"
+        width="20"
+        height="20"
+        className="fill-gray-700 hover:fill-red-500 duration-300 mt-[2px]"
       >
         <path fill="none" d="M0 0h24v24H0z" />
         <path d="M7 6V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5zm6.414 8l1.768-1.768-1.414-1.414L12 12.586l-1.768-1.768-1.414 1.414L10.586 14l-1.768 1.768 1.414 1.414L12 15.414l1.768 1.768 1.414-1.414L13.414 14zM9 4v2h6V4H9z" />
@@ -225,7 +225,7 @@ export default function ReleaseDraggable({
   console.log("actualdAta", agilePins);
 
   return (
-    <div className=" w-11/12 rounded-2xl pb-3 mb-24 border bg-gray-100 bg-opacity-75">
+    <div className=" w-11/12 rounded-bl-2xl pb-3 border-t-8 bg-gray-100 p-4 mb-24 border-l border-b bg-opacity-75">
       <div className="relative ">
         <button
           onClick={() => {
@@ -285,6 +285,10 @@ export default function ReleaseDraggable({
               Please Input Sprint Start Date
             </div>
             <input
+              onChange={(e) => {
+                console.log("val", e.target.value);
+                setSprintStart(e.target.value);
+              }}
               type="date"
               className="border p-1 w-full text-sm placeholder:text-sm font-Josefin rounded"
               placeholder="Sprint Start"
@@ -369,7 +373,18 @@ export default function ReleaseDraggable({
 
               console.log(obj, "flat");
               setTestArray((prev) => ({ ...prev, ...obj }));
+              const oldDATE = new Date(sprintStart);
 
+              function addWeeks(numOfWeeks, date = new Date()) {
+                const dateCopy = new Date(date.getTime());
+
+                dateCopy.setDate(dateCopy.getDate() + numOfWeeks * 7);
+
+                return dateCopy;
+              }
+              const dateEnd = new Date(sprintStart);
+
+              const result = addWeeks(3, dateEnd);
               setSprints((prev) => {
                 return [
                   ...prev,
@@ -377,6 +392,8 @@ export default function ReleaseDraggable({
                     name: sprintName,
                     duration: sprintDuration,
                     stories: [],
+                    sprintStartDate: dateEnd.toDateString(),
+                    sprintEndDate: result.toDateString(),
                   },
                 ];
               });
@@ -387,7 +404,7 @@ export default function ReleaseDraggable({
         </motion.div>
       </div>
       {
-        <div className="flex bg-gray-100 justify-center border-b-2 relative mb-4 p-2  py-6 rounded-t-2xl">
+        <div className="flex  justify-center border-b border-green-300 relative mb-4 p-2  py-6 rounded-t-2xl">
           {" "}
           <div className="mr-4 font-Josefin text-sm text-gray-800">Epics:</div>
           <div className="max-x-l flex w-[450px]">
@@ -441,15 +458,15 @@ export default function ReleaseDraggable({
             }}
           >
             {saveSuccessful ? Logo("animate-spin mr-2 fill-green-300") : ""}{" "}
-            Save Release Story Map
+            Save Release Sprint State
           </button>
         </div>
       }
       <DragDropContext onDragEnd={onDragEndFinal}>
         <div className="flex relative">
           <div className="flex justify-center">
-            <div className="-top-[64px] -left-[1px] text-2xl font-Josefin text-gray-500 absolute flex p-1">
-              <p className="ml-1 text-2xl -mt-1 uppercase font-bold">
+            <div className="-top-[64px] -left-[1px] text-2xl font-Josefin text-gray-700 absolute flex p-1">
+              <p className="ml-3 text-3xl -mt-1 uppercase font-bold">
                 Release {name}
               </p>
               <button
@@ -482,7 +499,9 @@ export default function ReleaseDraggable({
           </div>
 
           <div className="flex flex-col ml-4">
-            <p className="font-Josefin">Unassigned Stories</p>
+            <p className="font-Josefin border-b text-gray-400">
+              Unassigned Stories
+            </p>
             {Object.entries(testArray).map((story) => {
               console.log(story, "story");
               console.log(Object.entries(testArray));
@@ -541,7 +560,7 @@ export default function ReleaseDraggable({
                 const Sprint = Sprints.filter((item) => item.name === story[0]);
                 console.log(Sprint, "sprint");
                 return (
-                  <div className="mt-8 flex">
+                  <div className="mt-8 flex mb-6">
                     <SprintCard
                       name={Sprint[0].name}
                       duration={Sprint[0].duration}
@@ -620,7 +639,7 @@ export default function ReleaseDraggable({
                             });
                           }
                         }}
-                        className=" ml-[4px] h-fit pb-0 z-20"
+                        className=" ml-[4px] h-fit pb-0 z-20 mt-1"
                       >
                         {deleteSvg()}
                       </button>

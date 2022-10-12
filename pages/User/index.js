@@ -64,7 +64,7 @@ export default function User() {
   );
 
   return (
-    <div className="h-screen w-full relative overflow-x-hidden">
+    <div className="h-screen w-full relative overflow-x-hidden p-2">
       <div
         className={`h-full w-40 md:w-64 shadow-lg border-l bg-white absolute -right-40 md:-right-64 -top-0 z-30 duration-300 ${
           teamRequestMenu
@@ -107,7 +107,7 @@ export default function User() {
             })}
         </div>
       </div>
-      <div
+      <button
         onClick={() => {
           setTeamRequestMenu((prev) => !prev);
         }}
@@ -121,15 +121,15 @@ export default function User() {
           {bellIcon}
         </div>{" "}
         Team Requests
-      </div>
-      <div className="mt-24 font-Josefin p-2 text-2xl ml-1">
-        Hi {userData ? userData.name : "Data Unavailable"}
+      </button>
+      <div className="mt-24 font-Josefin p-2 text-3xl ml-1">
+        Hi {userData ? userData.name : "Data Unavailable"},
       </div>
       <div className="w-full items-center justify-center">
         <motion.div
-          animate={openTeamMenu ? { height: 350 } : { height: 48 }}
+          animate={openTeamMenu ? { height: 350 } : { height: 60 }}
           transition={{ duration: 0.4 }}
-          className={`w-9/12 bg-indigo-800 text-white ml-2 p-2 font-Josefin rounded-2xl `}
+          className={`w-11/12 bg-indigo-800 text-white ml-2 border-r-8 border-green-300  font-Josefin rounded-2xl `}
           onClick={() => {
             if (!userData) return;
             getTeamsWithUser(userData._id);
@@ -142,12 +142,12 @@ export default function User() {
             className="pt-1"
           >
             {openTeamMenu ? (
-              <p className="text-red-500">Close</p>
+              <p className="text-red-500 mt-4 ml-2">Close</p>
             ) : (
-              <p>Explore Your Teams</p>
+              <p className="mt-[15px] ml-2">Explore Your Teams</p>
             )}
           </button>
-          <div className={`${openTeamMenu ? "" : "hidden"} mt-2`}>
+          <div className={`${openTeamMenu ? "" : "hidden"} mt-2 ml-2`}>
             {allCurrentJoinedTeam ? (
               allCurrentJoinedTeam.length > 0 ? (
                 allCurrentJoinedTeam.map((item) => {
@@ -157,6 +157,7 @@ export default function User() {
                         onClick={() => {
                           setCurrentJoinedTeamFunction(item._id);
                         }}
+                        className="border-b w-full text-left border-indigo-500"
                       >
                         {" "}
                         {item.name}

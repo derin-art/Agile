@@ -168,7 +168,7 @@ export default function Story() {
   });
 
   let Tiles = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 10; i++) {
     console.log(i);
     Tiles.push({ active: false, no: i, val: "" });
   }
@@ -350,6 +350,20 @@ export default function Story() {
           `${savedStory ? "block" : "hidden"} animate-spin fill-white mr-2`
         )}{" "}
         Save Current State
+      </button>
+      <button
+        onClick={() => {
+          setTestArray((prev) => {
+            const numb = prev.Tiles.length;
+            return {
+              ...prev,
+              Tiles: [...prev.Tiles, { active: false, no: numb, val: "" }],
+            };
+          });
+        }}
+        className="fixed flex -mt-10 right-4 text-white rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
+      >
+        Add New Theme Row
       </button>
       <DragDropContext onDragEnd={onDragEnd}>
         {Object.entries(testArray).map((entry) => {
