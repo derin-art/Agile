@@ -225,7 +225,7 @@ export default function ReleaseDraggable({
   console.log("actualdAta", agilePins);
 
   return (
-    <div className=" w-11/12 rounded-bl-2xl pb-3 border-t-8 bg-gray-100 p-4 mb-24 border-l border-b bg-opacity-75">
+    <div className="w-fit lg:w-11/12 rounded-bl-2xl pb-3 border-t-8 bg-gray-100 p-4 mb-24 border-l border-b bg-opacity-75">
       <div className="relative ">
         <button
           onClick={() => {
@@ -404,14 +404,14 @@ export default function ReleaseDraggable({
         </motion.div>
       </div>
       {
-        <div className="flex  justify-center border-b border-green-300 relative mb-4 p-2  py-6 rounded-t-2xl">
+        <div className="flex -ml-24 lg:ml-0 justify-center border-b border-green-300 relative mb-4 p-2  py-6 rounded-t-2xl">
           {" "}
           <div className="mr-4 font-Josefin text-sm text-gray-800">Epics:</div>
-          <div className="max-x-l flex w-[450px]">
+          <div className="max-x-l flex lg:w-[450px] w-[300px]">
             {finalArr.map((item) => {
               return (
                 <div
-                  className={`duration-200 border-${item.color} bg-indigo-900 w-20 px-1 truncate border-l-4 border font-Josefin  hover:w-64 text-center text-sm mr-4 text-white`}
+                  className={`duration-200 border-${item.color} bg-indigo-900 w-20 px-1 truncate border-l-4 border font-Josefin  hover:w-64 text-center md:text-sm text-xs mr-4 text-white`}
                 >
                   {item.name}
                 </div>
@@ -466,7 +466,7 @@ export default function ReleaseDraggable({
         <div className="flex relative">
           <div className="flex justify-center">
             <div className="-top-[64px] -left-[1px] text-2xl font-Josefin text-gray-700 absolute flex p-1">
-              <p className="ml-3 text-3xl -mt-1 uppercase font-bold">
+              <p className="ml-3 lg:text-3xl text-lg -mt-1 uppercase font-bold">
                 Release {name}
               </p>
               <button
@@ -653,7 +653,6 @@ export default function ReleaseDraggable({
           </div>
         </div>
       </DragDropContext>
-      <ToastContainer></ToastContainer>
     </div>
   );
 }

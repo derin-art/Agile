@@ -3,7 +3,7 @@ import Release from "../../../Components/ProductOwner/Release";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import axios from "axios";
 import { useAuth } from "../../../Context/firebaseUserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import addIcon from "../../../public/addIcon";
@@ -25,6 +25,27 @@ export default function AccessTeam() {
   const [isReleaseCreateOpen, setIsReleaseCreateOpen] = useState(false);
 
   console.log("CHecking", currentTeam);
+
+  useEffect(() => {
+    toast.info(
+      <div>
+        In the world of Agile and Scrum, releases are time frames for versions
+        of apps to be launched. Imagine releases like and an “App” with
+        AppV1.00, AppV2.00 e.t.c. Releases represent the end of development
+        cycles where a version of an App is expected. Contained in releases are
+        the tasks required to complete that version of the app, this tasks are
+        called User Stories. When a particular task is too big it is made into
+        an Epic which comprises of smaller User stories. Please Navigate to one
+        of the releases.
+      </div>,
+      {
+        autoClose: false,
+        className: "text-sm",
+        position: toast.POSITION.TOP_CENTER,
+      }
+    );
+  }, []);
+
   return (
     <div className="mt-16 p-2 font-Josefin">
       {currentRelease ? (

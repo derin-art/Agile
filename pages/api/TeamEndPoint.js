@@ -293,36 +293,71 @@ router
 
       let TestScenc = parseJson(req.body.newMaps);
 
-      Test.forEach((item) => {
-        TestScenc[req.query.releaseId].forEach((scenc) => {
-          if (scenc.tName) {
-            scenc.pins.forEach((pin) => {
-              if (pin._id === item._id) {
-                if (pin.theme.name != item.theme.name) {
-                  const newArra = scenc.pins.filter((nw) => {
-                    return nw._id != pin._id;
-                  });
-                  const element = scenc.pins.filter((nw) => {
-                    return nw._id === pin._id;
-                  });
+      if (TestScenc) {
+        Test.forEach((item) => {
+          TestScenc[req.query.releaseId].forEach((scenc) => {
+            if (scenc.tName) {
+              scenc.pins.forEach((pin) => {
+                if (pin._id === item._id) {
+                  if (pin.theme.name != item.theme.name) {
+                    const newArra = scenc.pins.filter((nw) => {
+                      return nw._id != pin._id;
+                    });
+                    const element = scenc.pins.filter((nw) => {
+                      return nw._id === pin._id;
+                    });
 
-                  element[0].theme = item.theme;
+                    element[0].theme = item.theme;
 
-                  scenc.pins = newArra;
+                    scenc.pins = newArra;
 
-                  if (element[0].theme.name === "NoTheme") {
-                    TestScenc[req.query.releaseId].push(element[0]);
-                    return;
+                    if (element[0].theme.name === "NoTheme") {
+                      TestScenc[req.query.releaseId].push(element[0]);
+                      return;
+                    }
+
+                    if (
+                      TestScenc[req.query.releaseId].find((found) => {
+                        return found.tName === element[0].theme.name;
+                      })
+                    ) {
+                      TestScenc[req.query.releaseId].forEach((po) => {
+                        if (po.tName === element[0].theme.name) {
+                          po.pins = [...po.pins, element[0]];
+                        }
+                      });
+                    } else {
+                      TestScenc[req.query.releaseId].push({
+                        tName: element[0].theme.name,
+                        pins: [element[0]],
+                      });
+                    }
                   }
-
+                }
+              });
+            } else {
+              if (item._id === scenc._id) {
+                if (item.theme.name != scenc.theme.name) {
+                  const NewTest = TestScenc[req.query.releaseId].filter(
+                    (newT) => {
+                      return newT._id != scenc._id;
+                    }
+                  );
+                  const element = TestScenc[req.query.releaseId].filter(
+                    (newT) => {
+                      return newT._id === scenc._id;
+                    }
+                  );
+                  element[0].theme = item.theme;
+                  TestScenc[req.query.releaseId] = NewTest;
                   if (
-                    TestScenc[req.query.releaseId].find((found) => {
-                      return found.tName === element[0].theme.name;
+                    TestScenc[req.query.releaseId].find((Sc) => {
+                      return Sc.tName === element[0].theme.name;
                     })
                   ) {
-                    TestScenc[req.query.releaseId].forEach((po) => {
-                      if (po.tName === element[0].theme.name) {
-                        po.pins = [...po.pins, element[0]];
+                    TestScenc[req.query.releaseId].forEach((pp) => {
+                      if (pp.tName === element[0].theme.name) {
+                        pp.pins = [...pp.pins, element[0]];
                       }
                     });
                   } else {
@@ -333,43 +368,10 @@ router
                   }
                 }
               }
-            });
-          } else {
-            if (item._id === scenc._id) {
-              if (item.theme.name != scenc.theme.name) {
-                const NewTest = TestScenc[req.query.releaseId].filter(
-                  (newT) => {
-                    return newT._id != scenc._id;
-                  }
-                );
-                const element = TestScenc[req.query.releaseId].filter(
-                  (newT) => {
-                    return newT._id === scenc._id;
-                  }
-                );
-                element[0].theme = item.theme;
-                TestScenc[req.query.releaseId] = NewTest;
-                if (
-                  TestScenc[req.query.releaseId].find((Sc) => {
-                    return Sc.tName === element[0].theme.name;
-                  })
-                ) {
-                  TestScenc[req.query.releaseId].forEach((pp) => {
-                    if (pp.tName === element[0].theme.name) {
-                      pp.pins = [...pp.pins, element[0]];
-                    }
-                  });
-                } else {
-                  TestScenc[req.query.releaseId].push({
-                    tName: element[0].theme.name,
-                    pins: [element[0]],
-                  });
-                }
-              }
             }
-          }
+          });
         });
-      });
+      }
 
       console.log("foinn", TestScenc[req.query.releaseId]);
 
@@ -623,17 +625,26 @@ router
       const newMap = {};
       const newSprint = {};
       if (TeamFound) {
-        Object.entries(TeamFound.Map).map((item) => {
-          if (item[0] != req.query.ReleaseId) {
-            newMap[item[0]] = item[1];
-          }
-        });
+        if (TeamFound.Map) {
+          Object.entries(TeamFound.Map).map((item) => {
+            if (item[0] != req.query.ReleaseId) {
+              newMap[item[0]] = item[1];
+            }
+          });
+        }
 
         Object.entries(TeamFound.teamData.sprints).map((item) => {
           if (item[0] != req.query.ReleaseId) {
             newSprint[item[0]] = item[1];
           }
         });
+      }
+
+      let finalMap;
+      if (TeamFound.Map) {
+        finalMap = newMap;
+      } else {
+        finalMap = false;
       }
 
       const newRelease = TeamFound.Release.filter((release) => {
@@ -649,7 +660,11 @@ router
 
       const newTeamAfterReleaseDelete = await AgileTeam.findByIdAndUpdate(
         req.query.teamId,
-        { Map: newMap, Release: newRelease, teamData: { sprints: newSprint } },
+        {
+          Map: finalMap,
+          Release: newRelease,
+          teamData: { sprints: newSprint },
+        },
         { new: true }
       ).catch((err) => {
         console.log(err);

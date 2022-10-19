@@ -2,7 +2,7 @@ import { async } from "@firebase/util";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../Context/firebaseUserContext";
 import styles from "../styles/Home.module.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -137,8 +137,39 @@ export default function Home() {
       });
   };
 
+  const launchTutorial = () => {
+    toast.info(
+      <div className="">
+        "Hey, welcome to the tutorial of my Agile and Scrum app. Below are two
+        ways to login into the app, as a product owner and as a team member.
+        Logging in as a product owner is preferable if you are first time user
+        as it exposes you to most of the apps functionality. If you don’t want
+        to start the entire process of creating a user, you can login with the
+        tutorial user <span className="font-bold">email: guy@gmail.com</span>{" "}
+        and <span className="font-bold">password: password1</span>. It is
+        advisable you do this for first time users."
+      </div>,
+      {
+        autoClose: false,
+        className: "text-sm",
+        position: toast.POSITION.TOP_RIGHT,
+      }
+    );
+  };
+  useEffect(() => {
+    launchTutorial();
+  }, []);
+
   return (
     <div className="h-full bg-indigo-900 font-Josefin">
+      <button
+        className="absolute right-2 text-green-300"
+        onClick={() => {
+          launchTutorial();
+        }}
+      >
+        Show Tutorial
+      </button>
       <div className="flex-col flex h-full">
         <div className="flex items-center justify-center h-3/4">
           <div
@@ -200,22 +231,6 @@ export default function Home() {
                     }`
                   )}
                   Product Owner
-                </button>
-                <button
-                  className="flex-col flex items-center"
-                  onClick={() => {
-                    setTeamRole("ScrumMaster");
-                  }}
-                >
-                  {TeamRoleIcon(
-                    "ScrumMaster",
-                    `${
-                      teamRole === "ScrumMaster"
-                        ? "fill-green-300"
-                        : "fill-indigo-300"
-                    }`
-                  )}
-                  Scrum Master
                 </button>
               </div>
             </div>

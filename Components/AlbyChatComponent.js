@@ -2,17 +2,65 @@ import { useChannel } from "./AblyReactEffect";
 import { useState, useEffect } from "react";
 import { useAuth } from "../Context/firebaseUserContext";
 import { v4 as uuidv4 } from "uuid";
+import parseJson from "parse-json";
 
-export default function Ably() {
+export default function Ably({
+  userData,
+  messagesBeforeUpdate,
+  sendMessage,
+  currentJoinedTeam,
+  currentTeam,
+  deleteAllTeamMessages,
+  setCurrentTeam,
+  setCurrentJoinedTeam,
+}) {
   let inputBox = null;
   let messageEnd = null;
-  const {
+
+  const savedChats = parseJson(window.localStorage.getItem("chatMessages"));
+
+  /*   const {
     userData,
     sendMessage,
     currentJoinedTeam,
     currentTeam,
     deleteAllTeamMessages,
-  } = useAuth();
+  } = useAuth(); */
+
+  useEffect(() => {
+    /*   if (userData.role === "TeamMember") {
+      if (
+        currentJoinedTeam[0].chatHistory.Chats.length <
+        messagesBeforeUpdate.chatHistory.Chats.length
+      ) {
+        setCurrentJoinedTeam([messagesBeforeUpdate]);
+      }
+    } else {
+      if (
+        currentTeam[0].chatHistory.Chats.length <
+        messagesBeforeUpdate.chatHistory.Chats.length
+      ) {
+        setCurrentTeam([messagesBeforeUpdate]);
+      }
+    } */
+    /* return () => {
+      if (userData.role === "TeamMember") {
+        if (
+          currentJoinedTeam[0].chatHistory.Chats.length <
+          messagesBeforeUpdate.chatHistory.Chats.length
+        ) {
+          setCurrentJoinedTeam([messagesBeforeUpdate]);
+        }
+      } else {
+        if (
+          currentTeam[0].chatHistory.Chats.length <
+          messagesBeforeUpdate.chatHistory.Chats.length
+        ) {
+          setCurrentTeam([messagesBeforeUpdate]);
+        }
+      }
+    }; */
+  });
 
   const [messageText, setMessageText] = useState("");
   const [receivedMessages, setMessages] = useState([]);
@@ -80,41 +128,39 @@ export default function Ably() {
     teamMessagesToBeRendered = currentTeam;
   }
 
-  const alreadySentMessages = teamMessagesToBeRendered[0].chatHistory.Chats.map(
-    (message, index) => {
-      const author = message.email === userData.email ? true : false;
+  const alreadySentMessages = savedChats.Chats.map((message, index) => {
+    const author = message.email === userData.email ? true : false;
 
-      return (
+    return (
+      <div
+        key={message.id}
+        data-author={author}
+        className={`text-white w-full p-1 flex relative mb-4 h-fit ${
+          author ? "justify-end" : ""
+        }`}
+      >
         <div
-          key={message.id}
-          data-author={author}
-          className={`text-white w-full p-1 flex relative mb-4 h-fit ${
-            author ? "justify-end" : ""
-          }`}
+          className={`${author ? "right-2 flex-row-reverse" : "left-2"} flex`}
         >
-          <div
-            className={`${author ? "right-2 flex-row-reverse" : "left-2"} flex`}
-          >
-            <div className={`${author ? "ml-2" : "mr-2"}`}>
-              <div className="bg-indigo-900 h-6 w-6 rounded-full items-center justify-center flex font-mono">
-                {message.sender[0]}
-              </div>
-              <div className="text-xs text-gray-600">{message.sender}</div>
+          <div className={`${author ? "ml-2" : "mr-2"}`}>
+            <div className="bg-indigo-900 h-6 w-6 rounded-full items-center justify-center flex font-mono">
+              {message.sender[0]}
             </div>
+            <div className="text-xs text-gray-600">{message.sender}</div>
+          </div>
 
-            <div
-              className={`${
-                author ? "bg-green-500" : "bg-green-400"
-              }   rounded px-2 max-w-[250px] flex items-center justify-center`}
-            >
-              {" "}
-              {message.message}
-            </div>
+          <div
+            className={`${
+              author ? "bg-green-500" : "bg-green-400"
+            }   rounded px-2 max-w-[250px] flex items-center justify-center`}
+          >
+            {" "}
+            {message.message}
           </div>
         </div>
-      );
-    }
-  );
+      </div>
+    );
+  });
   const messages = receivedMessages.map((message, index) => {
     console.log("mssg", message);
     const author = message.data.email === userData.email ? true : false;
@@ -203,6 +249,7 @@ export default function Ably() {
         onClick={() => {
           deleteAllTeamMessages();
         }}
+        className="hidden"
       >
         delete
       </button>

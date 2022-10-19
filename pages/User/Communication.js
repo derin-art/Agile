@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { useAuth } from "../../Context/firebaseUserContext";
 
 const AblyChatComponent = dynamic(
   () => import("../../Components/AlbyChatComponent"),
@@ -6,12 +7,32 @@ const AblyChatComponent = dynamic(
 );
 
 export default function UserCommunication() {
+  const {
+    userData,
+    messagesBeforeUpdate,
+    sendMessage,
+    currentJoinedTeam,
+    currentTeam,
+    deleteAllTeamMessages,
+    setCurrentTeam,
+    setCurrentJoinedTeam,
+  } = useAuth();
   return (
     <div className="w-2/3 pl-32 pt-20">
       <div className="font-Josefin text-3xl border-green-400 bg-gray-200 p-2 text-gray-600 border-b mb-2">
         Chat
       </div>
-      <AblyChatComponent></AblyChatComponent>
+      <AblyChatComponent
+        setCurrentJoinedTeam={setCurrentJoinedTeam}
+        userData={userData}
+        key={"1212"}
+        setCurrentTeam={setCurrentTeam}
+        sendMessage={sendMessage}
+        messagesBeforeUpdate={messagesBeforeUpdate}
+        deleteAllTeamMessages={deleteAllTeamMessages}
+        currentJoinedTeam={currentJoinedTeam}
+        currentTeam={currentTeam}
+      ></AblyChatComponent>
     </div>
   );
 }

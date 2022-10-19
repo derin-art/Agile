@@ -842,12 +842,19 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     console.log(savedTeamAfterMessage);
-    if (savedTeamAfterMessage) {
-      setMessagesBeforeUpdate(savedTeamAfterMessage.data.chatHistory);
+    if (savedTeamAfterMessage.data) {
+      setCurrentTeam([savedTeamAfterMessage.data]);
+      setCurrentJoinedTeam([savedTeamAfterMessage.data]);
+      setMessagesBeforeUpdate(savedTeamAfterMessage.data);
+      window.localStorage.setItem(
+        "chatMessages",
+        stringify(savedTeamAfterMessage.data.chatHistory)
+      );
     }
   };
 
   const setCurrentMessages = () => {
+    return;
     let Team = currentTeam;
     console.log("uia", messagesBeforeUpdate, Team);
 
@@ -877,6 +884,10 @@ export default function usefirebaseAuthState() {
   };
 
   return {
+    setCurrentJoinedTeam,
+    setCurrentTeam,
+    messagesBeforeUpdate,
+    setMessagesBeforeUpdate,
     deleteAllTeamMessages,
     setCurrentMessages,
     sendMessage,

@@ -2,7 +2,7 @@ import TeamCreateIcon from "../../public/TeamCreateIcon";
 import infoIcon from "../../public/infoIcon";
 
 import Link from "next/dist/client/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 
 import logo from "../../public/logo";
@@ -11,6 +11,7 @@ import deleteIcon from "../../public/deleteIcon";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { async } from "@firebase/util";
+import stringify from "json-stringify";
 
 export default function Team({
   deleteTeam,
@@ -20,6 +21,8 @@ export default function Team({
   userTeamData,
   authUser,
   setCurrentTeamAvailable,
+  setMessagesBeforeUpdate,
+  messagesBeforeUpdate,
 }) {
   /*  const whiteToolKit = withStyles((theme) => ({
     tooltip: {
@@ -84,6 +87,27 @@ export default function Team({
     }
   };
 
+  const launchTutorial = () => {
+    toast.info(
+      <div>
+        Welcome to the team menu. A team represents the foundation this app,
+        teams comprise of a data that can be manipulated and shared with your
+        team members as the product owner. If you are logged in through the
+        tutorial account there is an already tutorial team existing for you be
+        explore.
+      </div>,
+      {
+        autoClose: false,
+        className: "text-sm",
+        position: toast.POSITION.TOP_CENTER,
+      }
+    );
+  };
+
+  useEffect(() => {
+    launchTutorial();
+  }, []);
+
   return (
     <div className="w-full h-full font-Josefin">
       <ToastContainer></ToastContainer>
@@ -99,6 +123,14 @@ export default function Team({
         >
           Add Team
         </motion.button>
+        <button
+          onClick={() => {
+            launchTutorial();
+          }}
+          className="absolute right-4 -top-6 text-sm text-gray-800"
+        >
+          Show Tutorial
+        </button>
         <motion.div
           initial={{ opacity: 0 }}
           animate={createTeamMenu ? { translateY: 20, opacity: 1 } : {}}
@@ -172,6 +204,11 @@ export default function Team({
                               className="text-white mr-4"
                               onClick={() => {
                                 setCurrentTeamAvailable(item._id);
+                                setMessagesBeforeUpdate(item);
+                                window.localStorage.setItem(
+                                  "chatMessages",
+                                  stringify(item.chatHistory)
+                                );
                               }}
                             >
                               {item.name}

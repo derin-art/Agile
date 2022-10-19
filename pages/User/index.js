@@ -5,6 +5,7 @@ import { useAuth } from "../../Context/firebaseUserContext";
 import { motion } from "framer-motion";
 import logo from "../../public/logo";
 import Link from "next/dist/client/link";
+import stringify from "json-stringify";
 
 let socket;
 
@@ -20,6 +21,7 @@ export default function User() {
     getTeamsWithUser,
     allCurrentJoinedTeam,
     setCurrentJoinedTeamFunction,
+    setMessagesBeforeUpdate,
   } = useAuth();
 
   console.log("userData", userData);
@@ -156,6 +158,11 @@ export default function User() {
                       <button
                         onClick={() => {
                           setCurrentJoinedTeamFunction(item._id);
+                          setMessagesBeforeUpdate(item);
+                          window.localStorage.setItem(
+                            "chatMessages",
+                            stringify(item.chatHistory)
+                          );
                         }}
                         className="border-b w-full text-left border-indigo-500"
                       >

@@ -16,7 +16,7 @@ export default function Header() {
     <div className="flex flex-col">
       <div
         className={`flex p-2 text-white bg-indigo-800 shadow-md border-green-300 border-b items-center ${
-          router.pathname === "/" ? "" : "fixed w-screen"
+          router.pathname === "/" ? "" : "fixed w-full"
         } z-50`}
       >
         <div className="flex">
@@ -52,7 +52,7 @@ export default function Header() {
         </button>
       </div>
       <div
-        className={`bg-green-300 p-4 border-b shadow border-indigo-800  fixed w-screen duration-500 md:hidden ${
+        className={`bg-green-300 p-4 border-b z-40 shadow border-indigo-800  fixed w-screen duration-500 md:hidden ${
           mobileMenuOpen ? "-translate-y-4" : "translate-y-10"
         }
     

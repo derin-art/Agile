@@ -47,7 +47,7 @@ export default function UserStory() {
             }}
           ></input>
           <textarea
-            placeholder="Description/Acceptance Criteria"
+            placeholder="Acceptance Criteria"
             onChange={(e) => {
               setAcceptanceCriteria(e.target.value);
             }}
@@ -171,7 +171,7 @@ export default function UserStory() {
           >
             21
           </button>
-          {infoIcon("ml-2 fill-indigo-600", "20", "20")}
+          {infoIcon("ml-2 fill-indigo-600 hidden", "20", "20")}
         </div>
         <button
           className="mt-8  text-sm bg-indigo-800 shadow-inner p-1 text-green-300 rounded hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
@@ -201,7 +201,6 @@ export default function UserStory() {
           CREATE
         </button>
       </div>
-      <ToastContainer></ToastContainer>
     </div>
   );
 }

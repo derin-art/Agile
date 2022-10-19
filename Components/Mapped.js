@@ -28,8 +28,8 @@ export default function Mapped({ Array, id, allItems, setFunction, name }) {
   }
 
   return (
-    <div className="h-fit w-fit mb-4  text-lg font-Josefin bg-gray-100 pt-2 pb-2 pr-2">
-      <div className="w-full border-b pl-4 text-2xl text-gray-500  border-green-400">
+    <div className="h-fit w-fit mb-4  text-lg font-Josefin pt-2 pb-2 pr-2">
+      <div className="w-full border-b pl-4 text-3xl text-gray-500  border-green-400">
         Release {releaseUsed[0].name}
       </div>
       <Droppable droppableId={id} direction="horizontal" key={id}>
@@ -38,7 +38,7 @@ export default function Mapped({ Array, id, allItems, setFunction, name }) {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="flex border border-white h-fit"
+              className="flex border border-white h-fit relative"
             >
               {Array.map((item, index) => {
                 if (!item) return;
@@ -60,7 +60,7 @@ export default function Mapped({ Array, id, allItems, setFunction, name }) {
                             className=" ml-4"
                           >
                             <div className="w-32 truncate text-xs overflow-auto hover:text-clip">
-                              No theme
+                              No Epic
                             </div>
                             <StoryTeamCard
                               name={item.name}

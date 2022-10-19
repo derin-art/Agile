@@ -88,14 +88,23 @@ export default function Communication() {
       </div>
     );
   };
-  const { teamRequest, userData, currentTeam } = useAuth();
+  const {
+    teamRequest,
+    userData,
+    currentTeam,
+    setCurrentTeam,
+    sendMessage,
+    currentJoinedTeam,
+    messagesBeforeUpdate,
+    deleteAllTeamMessages,
+  } = useAuth();
   console.log("pretty important", teamRequest, userData, currentTeam);
   const [roomInput, setRoomInput] = useState("");
   const [chats, setChats] = useState([]);
   console.log(chats, "chatsDatat");
-  socket = io();
+  /*   socket = io(); */
 
-  const socketIntiallizer = async () => {
+  /*   const socketIntiallizer = async () => {
     await fetch("../../../../api/Socket").catch((err) => {
       console.log("SocketErr", err);
     });
@@ -111,10 +120,15 @@ export default function Communication() {
       console.log(msg, "sent sjsj");
     });
     socket.emit("join", "room1");
-  };
-  useEffect(() => {
+  }; */
+  /*   useEffect(() => {
     socketIntiallizer();
-  }, []);
+  }, []); */
+
+  /*  useEffect(() => {
+    setCurrentTeam([messagesBeforeUpdate]);
+  }); */
+
   const [emailSearch, setEmailSearch] = useState("");
   const [message, setMessage] = useState("");
   const [allUsers, setAllUsers] = useState([]);
@@ -163,7 +177,7 @@ export default function Communication() {
     }
     return (
       <div
-        className={`h-24 w-32 bg-indigo-800 text-white rounded p-1 border-t-8 border-${
+        className={`h-24 lg:w-32 w-28 bg-indigo-800 text-white rounded p-1 border-t-8 border-${
           theme.color === "indigo" ? "green-300" : theme.color
         }`}
       >
@@ -188,15 +202,15 @@ export default function Communication() {
   };
 
   return (
-    <div className="flex w-10/11 h-screen overflow-x-hidden relative">
+    <div className="flex lg:w-10/11 w-full h-screen overflow-x-hidden relative">
       <ToastContainer></ToastContainer>
       <button
         onClick={() => {
           setTeamMenuOpen((prev) => !prev);
         }}
-        className={`absolute right-5 duration-300 rounded ${
+        className={`absolute right-5 top-12 duration-300 rounded ${
           teamMenuOpen ? "bg-red-500" : "bg-indigo-800"
-        } text-white top-16 z-50 font-Josefin border text-sm p-1 flex items-center`}
+        } text-white mt-2 hidden lg:flex z-50 font-Josefin border text-sm p-1 flex items-center`}
       >
         {teamMenuOpen ? "Close" : "Team Add"}
         {addIcon(
@@ -204,9 +218,9 @@ export default function Communication() {
         )}
       </button>
       <div className="h-full w-full flex flex-col  justify-center">
-        <div className="h-full   border bg-gray-100 relative">
+        <div className="h-full w-screen  lg:w-full z-10 border bg-gray-100 relative">
           {" "}
-          <div className="mt-12 flex font-Josefin w-full bg-indigo-900 text-green-400 p-2">
+          <div className="mt-12 z-10 flex font-Josefin w-full bg-indigo-900 text-green-400 p-2">
             <button
               onClick={() => {
                 setShowMenu("User");
@@ -253,14 +267,25 @@ export default function Communication() {
             })}
           </div>
           <div className={`${showMenu === "Chat" ? "" : "hidden"}`}>
-            <AblyChatComponent></AblyChatComponent>
+            <AblyChatComponent
+              setCurrentTeam={setCurrentTeam}
+              messagesBeforeUpdate={messagesBeforeUpdate}
+              userData={userData}
+              sendMessage={sendMessage}
+              key="Ablyyy"
+              deleteAllTeamMessages={deleteAllTeamMessages}
+              currentTeam={currentTeam}
+              currentJoinedTeam={currentJoinedTeam}
+            ></AblyChatComponent>
           </div>
           <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
-            <div className="p-2 border-b font-Josefin">KanBam Board</div>
-            <div className="flex font-Josefin">
+            <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-lg text-gray-500">
+              KanBam Board
+            </div>
+            <div className="flex font-Josefin ">
               <div className="p-1 ">
                 <div className="ml-1">Not Started</div>
-                <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
+                <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full lg:p-1">
                   {kanBamData.map((item) => {
                     if (!item.completed && !item.inProgress) {
                       return (
@@ -280,7 +305,7 @@ export default function Communication() {
                   })}
                 </div>
               </div>
-              <div className="p-1">
+              <div className="lg:p-1">
                 <div className="ml-1">In Progress</div>
                 <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
                   {kanBamData.map((item) => {
@@ -303,7 +328,7 @@ export default function Communication() {
                   })}
                 </div>
               </div>
-              <div className="p-1">
+              <div className="lg:p-1">
                 <div className="ml-1">Completed</div>
 
                 <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
@@ -329,22 +354,6 @@ export default function Communication() {
               </div>
             </div>
           </div>
-          <div className="w-full flex items-center justify-center hidden absolute bottom-0">
-            <textarea
-              className="w-3/4 border max-h-[60px]"
-              onChange={(e) => {
-                setMessage(e.target.value);
-              }}
-            ></textarea>
-            <button
-              onClick={() => {
-                socket.emit("roomMessage", message);
-              }}
-              className=" border p-3 font-Josefin py-[17px]"
-            >
-              Send
-            </button>
-          </div>
         </div>
       </div>
       <div
@@ -353,7 +362,9 @@ export default function Communication() {
         }`}
       >
         <div className="flex flex-col mt-20 p-1 font-Josefin">
-          <div className="text-lg border-b text-gray-800">Add To Your Team</div>
+          <div className="text-lg border-b text-gray-500 border-green-400">
+            Add A User Your Team
+          </div>
           <div className="text-xs mb-4">Send a team request to a user </div>
           <input
             onChange={(e) => {

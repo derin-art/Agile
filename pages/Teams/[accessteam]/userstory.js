@@ -51,6 +51,31 @@ export default function UserStory() {
 
   const [themes, setTheme] = useState([...allSaveThemes]);
 
+  const launchTutorial = () => {
+    toast.info(
+      <div>
+        User stories are an essential part of Releases. They are the tasks that
+        must be completed before a release can be released of launched. At the
+        right hand corner is button to open the create User story menu. Stories
+        require information; the Acceptance criteria which is used to judge when
+        the task is complete, the Priority which is judged to two metrics; value
+        to the app and the risk of attempting the task, through this metrics the
+        priority of each user story is decided, green indicating a low risk task
+        with high value and at the other end of the spectrum red indicating a
+        high risk task with low value. Another vital metric to judge User
+        stories are their story points which indicate the amount of work
+        contained or necessary to complete a task, the higher the number, the
+        more the work. When the number exceeds 21, the story should be broken
+        into smaller stories and made/organized into an Epic.
+      </div>,
+      {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: false,
+        className: "text-sm",
+      }
+    );
+  };
+
   console.log("themes", themes, Themes);
 
   useEffect(() => {
@@ -60,6 +85,7 @@ export default function UserStory() {
     if (!Themes[1]) {
       SetTheme(themes);
     }
+    launchTutorial();
   }, []);
 
   const removeFromList = (list, index) => {
@@ -421,6 +447,7 @@ export default function UserStory() {
         Please Switch to a bigger screen to access this feature
       </div>
       <div className="w-full relative  hidden md:block">
+        <p className="text-sm font-Josefin">Begin by creating user stories</p>
         <div className="">
           <button
             onClick={() => {
@@ -430,8 +457,15 @@ export default function UserStory() {
           >
             Add User Story
           </button>
+          <button
+            onClick={() => {
+              launchTutorial();
+            }}
+            className="texts-sm right-8 -top-2 absolute font-Josefin"
+          >
+            Show Tutorial
+          </button>
         </div>
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={createStoryMenu ? { translateY: 20, opacity: 1 } : {}}
@@ -565,7 +599,9 @@ export default function UserStory() {
                       return (
                         <div key={epic[0].toString()} className="relative">
                           <div className="absolute -top-0 z-40 text-gray-700 bg-gray-100 bg-white h-8 truncate border-b border-l w-full font-Josefin">
-                            <div className="w-48 truncate px-2 ">{epic[0]}</div>
+                            <div className="w-48 truncate px-2 text-center">
+                              {epic[0] === "Notheme" ? "No Epic" : epic[0]}
+                            </div>
                           </div>
                           <Droppable droppableId={epic[0].toString()}>
                             {(provided) => {

@@ -10,7 +10,12 @@ import MapIcon from "../public/SideBarIcons/mapIcon";
 
 export default function SideBar() {
   const router = useRouter();
-  const { currentTeam, setCurrentMessages } = useAuth();
+  const {
+    currentTeam,
+    setCurrentMessages,
+    messagesBeforeUpdate,
+    setCurrentTeam,
+  } = useAuth();
 
   const isAccess =
     router.pathname === "/Teams/[accessteam]" ||
@@ -107,9 +112,6 @@ export default function SideBar() {
           className=""
         >
           <button
-            onClick={() => {
-              setCurrentMessages();
-            }}
             className={`flex duration-300 flex-col items-center justify-center p-4 ${
               router.pathname ===
               "/Teams/[accessteam]/[createDisplay]/[communication]"
@@ -173,7 +175,7 @@ export default function SideBar() {
                   : "text-indigo-500"
               }`}
             >
-              <p className="text-center"> Map</p>
+              <p className="text-center">Story Map</p>
             </p>
           </button>
         </Link>

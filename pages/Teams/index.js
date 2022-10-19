@@ -22,7 +22,9 @@ export default function Newpage({ finalData }) {
     getUserTeam,
     userTeamData,
     setCurrentTeamAvailable,
+    setMessagesBeforeUpdate,
     currentTeam,
+    messagesBeforeUpdate,
     deleteTeam,
   } = useAuth();
   useEffect(() => {
@@ -75,6 +77,8 @@ export default function Newpage({ finalData }) {
     <div className="">
       <div className="mt-20 md:ml-4">
         <Team
+          messagesBeforeUpdate={messagesBeforeUpdate}
+          setMessagesBeforeUpdate={setMessagesBeforeUpdate}
           userData={userData}
           CreateTeam={CreateTeam}
           getUserTeam={getUserTeam}
