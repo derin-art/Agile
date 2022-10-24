@@ -18,7 +18,7 @@ export default function UserCommunication() {
     setCurrentJoinedTeam,
   } = useAuth();
   return (
-    <div className="w-2/3 pl-32 pt-20">
+    <div className="md:w-2/3 md:pl-32 p-1 pt-20">
       <div className="font-Josefin text-3xl border-green-400 bg-gray-200 p-2 text-gray-600 border-b mb-2">
         Chat
       </div>

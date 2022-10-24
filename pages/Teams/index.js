@@ -35,19 +35,6 @@ export default function Newpage({ finalData }) {
     console.log("index data", userData);
   }, [authUser, loading]);
 
-  useEffect(() => {
-    socket = io();
-  }, []);
-  const [roomInput, setRoomInput] = useState("");
-  const [typedInput, setTypedInput] = useState("");
-
-  const getAllUsers = async () => {
-    const data = await axios.get("../api/UserEndPoint").catch((err) => {
-      console.log(err);
-    });
-    console.log(data);
-  };
-
   const socketIntiallizer = async () => {
     await fetch("./api/Socket");
     socket.on("connect", () => {
@@ -63,9 +50,6 @@ export default function Newpage({ finalData }) {
       setRoomInput(msg);
     });
   };
-  useEffect(() => {
-    socketIntiallizer();
-  }, []);
 
   const onChangeHandler = async (value) => {
     setTypedInput(value);

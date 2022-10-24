@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { async, map } from "@firebase/util";
 import Logo from "../../../public/logo";
 import { motion } from "framer-motion";
+import parseJson from "parse-json";
 
 export default function UserStory() {
   const {
@@ -26,8 +27,6 @@ export default function UserStory() {
   } = useAuth();
 
   const allSaveThemes = [];
-
-  console.log("proprit", currentPinsOpen);
 
   const [createStoryMenu, setCreateStoryMenu] = useState(false);
   const [savedThemes, setSavedThemes] = useState([]);
@@ -76,7 +75,10 @@ export default function UserStory() {
     );
   };
 
-  console.log("themes", themes, Themes);
+  let tutorialBool = "";
+  if (typeof window !== "undefined") {
+    tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
+  }
 
   useEffect(() => {
     if (!Themes[0]) {
@@ -85,11 +87,10 @@ export default function UserStory() {
     if (!Themes[1]) {
       SetTheme(themes);
     }
-    launchTutorial();
+    tutorialBool && launchTutorial();
   }, []);
 
   const removeFromList = (list, index) => {
-    console.log(list, "liut");
     const result = Array.from(list);
     const [removed] = result.splice(index, 1);
     return [removed, result];
@@ -107,14 +108,12 @@ export default function UserStory() {
     }
     if (result.destination.droppableId === "names") {
     }
-    console.log("destination", result.destination);
     const newItems = [...currentPinsOpen.allPins];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
-    console.log(newItems, "newItems");
+
     const modefiedNewitems = { allPins: newItems };
     setCurrentPinsOpen((prev) => {
-      console.log(prev, "oldItems");
       return modefiedNewitems;
     });
   }
@@ -124,14 +123,13 @@ export default function UserStory() {
     if (!result.destination) {
       return;
     }
-    console.log("rann");
-    console.log("drop", result.source.droppableId);
+
     const listCopy = { ...currentPinsOpen };
-    console.log("listcopy", listCopy);
+
     const arrayKey = result.source.droppableId;
-    console.log("arr", arrayKey);
+
     const sourceList = listCopy[arrayKey];
-    console.log("sourceList", sourceList);
+
     const [removedElement, newSourceList] = removeFromList(
       sourceList,
       result.source.index
@@ -139,7 +137,7 @@ export default function UserStory() {
     listCopy[result.source.droppableId] = newSourceList;
 
     const destinationList = listCopy[result.destination.droppableId];
-    console.log("destination", result.destination.droppableId);
+
     listCopy[result.destination.droppableId] = addToList(
       destinationList,
       result.destination.index,
@@ -147,123 +145,6 @@ export default function UserStory() {
     );
 
     setCurrentPinsOpen(listCopy);
-  };
-
-  const onDragEndMultiple = (result) => {
-    if (!result.destination) {
-      return;
-    } else {
-      if (
-        !(
-          themes.filter((e) => e.name === result.destination.droppableId)
-            .length > 0
-        )
-      ) {
-        console.log(result.destination.type, "keey");
-        console.log(
-          "MMMM",
-          themes.includes((item) => {
-            return item.name != result.destination.droppableId;
-          })
-        );
-        const listCopy = { ...currentPinsOpenRevised[currentEpic] };
-
-        console.log(currentPinsOpenRevised.currentEpic, "listCopyMm");
-
-        const sourceList = listCopy[result.source.droppableId];
-
-        const [removedElement, newSourceList] = removeFromList(
-          sourceList,
-          result.source.index
-        );
-        listCopy[result.source.droppableId] = newSourceList;
-
-        const destinationList = listCopy[result.destination.droppableId];
-        listCopy[result.destination.droppableId] = addToList(
-          destinationList,
-          result.destination.index,
-          removedElement
-        );
-        console.log(listCopy);
-        setCurrentPinsOpenRevised((prev) => {
-          return { ...prev, [currentEpic]: listCopy };
-        });
-        return;
-      } else {
-        const listCopy = { ...currentPinsOpenRevised };
-        console.log("right one");
-        console.log(currentPinsOpenRevised, "right One");
-
-        console.log("EPiccQ", currentEpic, listCopy[currentEpic]);
-        const sourceList = listCopy[currentEpic][result.source.droppableId];
-
-        console.log("sourceList", sourceList);
-        const [removedElement, newSourceList] = removeFromList(
-          sourceList,
-          result.source.index
-        );
-        listCopy[result.source.droppableId] = newSourceList;
-
-        const destinationList = listCopy[result.destination.droppableId];
-        const destinationListArr = [];
-        console.log("MM", destinationList);
-        Object.entries(destinationList).forEach((item) => {
-          if (item) {
-            destinationListArr.push(...item[1]);
-          }
-        });
-        listCopy[result.destination.droppableId] = addToList(
-          destinationListArr,
-          result.destination.index,
-          removedElement
-        );
-        console.log(
-          "allThedata",
-          listCopy[result.source.droppableId],
-          listCopy[result.destination.droppableId]
-        );
-        setCurrentPinsOpenRevised((prev) => {
-          const finalArr = {};
-          const defaultArr = {};
-          let arrNo = 0;
-          for (
-            let i = 0;
-            i < listCopy[result.destination.droppableId].length;
-            i += 1
-          ) {
-            if (i % 4 === 0) {
-              arrNo++;
-              defaultArr = { ...defaultArr, [arrNo.toString()]: [] };
-              console.log(arrNo, "No");
-            }
-
-            defaultArr[arrNo].push(listCopy[result.destination.droppableId][i]);
-
-            console.log(defaultArr, "default");
-          }
-          finalArr = {
-            ...finalArr,
-            [result.destination.droppableId]: defaultArr,
-          };
-
-          console.log("COdd", destinationListArr, finalArr, [
-            result.destination.droppableId,
-          ]);
-
-          const newNew = {
-            ...prev,
-            [currentEpic]: {
-              ...prev.defaultArr,
-              [result.source.droppableId]: listCopy[result.source.droppableId],
-            },
-            ...finalArr,
-          };
-          console.log("newNew", newNew);
-
-          return newNew;
-        });
-      }
-    }
   };
 
   const purgeCSSSucks = () => {
@@ -443,7 +324,7 @@ export default function UserStory() {
       <p className="text-3xl mb-2 text-gray-300 border-b border-green-300 font-Josefin">
         BackLog
       </p>
-      <div className="md:hidden font-Josefin">
+      <div className="md:hidden font-Josefin p-2">
         Please Switch to a bigger screen to access this feature
       </div>
       <div className="w-full relative  hidden md:block">
@@ -538,25 +419,18 @@ export default function UserStory() {
                     className="bg-indigo-800 p-2 px-3 text-white rounded shadow hover:text-indigo-800 hover:border border-indigo-800 hover:bg-white"
                     onClick={async () => {
                       setDataSaved((prev) => ({ ...prev, loading: true }));
-                      console.log("Mkk", currentPinsOpen);
+
                       const editedPinsWithEpics = Object.entries(
                         currentPinsOpen
                       ).map((item, index) => {
                         if (item) {
                           return item[1].map((pins) => {
                             if (pins) {
-                              console.log("checkingThemes", Themes);
                               const itemColor = Themes.filter((theme) => {
                                 if (theme) {
                                   return theme.name === item[0];
                                 }
                               });
-                              console.log(
-                                "itemColor",
-                                itemColor,
-                                item[0],
-                                themes
-                              );
 
                               const newTheme = {
                                 name: item[0],
@@ -573,7 +447,7 @@ export default function UserStory() {
                       const response = await saveStories(
                         editedPinsWithEpics.flat()
                       );
-                      console.log("response", response);
+
                       setDataSaved((prev) => ({
                         loading: false,
                         status: response.status,
@@ -591,11 +465,10 @@ export default function UserStory() {
                 <div className="flex ml-2">
                   {Object.entries(currentPinsOpen).map((epic) => {
                     if (epic[0]) {
-                      console.log("dd", epic[0], themes);
                       const themeObject = themes.filter(
                         (item) => item.name === epic[0]
                       );
-                      console.log("themeObject", themeObject);
+
                       return (
                         <div key={epic[0].toString()} className="relative">
                           <div className="absolute -top-0 z-40 text-gray-700 bg-gray-100 bg-white h-8 truncate border-b border-l w-full font-Josefin">
@@ -677,7 +550,6 @@ export default function UserStory() {
                   </div>
                 </div>
                 {Themes.map((item) => {
-                  console.log("themes", Themes);
                   if (item) {
                     return (
                       <Droppable droppableId={item.name} key={item.name}>

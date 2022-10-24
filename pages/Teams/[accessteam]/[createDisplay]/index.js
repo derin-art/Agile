@@ -3,6 +3,7 @@ import ReleaseDraggable from "../../../../Components/ReleaseDraggable";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import parseJson from "parse-json";
 
 export default function CreateDisplay() {
   const {
@@ -42,37 +43,55 @@ export default function CreateDisplay() {
     );
   };
 
+  let tutorialBool = "";
+  if (typeof window !== "undefined") {
+    tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
+  }
+
   useEffect(() => {
-    launchTutorial();
+    tutorialBool && launchTutorial();
   }, []);
 
   return (
     <div className="mt-14 ml-6">
       <div className="text-3xl font-Josefin border-b border-green-300 text-gray-300 mb-2">
         Story Map
+        <button
+          onClick={() => {
+            launchTutorial();
+          }}
+          className="absolute top-16 right-4 text-base text-black"
+        >
+          Show Tutorial
+        </button>
       </div>
-      <div className="md:block hidden">
-        <ToastContainer></ToastContainer>
-        {currentTeam[0].Release.length > 0 ? (
-          currentTeam[0].Release.map((release) => {
-            return (
-              <ReleaseDraggable
-                key={release._id}
-                currentTeam={currentTeam}
-                agilePins={release.agilePins}
-                dateStart={release.dateStart}
-                dateEnd={release.dateEnd}
-                name={release.name}
-                id={release._id}
-              ></ReleaseDraggable>
-            );
-          })
-        ) : (
-          <p className="text-lg font-Josefin">
-            No Releases created <span className="text-green-400 ">yet</span>{" "}
-          </p>
-        )}
+      <div className="font-Josefin md:hidden p-2">
+        Please switch to a smaller screen to access this feature
       </div>
+      {currentTeam && (
+        <div className="md:block hidden">
+          <ToastContainer></ToastContainer>
+          {currentTeam[0].Release.length > 0 ? (
+            currentTeam[0].Release.map((release) => {
+              return (
+                <ReleaseDraggable
+                  key={release._id}
+                  currentTeam={currentTeam}
+                  agilePins={release.agilePins}
+                  dateStart={release.dateStart}
+                  dateEnd={release.dateEnd}
+                  name={release.name}
+                  id={release._id}
+                ></ReleaseDraggable>
+              );
+            })
+          ) : (
+            <p className="text-lg font-Josefin">
+              No Releases created <span className="text-green-400 ">yet</span>{" "}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

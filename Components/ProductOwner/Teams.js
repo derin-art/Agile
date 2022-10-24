@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { async } from "@firebase/util";
 import stringify from "json-stringify";
+import parseJson from "parse-json";
 
 export default function Team({
   deleteTeam,
@@ -105,7 +106,7 @@ export default function Team({
   };
 
   useEffect(() => {
-    launchTutorial();
+    parseJson(localStorage.getItem("enableTutorial")) && launchTutorial();
   }, []);
 
   return (

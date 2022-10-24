@@ -346,7 +346,7 @@ export default function SprintCardDisplay({
         </p>
       </div>
 
-      <div className="w-56 text-xs font-Josefin h-14 overflow-auto">
+      <div className="w-48 text-xs font-Josefin h-14 overflow-y-auto">
         {AcceptanceCriteria}
       </div>
     </div>

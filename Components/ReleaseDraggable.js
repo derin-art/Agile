@@ -466,7 +466,7 @@ export default function ReleaseDraggable({
         <div className="flex relative">
           <div className="flex justify-center">
             <div className="-top-[64px] -left-[1px] text-2xl font-Josefin text-gray-700 absolute flex p-1">
-              <p className="ml-3 lg:text-3xl text-lg -mt-1 uppercase font-bold">
+              <p className="ml-3 lg:text-3xl text-lg -mt-1 uppercase font-bold w-80 truncate">
                 Release {name}
               </p>
               <button
@@ -515,8 +515,8 @@ export default function ReleaseDraggable({
                           ref={provided.innerRef}
                           className="flex h-full w-full"
                         >
-                          <div className="flex-col flex font-Josefin">
-                            <div className="flex">
+                          <div className="flex-col flex font-Josefin ">
+                            <div className="flex  overflow-auto w-[1000px] order-red-500">
                               {story[1].map((item, index) => {
                                 if (item) {
                                   return (

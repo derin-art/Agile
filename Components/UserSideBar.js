@@ -12,9 +12,9 @@ export default function UserSideBar() {
     <div
       className={`h-full flex flex-col w-24 bg-indigo-900 z-40 ${
         router.pathname.includes("/Teams") ? "hidden md:hidden" : "fixed"
-      } ${router.pathname === "/User" ? "hidden md:hidden" : ""} ${
-        router.pathname === "/" ? "hidden" : ""
-      }`}
+      } ${
+        router.pathname === "/User" ? "hidden md:hidden" : "hidden md:block"
+      } ${router.pathname === "/" ? "hidden md:hidden" : ""}`}
     >
       <Link href="/User/UserTeam" className="">
         <button

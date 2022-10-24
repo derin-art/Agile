@@ -7,10 +7,19 @@ import signOutIcon from "../public/signOutIcon";
 import downArrowFunction from "../public/downArrowIcon";
 import { useState } from "react";
 import openFolderIcon from "../public/SideBarIcons/openFolderIcon";
+import parseJson from "parse-json";
+
+import stringify from "json-stringify";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const { SignOut } = useAuth();
+  let tutorialBool;
+  if (typeof window !== "undefined") {
+    tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
+  }
+
+  const [tutorialEnabled, setTutorialEnabled] = useState(tutorialBool);
   const router = useRouter();
   return (
     <div className="flex flex-col">
@@ -37,6 +46,19 @@ export default function Header() {
               router.pathname === "/" ? "md:hidden hidden" : ""
             } ${mobileMenuOpen ? "" : "rotate-180"}`
           )}
+        </button>
+        <button
+          className={`absolute right-32 hidden md:block font-Josefin ${
+            router.pathname === "/" ? "hidden md:hidden" : ""
+          }`}
+          onClick={() => {
+            setTutorialEnabled((prev) => !prev);
+            localStorage.setItem("enableTutorial", stringify(tutorialEnabled));
+          }}
+        >
+          {tutorialEnabled
+            ? "Disable Tutorial Popups"
+            : "Enable Tutorial Popups"}
         </button>
         <button
           className={`absolute right-4 flex text-green-300 font-Josefin ${

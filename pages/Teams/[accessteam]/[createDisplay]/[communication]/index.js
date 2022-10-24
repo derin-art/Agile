@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
 import dynamic from "next/dynamic";
 import { toast, ToastContainer } from "react-toastify";
-import { io } from "socket.io-client";
 import axios from "axios";
 import addIcon from "../../../../../public/addIcon";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,10 +10,6 @@ const AblyChatComponent = dynamic(
   () => import("../../../../../Components/AlbyChatComponent"),
   { ssr: false }
 );
-
-let socket;
-
-/* (email, teamId, teamName, fromEmail) */
 
 export default function Communication() {
   const purgeCSSSucksBorder = () => {
@@ -98,36 +92,8 @@ export default function Communication() {
     messagesBeforeUpdate,
     deleteAllTeamMessages,
   } = useAuth();
-  console.log("pretty important", teamRequest, userData, currentTeam);
-  const [roomInput, setRoomInput] = useState("");
+
   const [chats, setChats] = useState([]);
-  console.log(chats, "chatsDatat");
-  /*   socket = io(); */
-
-  /*   const socketIntiallizer = async () => {
-    await fetch("../../../../api/Socket").catch((err) => {
-      console.log("SocketErr", err);
-    });
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-
-    socket.on("joinedroom", () => {
-      console.log("Joined room");
-    });
-    socket.on("recieveMessage", (msg) => {
-      setChats((prev) => [...prev, <p>{msg}</p>]);
-      console.log(msg, "sent sjsj");
-    });
-    socket.emit("join", "room1");
-  }; */
-  /*   useEffect(() => {
-    socketIntiallizer();
-  }, []); */
-
-  /*  useEffect(() => {
-    setCurrentTeam([messagesBeforeUpdate]);
-  }); */
 
   const [emailSearch, setEmailSearch] = useState("");
   const [message, setMessage] = useState("");
@@ -137,21 +103,25 @@ export default function Communication() {
 
   const kanBamData = [];
 
-  Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
-    if (currentTeam[0].Release.find((release) => release._id === item[0])) {
-      item[1].sprints.forEach((sprint) => {
-        sprint.stories.forEach((pin) => {
-          kanBamData.push({ ...pin, sprintName: sprint.name });
+  const kanBamFunction = () => {
+    Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
+      if (currentTeam[0].Release.find((release) => release._id === item[0])) {
+        item[1].sprints.forEach((sprint) => {
+          sprint.stories.forEach((pin) => {
+            kanBamData.push({ ...pin, sprintName: sprint.name });
+          });
         });
-      });
 
-      item[1].unSelected.forEach((pin) => {
-        kanBamData.push({ ...pin, sprintName: "No Sprint" });
-      });
-    }
-  });
+        item[1].unSelected.forEach((pin) => {
+          kanBamData.push({ ...pin, sprintName: "No Sprint" });
+        });
+      }
+    });
+  };
 
-  console.log("kan", kanBamData);
+  useEffect(() => {
+    currentTeam && kanBamFunction();
+  }, []);
 
   const DumpStory = ({
     name,
@@ -250,33 +220,36 @@ export default function Communication() {
             <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-lg text-gray-500">
               Team
             </div>
-            {currentTeam[0].members.map((item) => {
-              return (
-                <div className="flex font-Josefin border-b bg-gray-200 mb-1 pl-2 rounded-l">
-                  <div className=" flex flex-col w-8 mr-2 h-8 mt-2 p-1 items-center justify-center bg-indigo-900 text-green-400 uppercase rounded-full pt-1 font-mono">
-                    {item.name[0]}
-                  </div>
-                  <div>
-                    <div className="text-lg capitalize text-gray-600">
-                      {item.name}
+            {currentTeam &&
+              currentTeam[0].members.map((item) => {
+                return (
+                  <div className="flex font-Josefin border-b bg-gray-200 mb-1 pl-2 rounded-l">
+                    <div className=" flex flex-col w-8 mr-2 h-8 mt-2 p-1 items-center justify-center bg-indigo-900 text-green-400 uppercase rounded-full pt-1 font-mono">
+                      {item.name[0]}
                     </div>
-                    <div className="text-gray-400">{item.email}</div>
+                    <div>
+                      <div className="text-lg capitalize text-gray-600">
+                        {item.name}
+                      </div>
+                      <div className="text-gray-400">{item.email}</div>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
           <div className={`${showMenu === "Chat" ? "" : "hidden"}`}>
-            <AblyChatComponent
-              setCurrentTeam={setCurrentTeam}
-              messagesBeforeUpdate={messagesBeforeUpdate}
-              userData={userData}
-              sendMessage={sendMessage}
-              key="Ablyyy"
-              deleteAllTeamMessages={deleteAllTeamMessages}
-              currentTeam={currentTeam}
-              currentJoinedTeam={currentJoinedTeam}
-            ></AblyChatComponent>
+            {currentTeam && (
+              <AblyChatComponent
+                setCurrentTeam={setCurrentTeam}
+                messagesBeforeUpdate={messagesBeforeUpdate}
+                userData={userData}
+                sendMessage={sendMessage}
+                key="Ablyyy"
+                deleteAllTeamMessages={deleteAllTeamMessages}
+                currentTeam={currentTeam}
+                currentJoinedTeam={currentJoinedTeam}
+              ></AblyChatComponent>
+            )}
           </div>
           <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
             <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-lg text-gray-500">
@@ -361,148 +334,74 @@ export default function Communication() {
           teamMenuOpen ? "translate-x-0" : "translate-x-96"
         }`}
       >
-        <div className="flex flex-col mt-20 p-1 font-Josefin">
-          <div className="text-lg border-b text-gray-500 border-green-400">
-            Add A User Your Team
-          </div>
-          <div className="text-xs mb-4">Send a team request to a user </div>
-          <input
-            onChange={(e) => {
-              setEmailSearch(e.target.value);
-            }}
-            placeholder="Name"
-            className="border p-1 mt-2 mb-2 rounded"
-          ></input>
-          <button
-            className="border p-2 bg-indigo-800 text-white rounded"
-            onClick={async () => {
-              const data = await axios
-                .get(
-                  `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?userName=${emailSearch}`
-                )
-                .catch((err) => {
-                  console.log(err);
-                });
-              console.log("searchData", data);
-              setAllUsers(data.data);
-              if (data.data.length === 0) {
-                toast.warn("No user for your search field found", {
-                  position: toast.POSITION.BOTTOM_CENTER,
-                  className: "text-sm",
-                });
-              }
-            }}
-          >
-            Search
-          </button>
-          <div className="max-h-[400px] overflow-y-auto">
-            {" "}
-            {allUsers.length > 0 &&
-              allUsers.map((item) => {
-                return (
-                  <div
-                    key={item.email}
-                    className="mb-2 flex mt-2 relative bg-gray-100 p-1 rounded"
-                  >
-                    <div className="flex flex-col">
-                      <p className="text-xs text-gray-500">{item.email}</p>
-                      <p className="font-bold">{item.name}</p>
-                    </div>
-                    <button
-                      className="text-sm p-1 border absolute right-0 bg-indigo-800 text-white rounded"
-                      onClick={() => {
-                        teamRequest(
-                          item.email,
-                          currentTeam[0]._id,
-                          currentTeam[0].name,
-                          userData.email
-                        );
-                      }}
+        {currentTeam && (
+          <div className="flex flex-col mt-20 p-1 font-Josefin">
+            <div className="text-lg border-b text-gray-500 border-green-400">
+              Add A User Your Team
+            </div>
+            <div className="text-xs mb-4">Send a team request to a user </div>
+            <input
+              onChange={(e) => {
+                setEmailSearch(e.target.value);
+              }}
+              placeholder="Name"
+              className="border p-1 mt-2 mb-2 rounded"
+            ></input>
+            <button
+              className="border p-2 bg-indigo-800 text-white rounded"
+              onClick={async () => {
+                const data = await axios
+                  .get(
+                    `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?userName=${emailSearch}`
+                  )
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                console.log("searchData", data);
+                setAllUsers(data.data);
+                if (data.data.length === 0) {
+                  toast.warn("No user for your search field found", {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                    className: "text-sm",
+                  });
+                }
+              }}
+            >
+              Search
+            </button>
+            <div className="max-h-[400px] overflow-y-auto">
+              {" "}
+              {allUsers.length > 0 &&
+                allUsers.map((item) => {
+                  return (
+                    <div
+                      key={item.email}
+                      className="mb-2 flex mt-2 relative bg-gray-100 p-1 rounded"
                     >
-                      Team Request
-                    </button>
-                  </div>
-                );
-              })}
+                      <div className="flex flex-col">
+                        <p className="text-xs text-gray-500">{item.email}</p>
+                        <p className="font-bold">{item.name}</p>
+                      </div>
+                      <button
+                        className="text-sm p-1 border absolute right-0 bg-indigo-800 text-white rounded"
+                        onClick={() => {
+                          teamRequest(
+                            item.email,
+                            currentTeam[0]._id,
+                            currentTeam[0].name,
+                            userData.email
+                          );
+                        }}
+                      >
+                        Team Request
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
-
-/* export async function getStaticProps() {
-  const data = await fetch("http://localhost:3000/api/handler").catch((err) => {
-    console.log(err);
-  });
-  const finalData = await data.json();
-  console.log(finalData);
-  return {
-    props: {
-      finalData,
-    },
-  };
-} */
-
-/*   const socketIntiallizer = async () => {
-    await fetch("./api/Socket");
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-    socket.on("update-input", (msg) => {
-      setTypedInput(msg);
-    });
-    socket.on("joinedroom", () => {
-      console.log("Joined room");
-    });
-    socket.on("sendMembers", (msg) => {
-      setRoomInput(msg);
-    });
-  };
-  useEffect(() => {
-    socketIntiallizer();
-  }, []);
-
-  const onChangeHandler = async (value) => {
-    setTypedInput(value);
-    console.log("valuechanged", value);
-    socket.emit("input-change", value);
-  };
-
-
-
-<h1>
-        Newpage
-        <Link href="/">
-          <button>Home</button>
-        </Link>
-        <input
-          onChange={(e) => {
-            onChangeHandler(e.target.value);
-          }}
-          value={typedInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("join", "room1");
-            console.log("join room emitted");
-          }}
-        >
-          Create New Room
-        </button>
-        <button>Join created room</button>
-        <input
-          placeholder="room data"
-          onChange={(e) => {
-            setRoomInput(e.target.value);
-          }}
-          value={roomInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("roomMessage", roomInput);
-          }}
-        >
-          Send
-        </button>
-      </h1> */

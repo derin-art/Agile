@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import addIcon from "../../../public/addIcon";
 import { motion } from "framer-motion";
+import parseJson from "parse-json";
 
 export default function AccessTeam() {
   const {
@@ -26,24 +27,30 @@ export default function AccessTeam() {
 
   console.log("CHecking", currentTeam);
 
+  let tutorialBool = "";
+  if (typeof window !== "undefined") {
+    tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
+  }
+
   useEffect(() => {
-    toast.info(
-      <div>
-        In the world of Agile and Scrum, releases are time frames for versions
-        of apps to be launched. Imagine releases like and an “App” with
-        AppV1.00, AppV2.00 e.t.c. Releases represent the end of development
-        cycles where a version of an App is expected. Contained in releases are
-        the tasks required to complete that version of the app, this tasks are
-        called User Stories. When a particular task is too big it is made into
-        an Epic which comprises of smaller User stories. Please Navigate to one
-        of the releases.
-      </div>,
-      {
-        autoClose: false,
-        className: "text-sm",
-        position: toast.POSITION.TOP_CENTER,
-      }
-    );
+    tutorialBool &&
+      toast.info(
+        <div>
+          In the world of Agile and Scrum, releases are time frames for versions
+          of apps to be launched. Imagine releases like and an “App” with
+          AppV1.00, AppV2.00 e.t.c. Releases represent the end of development
+          cycles where a version of an App is expected. Contained in releases
+          are the tasks required to complete that version of the app, this tasks
+          are called User Stories. When a particular task is too big it is made
+          into an Epic which comprises of smaller User stories. Please Navigate
+          to one of the releases.
+        </div>,
+        {
+          autoClose: false,
+          className: "text-sm",
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
   }, []);
 
   return (
@@ -150,7 +157,7 @@ export default function AccessTeam() {
             <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-lg mb-2 text-gray-300">
               RELEASES
             </div>
-            {currentTeam[0].Release.length > 0 ? (
+            {currentTeam && currentTeam[0].Release.length > 0 ? (
               currentTeam[0].Release.map((item) => {
                 if (item) {
                   return (
