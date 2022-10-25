@@ -18,7 +18,7 @@ export default function UserSideBar() {
     >
       <Link href="/User/UserTeam" className="">
         <button
-          className={`flex mt-[51px] font-Josefin duration-300 flex-col items-center justify-center p-4 ${
+          className={`flex mt-[51px] w-full font-Josefin duration-300 flex-col items-center justify-center p-4 ${
             router.pathname === "/User/UserTeam"
               ? "bg-indigo-800 border-r-4 border-indigo-700"
               : ""
@@ -32,7 +32,7 @@ export default function UserSideBar() {
             }`
           )}
 
-          <p
+          <div
             className={`duration-300 w-14 ${
               router.pathname === "/User/UserTeam"
                 ? "text-green-300"
@@ -40,13 +40,13 @@ export default function UserSideBar() {
             }`}
           >
             <p className="text-center">Sprints</p>
-          </p>
+          </div>
         </button>
       </Link>
 
       <Link href="/User/Communication" className="">
         <button
-          className={`flex duration-300 font-Josefin flex-col items-center justify-center p-4 ${
+          className={`flex duration-300 font-Josefin w-full flex-col items-center justify-center p-4 ${
             router.pathname === "/User/Communication"
               ? "bg-indigo-800 border-r-4 border-indigo-700"
               : ""
@@ -60,7 +60,7 @@ export default function UserSideBar() {
             }`
           )}
 
-          <p
+          <div
             className={`duration-300 w-14 ${
               router.pathname === "/User/Communication"
                 ? "text-green-300"
@@ -68,13 +68,13 @@ export default function UserSideBar() {
             }`}
           >
             <p className="text-center">Team Contact</p>
-          </p>
+          </div>
         </button>
       </Link>
 
       <Link href="/User/StoryMap" className="">
         <button
-          className={`flex duration-300 font-Josefin flex-col items-center justify-center p-4 ${
+          className={`flex duration-300 font-Josefin w-full flex-col items-center justify-center p-4 ${
             router.pathname === "/User/StoryMap"
               ? "bg-indigo-800 border-r-4 border-indigo-700"
               : ""
@@ -88,7 +88,7 @@ export default function UserSideBar() {
             }`
           )}
 
-          <p
+          <div
             className={`duration-300 w-14 ${
               router.pathname === "/User/StoryMap"
                 ? "text-green-300"
@@ -96,7 +96,7 @@ export default function UserSideBar() {
             }`}
           >
             <p className="text-center">Team Story Map</p>
-          </p>
+          </div>
         </button>
       </Link>
 

@@ -44,56 +44,59 @@ export default function Story() {
 
   let beArray = {};
 
-  currentTeam[0].Release.forEach((release) => {
-    const allThemes = release.agilePins.map((item) => {
-      if (item) {
-        if (item.theme.name === "Notheme") return;
-        else {
-          return { tName: item.theme.name, pins: [], info: item.theme };
+  currentTeam &&
+    currentTeam[0].Release.forEach((release) => {
+      const allThemes = release.agilePins.map((item) => {
+        if (item) {
+          if (item.theme.name === "Notheme") return;
+          else {
+            return { tName: item.theme.name, pins: [], info: item.theme };
+          }
         }
-      }
-    });
+      });
 
-    const allThemeFilterd = allThemes.filter((allTheme) => {
-      if (allTheme) {
-        return allTheme;
-      }
-    });
+      const allThemeFilterd = allThemes.filter((allTheme) => {
+        if (allTheme) {
+          return allTheme;
+        }
+      });
 
-    const finalArrayThemed = [];
+      const finalArrayThemed = [];
 
-    const finalThemeFiltered = allThemeFilterd.forEach((filtered) => {
-      if (finalArrayThemed.find((found) => found.tName === filtered.tName))
-        return;
-      finalArrayThemed.push(filtered);
-    });
-
-    const arrayToBe = release.agilePins.map((item) => {
-      if (item) {
-        if (item.theme.name === "Notheme") {
-          return item;
-        } else {
-          finalArrayThemed.forEach((theme) => {
-            if (item.theme.name === theme.tName) {
-              theme.pins.push(item);
-            }
-          });
+      const finalThemeFiltered = allThemeFilterd.forEach((filtered) => {
+        if (finalArrayThemed.find((found) => found.tName === filtered.tName))
           return;
-        }
-      }
-    });
-    const finalArrayToBe = arrayToBe.filter((obj) => {
-      if (obj) {
-        return obj;
-      }
-    });
+        finalArrayThemed.push(filtered);
+      });
 
-    console.log([...finalArrayToBe, ...finalArrayThemed]);
-    beArray = {
-      ...beArray,
-      [release._id]: [...finalArrayToBe, ...finalArrayThemed],
-    };
-  });
+      const arrayToBe =
+        currentTeam &&
+        release.agilePins.map((item) => {
+          if (item) {
+            if (item.theme.name === "Notheme") {
+              return item;
+            } else {
+              finalArrayThemed.forEach((theme) => {
+                if (item.theme.name === theme.tName) {
+                  theme.pins.push(item);
+                }
+              });
+              return;
+            }
+          }
+        });
+      const finalArrayToBe = arrayToBe.filter((obj) => {
+        if (obj) {
+          return obj;
+        }
+      });
+
+      console.log([...finalArrayToBe, ...finalArrayThemed]);
+      beArray = {
+        ...beArray,
+        [release._id]: [...finalArrayToBe, ...finalArrayThemed],
+      };
+    });
 
   let Tiles = [];
   for (let i = 0; i < 10; i++) {
@@ -110,18 +113,19 @@ export default function Story() {
     const arrayOfB = [];
     const biggestNo = [];
 
-    Object.entries(otherObj).forEach((keu) => {
-      if (keu[0] != "Tiles") {
-        const newKeu = keu[1].filter((othr) => {
-          if (!othr) return;
-          if (!othr.type) {
-            return othr;
-          }
-        });
+    currentTeam &&
+      Object.entries(otherObj).forEach((keu) => {
+        if (keu[0] != "Tiles") {
+          const newKeu = keu[1].filter((othr) => {
+            if (!othr) return;
+            if (!othr.type) {
+              return othr;
+            }
+          });
 
-        biggestNo.push(newKeu.length);
-      }
-    });
+          biggestNo.push(newKeu.length);
+        }
+      });
 
     Object.entries(otherObj).forEach((keu) => {
       if (keu[0] != "Tiles") {
@@ -217,7 +221,7 @@ export default function Story() {
   }
 
   return (
-    <div className=" w-fit pt-24 h-screen scrollbar">
+    <div className=" w-fit pt-24 h-screen">
       <ToastContainer></ToastContainer>
       <div className="lg:hidden font-Josefin p-2">
         Please switch to to a bigger screen to access this feature
@@ -264,119 +268,127 @@ export default function Story() {
           Time —————————›
           <div className="absolute rotate-90 -left-7 top-10">Priority ———›</div>
         </div>
-        <DragDropContext onDragEnd={onDragEnd}>
-          {Object.entries(testArray).map((entry) => {
-            if (entry[0] === "Tiles") {
-              return (
-                <Droppable
-                  droppableId={entry[0]}
-                  direction="horizontal"
-                  key={entry[0]}
-                >
-                  {(provided) => {
-                    return (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        key={entry[0]}
-                        className="lg:flex hidden mt-3 border-b bg-white w-full ml-0 z-30 pb-2 pt-2"
-                      >
-                        {entry[1].map((item, index) => {
-                          console.log("eee", item);
-                          return (
-                            <Draggable
-                              draggableId={String(item.no)}
-                              index={index}
-                              key={String(item.no)}
-                            >
-                              {(provided) => {
-                                return (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    key={String(item.no)}
-                                    className={`border ${
-                                      item.active ? "border-indigo-800" : ""
-                                    }  border-t-8  ml-4 h-16 rounded-lg w-32 flex duration-300  justify-center items-center`}
-                                  >
-                                    {" "}
-                                    <input
-                                      placeholder={`${
-                                        item.active ? item.val : "Input Theme"
-                                      }`}
-                                      className={`text-center ${
-                                        item.active
-                                          ? "placeholder:text-gray-600"
-                                          : "placeholder:text-white"
-                                      } placeholder:duration-300 hover:placeholder:text-gray-300 rounded-lg outline-gray-100 w-24 h-8 font-Josefin`}
+        {currentTeam && (
+          <DragDropContext onDragEnd={onDragEnd}>
+            {Object.entries(testArray).map((entry) => {
+              if (entry[0] === "Tiles") {
+                return (
+                  <Droppable
+                    droppableId={entry[0]}
+                    direction="horizontal"
+                    key={entry[0]}
+                  >
+                    {(provided) => {
+                      return (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          key={entry[0]}
+                          className="lg:flex hidden border-b bg-white w-full ml-0 z-30 pb-2 pt-2"
+                        >
+                          {entry[1].map((item, index) => {
+                            console.log("eee", item);
+                            return (
+                              <Draggable
+                                draggableId={String(item.no)}
+                                index={index}
+                                key={String(item.no)}
+                              >
+                                {(provided) => {
+                                  return (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
                                       key={String(item.no)}
-                                      onChange={(e) => {
-                                        setTestArray((prev) => {
-                                          const Tiles = prev.Tiles.map((ma) => {
-                                            if (item.no === ma.no) {
-                                              return {
-                                                active: ma.active,
-                                                no: ma.no,
-                                                val: e.target.value,
-                                              };
-                                            } else {
-                                              return ma;
-                                            }
-                                          });
-                                          const finalTiles = Tiles.map(
-                                            (tile) => {
-                                              if (tile.val) {
-                                                return {
-                                                  active: true,
-                                                  no: tile.no,
-                                                  val: tile.val,
-                                                };
-                                              } else {
-                                                return {
-                                                  active: false,
-                                                  no: tile.no,
-                                                  val: tile.val,
-                                                };
+                                      className={`border ${
+                                        item.active ? "border-indigo-800" : ""
+                                      }  border-t-8  ml-4 h-16 rounded-lg w-32 flex duration-300  justify-center items-center`}
+                                    >
+                                      {" "}
+                                      <input
+                                        placeholder={`${
+                                          item.active ? item.val : "Input Theme"
+                                        }`}
+                                        className={`text-center ${
+                                          item.active
+                                            ? "placeholder:text-gray-600"
+                                            : "placeholder:text-white"
+                                        } placeholder:duration-300 hover:placeholder:text-gray-300 rounded-lg outline-gray-100 w-24 h-6 font-Josefin`}
+                                        key={String(item.no)}
+                                        onChange={(e) => {
+                                          setTestArray((prev) => {
+                                            const Tiles = prev.Tiles.map(
+                                              (ma) => {
+                                                if (item.no === ma.no) {
+                                                  return {
+                                                    active: ma.active,
+                                                    no: ma.no,
+                                                    val: e.target.value,
+                                                  };
+                                                } else {
+                                                  return ma;
+                                                }
                                               }
-                                            }
-                                          );
-                                          console.log("dd", finalTiles);
-                                          return { ...prev, Tiles: finalTiles };
-                                        });
-                                      }}
-                                    ></input>
-                                  </div>
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                      </div>
-                    );
-                  }}
-                </Droppable>
-              );
-            }
-          })}
-        </DragDropContext>
+                                            );
+                                            const finalTiles = Tiles.map(
+                                              (tile) => {
+                                                if (tile.val) {
+                                                  return {
+                                                    active: true,
+                                                    no: tile.no,
+                                                    val: tile.val,
+                                                  };
+                                                } else {
+                                                  return {
+                                                    active: false,
+                                                    no: tile.no,
+                                                    val: tile.val,
+                                                  };
+                                                }
+                                              }
+                                            );
+                                            return {
+                                              ...prev,
+                                              Tiles: finalTiles,
+                                            };
+                                          });
+                                        }}
+                                      ></input>
+                                    </div>
+                                  );
+                                }}
+                              </Draggable>
+                            );
+                          })}
+                        </div>
+                      );
+                    }}
+                  </Droppable>
+                );
+              }
+            })}
+          </DragDropContext>
+        )}
       </div>
-      <div className="h-5/6 overflow-y-auto w-fit pt-8 lg:block hidden">
-        <DragDropContext onDragEnd={onDragEnd}>
-          {Object.entries(testArray).map((entry) => {
-            if (entry[0] != "Tiles") {
-              return (
-                <Mapped
-                  Array={entry[1]}
-                  allItems={testArray}
-                  setFunction={setTestArray}
-                  key={entry[0]}
-                  id={entry[0].toString()}
-                ></Mapped>
-              );
-            }
-          })}
-        </DragDropContext>
+      <div className="h-4/6 overflow-y-auto w-fit pt-8 lg:block hidden">
+        {currentTeam && (
+          <DragDropContext onDragEnd={onDragEnd}>
+            {Object.entries(testArray).map((entry) => {
+              if (entry[0] != "Tiles") {
+                return (
+                  <Mapped
+                    Array={entry[1]}
+                    allItems={testArray}
+                    setFunction={setTestArray}
+                    key={entry[0]}
+                    id={entry[0].toString()}
+                  ></Mapped>
+                );
+              }
+            })}
+          </DragDropContext>
+        )}
       </div>
     </div>
   );

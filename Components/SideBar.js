@@ -7,6 +7,7 @@ import FolderAddIcon from "../public/folderAddIcon";
 import { useEffect } from "react";
 import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
 import MapIcon from "../public/SideBarIcons/mapIcon";
+import TeamDataIcon from "../public/SideBarIcons/teamDataIcon";
 
 export default function SideBar() {
   const router = useRouter();
@@ -119,7 +120,7 @@ export default function SideBar() {
                 : ""
             } `}
           >
-            {CommunicateIcon(
+            {TeamDataIcon(
               `duration-300 ${
                 router.pathname ===
                 "/Teams/[accessteam]/[createDisplay]/[communication]"
@@ -128,7 +129,7 @@ export default function SideBar() {
               }`
             )}
 
-            <p
+            <div
               className={`duration-300 w-14 ${
                 router.pathname ===
                 "/Teams/[accessteam]/[createDisplay]/[communication]"
@@ -137,7 +138,7 @@ export default function SideBar() {
               }`}
             >
               <p className="text-center">Team and contact</p>
-            </p>
+            </div>
           </button>
         </Link>
 
@@ -167,7 +168,7 @@ export default function SideBar() {
               "24"
             )}
 
-            <p
+            <div
               className={`duration-300 w-14 ${
                 router.pathname ===
                 "/Teams/[accessteam]/[createDisplay]/[communication]/Story"
@@ -176,7 +177,46 @@ export default function SideBar() {
               }`}
             >
               <p className="text-center">Story Map</p>
-            </p>
+            </div>
+          </button>
+        </Link>
+
+        <Link
+          href={`${
+            currentTeam
+              ? `/Teams/${currentTeam[0]._id}/createDisplay/communication/Chat`
+              : "Teams"
+          }`}
+        >
+          <button
+            className={`flex duration-300 flex-col items-center justify-center p-4 ${
+              router.pathname ===
+              "/Teams/[accessteam]/[createDisplay]/[communication]/Chat"
+                ? "bg-indigo-800 border-r-4 border-indigo-700"
+                : ""
+            } `}
+          >
+            {CommunicateIcon(
+              `duration-300 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]/Chat"
+                  ? "fill-green-300"
+                  : "fill-indigo-600"
+              }`,
+              "24",
+              "24"
+            )}
+
+            <div
+              className={`duration-300 w-14 ${
+                router.pathname ===
+                "/Teams/[accessteam]/[createDisplay]/[communication]/Chat"
+                  ? "text-green-300"
+                  : "text-indigo-500"
+              }`}
+            >
+              <p className="text-center">Team Chat</p>
+            </div>
           </button>
         </Link>
 

@@ -6,11 +6,6 @@ import addIcon from "../../../../../public/addIcon";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../../../../Context/firebaseUserContext";
 
-const AblyChatComponent = dynamic(
-  () => import("../../../../../Components/AlbyChatComponent"),
-  { ssr: false }
-);
-
 export default function Communication() {
   const purgeCSSSucksBorder = () => {
     return (
@@ -93,30 +88,30 @@ export default function Communication() {
     deleteAllTeamMessages,
   } = useAuth();
 
-  const [chats, setChats] = useState([]);
-
   const [emailSearch, setEmailSearch] = useState("");
   const [message, setMessage] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [teamMenuOpen, setTeamMenuOpen] = useState(false);
   const [showMenu, setShowMenu] = useState("User");
+  const [kanBamData, setKanBamData] = useState(null);
 
-  const kanBamData = [];
+  const KanBamOtherData = [];
 
   const kanBamFunction = () => {
     Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
       if (currentTeam[0].Release.find((release) => release._id === item[0])) {
         item[1].sprints.forEach((sprint) => {
           sprint.stories.forEach((pin) => {
-            kanBamData.push({ ...pin, sprintName: sprint.name });
+            KanBamOtherData.push({ ...pin, sprintName: sprint.name });
           });
         });
 
         item[1].unSelected.forEach((pin) => {
-          kanBamData.push({ ...pin, sprintName: "No Sprint" });
+          KanBamOtherData.push({ ...pin, sprintName: "No Sprint" });
         });
       }
     });
+    setKanBamData(KanBamOtherData);
   };
 
   useEffect(() => {
@@ -162,7 +157,9 @@ export default function Communication() {
           <div className="flex text-sm w-24 overflow-x-auto -mt-1">
             {Array.isArray(AssignedTo)
               ? AssignedTo.map((user) => (
-                  <div className="mr-1">{user.name},</div>
+                  <div className="mr-1" key={user.email}>
+                    {user.name},
+                  </div>
                 ))
               : ""}
           </div>
@@ -207,14 +204,6 @@ export default function Communication() {
             >
               KanBam Board
             </button>
-            <button
-              onClick={() => {
-                setShowMenu("Chat");
-              }}
-              className="ml-1 border-r px-1 hover:text-green-600 duration-300"
-            >
-              Chat
-            </button>
           </div>
           <div className={`ml-2 ${showMenu === "User" ? "" : "hidden"}`}>
             <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-lg text-gray-500">
@@ -223,7 +212,10 @@ export default function Communication() {
             {currentTeam &&
               currentTeam[0].members.map((item) => {
                 return (
-                  <div className="flex font-Josefin border-b bg-gray-200 mb-1 pl-2 rounded-l">
+                  <div
+                    key={item.email}
+                    className="flex font-Josefin border-b bg-gray-200 mb-1 pl-2 rounded-l"
+                  >
                     <div className=" flex flex-col w-8 mr-2 h-8 mt-2 p-1 items-center justify-center bg-indigo-900 text-green-400 uppercase rounded-full pt-1 font-mono">
                       {item.name[0]}
                     </div>
@@ -237,20 +229,6 @@ export default function Communication() {
                 );
               })}
           </div>
-          <div className={`${showMenu === "Chat" ? "" : "hidden"}`}>
-            {currentTeam && (
-              <AblyChatComponent
-                setCurrentTeam={setCurrentTeam}
-                messagesBeforeUpdate={messagesBeforeUpdate}
-                userData={userData}
-                sendMessage={sendMessage}
-                key="Ablyyy"
-                deleteAllTeamMessages={deleteAllTeamMessages}
-                currentTeam={currentTeam}
-                currentJoinedTeam={currentJoinedTeam}
-              ></AblyChatComponent>
-            )}
-          </div>
           <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
             <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-lg text-gray-500">
               KanBam Board
@@ -259,70 +237,73 @@ export default function Communication() {
               <div className="p-1 ">
                 <div className="ml-1">Not Started</div>
                 <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full lg:p-1">
-                  {kanBamData.map((item) => {
-                    if (!item.completed && !item.inProgress) {
-                      return (
-                        <div key={item._id} className="mb-2">
-                          <DumpStory
-                            AssignedTo={item.AssignedTo}
-                            name={item.name}
-                            sprintName={item.sprintName}
-                            storyPoints={item.storyPoints}
-                            theme={item.theme}
-                            key={item._id}
-                            priorityRank={item.PriorityRank}
-                          ></DumpStory>
-                        </div>
-                      );
-                    }
-                  })}
+                  {kanBamData &&
+                    kanBamData.map((item) => {
+                      if (!item.completed && !item.inProgress) {
+                        return (
+                          <div key={item._id} className="mb-2">
+                            <DumpStory
+                              AssignedTo={item.AssignedTo}
+                              name={item.name}
+                              sprintName={item.sprintName}
+                              storyPoints={item.storyPoints}
+                              theme={item.theme}
+                              key={item._id}
+                              priorityRank={item.PriorityRank}
+                            ></DumpStory>
+                          </div>
+                        );
+                      }
+                    })}
                 </div>
               </div>
               <div className="lg:p-1">
                 <div className="ml-1">In Progress</div>
                 <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
-                  {kanBamData.map((item) => {
-                    if (!item.completed && item.inProgress) {
-                      return (
-                        <div className="mb-2" key={item._id}>
-                          <DumpStory
-                            AssignedTo={item.AssignedTo}
-                            name={item.name}
-                            sprintName={item.sprintName}
-                            storyPoints={item.storyPoints}
-                            theme={item.theme}
-                            key={item._id}
-                            priorityRank={item.PriorityRank}
-                            showAssigned={true}
-                          ></DumpStory>
-                        </div>
-                      );
-                    }
-                  })}
+                  {kanBamData &&
+                    kanBamData.map((item) => {
+                      if (!item.completed && item.inProgress) {
+                        return (
+                          <div className="mb-2" key={item._id}>
+                            <DumpStory
+                              AssignedTo={item.AssignedTo}
+                              name={item.name}
+                              sprintName={item.sprintName}
+                              storyPoints={item.storyPoints}
+                              theme={item.theme}
+                              key={item._id}
+                              priorityRank={item.PriorityRank}
+                              showAssigned={true}
+                            ></DumpStory>
+                          </div>
+                        );
+                      }
+                    })}
                 </div>
               </div>
               <div className="lg:p-1">
                 <div className="ml-1">Completed</div>
 
                 <div className="max-h-80 overflow-y-auto overflow-x-hidden w-full p-1">
-                  {kanBamData.map((item) => {
-                    if (item.completed && item.inProgress) {
-                      return (
-                        <div className="mb-2" key={item._id}>
-                          <DumpStory
-                            AssignedTo={item.AssignedTo}
-                            name={item.name}
-                            sprintName={item.sprintName}
-                            storyPoints={item.storyPoints}
-                            theme={item.theme}
-                            key={item._id}
-                            priorityRank={item.PriorityRank}
-                            showAssigned={true}
-                          ></DumpStory>
-                        </div>
-                      );
-                    }
-                  })}
+                  {kanBamData &&
+                    kanBamData.map((item) => {
+                      if (item.completed && item.inProgress) {
+                        return (
+                          <div className="mb-2" key={item._id}>
+                            <DumpStory
+                              AssignedTo={item.AssignedTo}
+                              name={item.name}
+                              sprintName={item.sprintName}
+                              storyPoints={item.storyPoints}
+                              theme={item.theme}
+                              key={item._id}
+                              priorityRank={item.PriorityRank}
+                              showAssigned={true}
+                            ></DumpStory>
+                          </div>
+                        );
+                      }
+                    })}
                 </div>
               </div>
             </div>
@@ -373,30 +354,55 @@ export default function Communication() {
               {" "}
               {allUsers.length > 0 &&
                 allUsers.map((item) => {
-                  return (
-                    <div
-                      key={item.email}
-                      className="mb-2 flex mt-2 relative bg-gray-100 p-1 rounded"
-                    >
-                      <div className="flex flex-col">
-                        <p className="text-xs text-gray-500">{item.email}</p>
-                        <p className="font-bold">{item.name}</p>
-                      </div>
-                      <button
-                        className="text-sm p-1 border absolute right-0 bg-indigo-800 text-white rounded"
-                        onClick={() => {
-                          teamRequest(
-                            item.email,
-                            currentTeam[0]._id,
-                            currentTeam[0].name,
-                            userData.email
-                          );
-                        }}
+                  if (
+                    currentTeam[0].members.find(
+                      (member) => member.email === item.email
+                    )
+                  ) {
+                    return (
+                      <div
+                        key={item.email}
+                        className={`${
+                          userData.email === item.email ? "hidden" : ""
+                        } mb-2 flex mt-2 relative bg-gray-100 p-1 rounded`}
                       >
-                        Team Request
-                      </button>
-                    </div>
-                  );
+                        <div className="flex flex-col">
+                          <p className="text-xs text-gray-500">{item.email}</p>
+                          <p className="font-bold">{item.name}</p>
+                        </div>
+                        <div className="text-sm p-1  absolute right-0  text-gray-700 rounded">
+                          Already in Team
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={item.email}
+                        className={`${
+                          userData.email === item.email ? "hidden" : ""
+                        } mb-2 flex mt-2 relative bg-gray-100 p-1 rounded`}
+                      >
+                        <div className="flex flex-col">
+                          <p className="text-xs text-gray-500">{item.email}</p>
+                          <p className="font-bold">{item.name}</p>
+                        </div>
+                        <button
+                          className="text-sm p-1 border absolute right-0 bg-indigo-800 text-white rounded"
+                          onClick={() => {
+                            teamRequest(
+                              item.email,
+                              currentTeam[0]._id,
+                              currentTeam[0].name,
+                              userData.email
+                            );
+                          }}
+                        >
+                          Team Request
+                        </button>
+                      </div>
+                    );
+                  }
                 })}
             </div>
           </div>

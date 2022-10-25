@@ -2,26 +2,28 @@ import { useChannel } from "./AblyReactEffect";
 import { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import parseJson from "parse-json";
+import { useAuth } from "../Context/firebaseUserContext";
 
-export default function AblyChatComponent({
-  userData,
-  messagesBeforeUpdate,
-  sendMessage,
-  currentJoinedTeam,
-  currentTeam,
-  deleteAllTeamMessages,
-  setCurrentTeam,
-  setCurrentJoinedTeam,
-}) {
+export default function AblyChatComponent({}) {
   let inputBox = null;
   let messageEnd = null;
+
+  const {
+    userData,
+    messagesBeforeUpdate,
+    sendMessage,
+    currentJoinedTeam,
+    currentTeam,
+    deleteAllTeamMessages,
+    setCurrentTeam,
+    setCurrentJoinedTeam,
+  } = useAuth();
 
   let savedChats = [];
 
   if (typeof window !== "undefined") {
     savedChats = parseJson(window.localStorage.getItem("chatMessages"));
   }
-
   /*   const {
     userData,
     sendMessage,
@@ -190,9 +192,9 @@ export default function AblyChatComponent({
 
   useEffect(() => {
     messageEnd && messageEnd.scrollIntoView({ behaviour: "smooth" });
-  });
+  }, [receivedMessages]);
   return (
-    <div className="border p-2">
+    <div className=" p-2">
       {teamMessagesToBeRendered && (
         <div>
           <div className="h-80 overflow-auto font-Josefin">
@@ -204,7 +206,10 @@ export default function AblyChatComponent({
               }}
             ></div>
           </div>
-          <form onSubmit={handleFormSubmission} className="w-full flex border">
+          <form
+            onSubmit={handleFormSubmission}
+            className="w-full flex border mt-4 rounded"
+          >
             <textarea
               ref={(element) => {
                 inputBox = element;
@@ -217,7 +222,7 @@ export default function AblyChatComponent({
             ></textarea>
             <button
               type="submit"
-              className="font-Josefin flex items-center justify-center p-1"
+              className="font-Josefin flex items-center justify-center p-1 border-l text-gray-700"
               disabled={messageTextIsEmpty}
             >
               Send <div className="ml-1">{sendIcon}</div>

@@ -142,6 +142,7 @@ router
         { new: true }
       ).catch((err) => {
         console.log(err);
+        return;
       });
 
       return res.status(200).json(userEdited);
@@ -157,6 +158,7 @@ router
         }
       ).catch((err) => {
         console.log(err);
+        return res.status(500).send(err);
       });
       return res.status(200).json(patchedUser);
     }
@@ -169,7 +171,8 @@ router
         },
         { new: true }
       ).catch((err) => {
-        console.log("rejectErr", err);
+        console.log(err);
+        return res.send(err);
       });
 
       return res.status(200).json(updatedUser);

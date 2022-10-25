@@ -23,8 +23,8 @@ export default function Wrapper(props) {
     <div className="h-screen">
       <Header></Header>
       <div className="flex h-full">
-        <UserSideBar></UserSideBar>
-        <SideBar></SideBar>
+        {router.pathname.includes("/User") && <UserSideBar></UserSideBar>}
+        {router.pathname.includes("/Teams") && <SideBar></SideBar>}
         <div
           className={`w-screen ${router.pathname != "/" ? "md:ml-24" : ""}
         ${router.pathname === "/Teams" ? "md:ml-0 ml-0" : ""}

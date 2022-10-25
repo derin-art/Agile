@@ -33,7 +33,7 @@ export default function StoryMap() {
   }, []);
 
   return (
-    <div className="pt-14 md:pl-24 h-screen p-2">
+    <div className="pt-14 md:pl-24 h-full p-2">
       <ToastContainer></ToastContainer>
       <div className="md:hidden font-Josefin">
         Please Switch to a bigger screen to access this feature
@@ -57,7 +57,7 @@ export default function StoryMap() {
           Object.entries(currentJoinedTeam[0].Map).map((item) => {
             if (item[0] === "Tiles") {
               return (
-                <div className="flex font-Josefin bg-white w-fit z-20 absolute top-16 z-30">
+                <div className="flex font-Josefin border-b pb-4 bg-white w-fit z-20 absolute top-16 z-30">
                   {item[1].map((tiles) => {
                     return (
                       <div
@@ -74,7 +74,7 @@ export default function StoryMap() {
               );
             }
           })}
-        <div className="pt-24 mt-8 h-5/6 overflow-y-auto w-fit">
+        <div className="pt-8 mt-16 h-4/6 overflow-y-auto w-fit">
           {currentJoinedTeam &&
             Object.entries(currentJoinedTeam[0].Map).map((item) => {
               if (item[0] != "Tiles") {
