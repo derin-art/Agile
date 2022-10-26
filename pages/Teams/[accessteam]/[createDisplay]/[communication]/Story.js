@@ -19,11 +19,11 @@ export default function Story() {
     toast.info(
       <div>
         Story Maps are an essential part of any good Agile and Scrum system. It
-        show the intended progression of the app development in relation to Time
-        and each of the releases. Themes are overarching ideas that stories and
-        epics fall under on the story map. The horizontal axis representing the
-        time flow and vertical priority of stories as stories in the epics are
-        stacked based on priority.
+        display the intended progression of the app development in relation to
+        Time and each of the releases. Themes are overarching ideas that stories
+        and epics fall under on the story map. The horizontal axis representing
+        the time flow and the vertical, the priority of stories. The stories in
+        the epics are stacked based on priority.
       </div>,
       {
         autoClose: false,

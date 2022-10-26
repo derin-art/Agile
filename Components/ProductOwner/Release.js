@@ -1,5 +1,6 @@
 import deleteIcon from "../../public/deleteIcon";
 import Link from "next/dist/client/link";
+import { toast } from "react-toastify";
 
 export default function Release({
   name,
@@ -10,8 +11,6 @@ export default function Release({
   dateStart,
   dateEnd,
 }) {
-  console.log("ReleaseId", id);
-
   return (
     <div className="relative flex md:w-1/2 border-b">
       <Link href={`/Teams/${currentTeam[0]._id}/userstory`}>
@@ -27,13 +26,21 @@ export default function Release({
           {name}
         </div>
       </Link>
-      {deleteIcon(
-        "fill-red-500 absolute right-4 md:right-4 hover:fill-red-700 cursor-pointer duration-300 mt-5",
-        "24",
-        "24",
-        id,
-        deleteRelease
-      )}
+      <button
+        onClick={() => {
+          toast.info("delete disabled for demo", {
+            className: "text-sm",
+          });
+        }}
+      >
+        {deleteIcon(
+          "fill-red-500 absolute right-4 md:right-4 hover:fill-red-700 cursor-pointer duration-300 mt-5",
+          "24",
+          "24",
+          id,
+          deleteRelease
+        )}
+      </button>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import alertIcon from "../public/alertIcon";
 import deleteIcon from "../public/deleteIcon";
+import { toast } from "react-toastify";
 
 export default function StoryTeamCard({
   name,
@@ -221,7 +222,14 @@ export default function StoryTeamCard({
       </p>
       <span className="text-xs absolute bottom-2 left-2">{points} Points</span>
       {deleteVisible && (
-        <button className="group">
+        <button
+          className="group"
+          onClick={() => {
+            toast.info("delete disabled for demo", {
+              className: "text-sm",
+            });
+          }}
+        >
           {deleteIcon(
             "fill-white absolute bottom-2 right-1 group-hover:fill-green-300",
             "24",

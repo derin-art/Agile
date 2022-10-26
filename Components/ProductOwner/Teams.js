@@ -220,6 +220,10 @@ export default function Team({
                             id={item._id}
                             className="absolute right-4 -mt-1 z-10"
                             onClick={(e) => {
+                              toast.info("delete disabled for demo", {
+                                className: "text-sm",
+                              });
+                              return;
                               deleteTeam(e.target.id);
                             }}
                           >

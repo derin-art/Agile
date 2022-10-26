@@ -26,7 +26,7 @@ export default function CreateDisplay() {
   const launchTutorial = () => {
     toast.info(
       <div>
-        Sprints are the ways a product owner direct his/her team to complete a
+        Sprints are the way a product owner direct his/her team to complete a
         release. They are short time frames, usually between 1 week to 4 weeks
         where Stories are undertaken by the team and performance evaluated at
         the end of the sprint. If you were logged as a team member as part of
