@@ -44,7 +44,7 @@ export default function UserSideBar() {
         </button>
       </Link>
 
-      <Link href="/User/Communication" className="">
+      {/*  <Link href="/User/Communication" className="hidden md:hidden">
         <button
           className={`flex duration-300 font-Josefin w-full flex-col items-center justify-center p-4 ${
             router.pathname === "/User/Communication"
@@ -70,7 +70,7 @@ export default function UserSideBar() {
             <p className="text-center">Team Contact</p>
           </div>
         </button>
-      </Link>
+      </Link> */}
 
       <Link href="/User/StoryMap" className="">
         <button
