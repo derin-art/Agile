@@ -48,6 +48,7 @@ export default function Team({
   const [stateTeamData, setStateTeamData] = useState(null);
 
   const fetchTeamFunction = async () => {
+    setStateTeamData(null);
     console.log("mmm", userData);
     if (userData === null) {
       toast.error("User data unavailable due to poor internet connection", {

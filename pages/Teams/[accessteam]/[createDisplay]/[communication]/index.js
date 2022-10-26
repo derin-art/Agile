@@ -116,6 +116,13 @@ export default function Communication() {
 
   useEffect(() => {
     currentTeam && kanBamFunction();
+    toast.info(
+      "Login with any of these email as Team members in the login page, to access the app's team member functionalities. They all share the same password. The password is `password1` ",
+      {
+        className: "text-sm",
+        autoClose: false,
+      }
+    );
   }, []);
 
   const DumpStory = ({

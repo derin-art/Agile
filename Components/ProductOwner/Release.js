@@ -26,21 +26,14 @@ export default function Release({
           {name}
         </div>
       </Link>
-      <button
-        onClick={() => {
-          toast.info("delete disabled for demo", {
-            className: "text-sm",
-          });
-        }}
-      >
-        {deleteIcon(
-          "fill-red-500 absolute right-4 md:right-4 hover:fill-red-700 cursor-pointer duration-300 mt-5",
-          "24",
-          "24",
-          id,
-          deleteRelease
-        )}
-      </button>
+
+      {deleteIcon(
+        "fill-red-500 absolute right-4 md:right-4 hover:fill-red-700 cursor-pointer duration-300 mt-5",
+        "24",
+        "24",
+        id,
+        deleteRelease
+      )}
     </div>
   );
 }

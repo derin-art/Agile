@@ -69,6 +69,14 @@ export default function AccessTeam() {
             >
               Add Release
             </button>
+            <button
+              onClick={() => {
+                launchTutorial();
+              }}
+              className="absolute top-14 right-2  "
+            >
+              Show Tutorial
+            </button>
             <motion.div
               initial={{ opacity: 0 }}
               animate={
@@ -181,6 +189,7 @@ export default function AccessTeam() {
               <p>No releases created yet</p>
             )}
           </div>
+          <div>delete disabled for demo</div>
           <div
             className={`absolute ${
               smallMenuOpen ? "right-14" : "right-4"

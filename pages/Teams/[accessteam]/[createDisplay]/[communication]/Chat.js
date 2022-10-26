@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+
 import { useAuth } from "../../../../../Context/firebaseUserContext";
 
 const AblyChatComponent = dynamic(
@@ -18,21 +19,33 @@ export default function Chat() {
     messagesBeforeUpdate,
     deleteAllTeamMessages,
   } = useAuth();
+  const [viewChat, setViewChat] = useState(false);
   return (
     <div className="pt-12">
       <div className="font-Josefin text-3xl border-green-400 p-2 text-gray-400 border-b mb-2">
         Chat
       </div>
-      <AblyChatComponent
-        setCurrentTeam={setCurrentTeam}
-        messagesBeforeUpdate={messagesBeforeUpdate}
-        userData={userData}
-        sendMessage={sendMessage}
-        key="Ablyyy"
-        deleteAllTeamMessages={deleteAllTeamMessages}
-        currentTeam={currentTeam}
-        currentJoinedTeam={currentJoinedTeam}
-      ></AblyChatComponent>
+      <button
+        className="bg-green-400 p-3 text-white rounded"
+        onClick={() => {
+          setViewChat(true);
+        }}
+      >
+        View Chat
+      </button>
+
+      {viewChat && (
+        <AblyChatComponent
+          setCurrentTeam={setCurrentTeam}
+          messagesBeforeUpdate={messagesBeforeUpdate}
+          userData={userData}
+          sendMessage={sendMessage}
+          key="Ablyyy"
+          deleteAllTeamMessages={deleteAllTeamMessages}
+          currentTeam={currentTeam}
+          currentJoinedTeam={currentJoinedTeam}
+        ></AblyChatComponent>
+      )}
     </div>
   );
 }

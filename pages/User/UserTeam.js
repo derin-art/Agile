@@ -35,7 +35,7 @@ export default function UserTeam() {
   };
 
   useEffect(() => {
-    tutorialBool && launchTutorial();
+    launchTutorial();
   }, []);
   return (
     <div className="h-screen w-fit pt-12 md:ml-32 pb-12 p-2">

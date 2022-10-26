@@ -29,7 +29,7 @@ export default function StoryMap() {
   };
 
   useEffect(() => {
-    tutorialBool && launchTutorial();
+    launchTutorial();
   }, []);
 
   return (

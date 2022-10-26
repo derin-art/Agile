@@ -547,7 +547,8 @@ export default function UserStory() {
                 <div className="mb-2 font-Josefin self-start ml-2 text-xl text-gray-700">
                   EPICS
                   <div className="text-xs">
-                    Drag a User story over an epic to add them to the epic
+                    Drag a User story over an epic to add them to the epic.
+                    click "save current state" to save it.
                   </div>
                 </div>
                 {Themes &&

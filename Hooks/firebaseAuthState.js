@@ -38,6 +38,11 @@ export default function usefirebaseAuthState() {
   const clear = () => {
     setAuthUser(null);
     setLoading(false);
+    setUserData(null);
+    setCurrentJoinedTeam(null);
+    setCurrentTeam(null);
+    setUserTeamData(null);
+    setAllCurrentJoinedTeam(null);
   };
 
   const getUserData = async (email) => {
