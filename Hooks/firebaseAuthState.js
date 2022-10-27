@@ -117,6 +117,7 @@ export default function usefirebaseAuthState() {
       )
       .catch((err) => {
         console.log(err);
+        return;
       });
     console.log("Login details", editedUser);
     setUserData(editedUser.data);
@@ -132,7 +133,12 @@ export default function usefirebaseAuthState() {
 
   const SignInWithEmailAndPassword = (email, password, role) => {
     /*  getUserData(email); */
-    patchedMongoDbUser(email, role);
+
+    /*   patchedMongoDbUser(email, role).catch((err) => {
+      console.log(err);
+      return;
+    }); */
+
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -889,6 +895,7 @@ export default function usefirebaseAuthState() {
   };
 
   return {
+    patchedMongoDbUser,
     setCurrentJoinedTeam,
     setCurrentTeam,
     messagesBeforeUpdate,

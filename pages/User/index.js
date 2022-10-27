@@ -146,7 +146,9 @@ export default function User() {
             {openTeamMenu ? (
               <p className="text-red-500 mt-4 ml-2">Close</p>
             ) : (
-              <p className="mt-[15px] ml-2">Explore Your Teams</p>
+              <p className="mt-[15px] ml-2">
+                Explore the teams your are a member of
+              </p>
             )}
           </button>
           <div className={`${openTeamMenu ? "" : "hidden"} mt-2 ml-2`}>

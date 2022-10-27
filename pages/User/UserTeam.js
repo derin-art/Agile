@@ -81,14 +81,18 @@ export default function UserTeam() {
                     }
                   });
                   return (
-                    <div className="bg-gray-100 mb-8 border font-Josefin rounded-b-lg border-t-8">
+                    <div
+                      key={release[0]._id}
+                      className="bg-gray-100 mb-8 border font-Josefin rounded-b-lg border-t-8"
+                    >
                       <div className="text-2xl bg-gray-100 border-green-400 border-b p-2 text-gray-400">
                         Release {release[0].name}
                       </div>
                       <div className="flex p-2  border overflow-x-auto">
-                        {finalFilteredThemes.map((theme) => {
+                        {finalFilteredThemes.map((theme, index) => {
                           return (
                             <div
+                              key={index}
                               className={`duration-200 border-${
                                 theme.color === "indigo"
                                   ? "green-300"
@@ -135,10 +139,10 @@ export default function UserTeam() {
                             </div>
                           );
                         } else {
-                          return data[1].map((sprints) => {
+                          return data[1].map((sprints, index) => {
                             if (sprints.stories) {
                               return (
-                                <div className="p-2 border-t">
+                                <div className="p-2 border-t" key={index}>
                                   <div className="text-gray-600 text-lg">
                                     {" "}
                                     Sprint {sprints.name}{" "}

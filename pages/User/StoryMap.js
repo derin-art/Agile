@@ -57,7 +57,10 @@ export default function StoryMap() {
           Object.entries(currentJoinedTeam[0].Map).map((item) => {
             if (item[0] === "Tiles") {
               return (
-                <div className="flex font-Josefin border-b pb-4 bg-white w-fit z-20 absolute top-16 z-30">
+                <div
+                  key={"Tiles"}
+                  className="flex font-Josefin border-b pb-4 bg-white w-fit z-20 absolute top-16 z-30"
+                >
                   {item[1].map((tiles) => {
                     return (
                       <div

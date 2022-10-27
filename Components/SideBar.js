@@ -137,7 +137,7 @@ export default function SideBar() {
                   : "text-indigo-500"
               }`}
             >
-              <p className="text-center">Team and contact</p>
+              <p className="text-center">Team and Data</p>
             </div>
           </button>
         </Link>
@@ -181,7 +181,8 @@ export default function SideBar() {
           </button>
         </Link>
 
-        <Link
+        {/*   <Link
+          className="hidden md:hidden"
           href={`${
             currentTeam
               ? `/Teams/${currentTeam[0]._id}/createDisplay/communication/Chat`
@@ -219,7 +220,7 @@ export default function SideBar() {
             </div>
           </button>
         </Link>
-
+ */}
         <Link href="/Teams">
           <button className="flex flex-col items-center justify-center p-4">
             {teamHeadsIcon("fill-indigo-600")}

@@ -10,11 +10,15 @@ import "react-toastify/dist/ReactToastify.css";
 import SmileUser from "../public/smileUser";
 import CreateUser from "../public/CreateUser";
 import TeamRoleIcon from "../public/TeamRole";
+import stringify from "json-stringify";
 
 export default function Home() {
   const router = useRouter();
-  const { CreateUserWithEmailAndPassword, SignInWithEmailAndPassword } =
-    useAuth();
+  const {
+    CreateUserWithEmailAndPassword,
+    patchedMongoDbUser,
+    SignInWithEmailAndPassword,
+  } = useAuth();
 
   const [verifyPassword, setVerifyPassword] = useState("");
   const [gitHubPage, setGitHubPage] = useState("");
@@ -92,7 +96,7 @@ export default function Home() {
     await SignInWithEmailAndPassword(email, password, teamRole)
       .then((authUser) => {
         console.log("Login successful");
-
+        patchedMongoDbUser(email, teamRole);
         toast.success("Login Successful!", {
           position: toast.POSITION.BOTTOM_CENTER,
           className: "text-sm",
@@ -238,7 +242,7 @@ export default function Home() {
               onClick={() => {
                 loginRequest();
                 if (!localStorage.getItem("enableTutorial")) {
-                  localStorage.setItem("enableTutorial", true);
+                  localStorage.setItem("enableTutorial", stringify(true));
                 }
               }}
               className="p-2 px-6 border border-green-400 text-green-300 mt-2 hover:text-green-300"
