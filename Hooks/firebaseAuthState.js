@@ -595,6 +595,7 @@ export default function usefirebaseAuthState() {
       )
       .catch((err) => {
         console.log(err);
+        return;
       });
 
     if (UpdatedTeamWithStories) {
@@ -606,6 +607,7 @@ export default function usefirebaseAuthState() {
       );
       const EarlyUniqueEpics = newRelease1[0].agilePins.map((item) => {
         if (item) {
+          console.log("item", item);
           return item.theme.name;
         } else {
           return;
