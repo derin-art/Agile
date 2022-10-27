@@ -1,36 +1,18 @@
-import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import StoryTeamCard from "./StoryTeamCard";
 import { useAuth } from "../Context/firebaseUserContext";
 
 export default function Mapped({ Array, id, allItems, setFunction, name }) {
-  console.log("k", Array);
   const { currentTeam } = useAuth();
 
-  const releaseUsed = currentTeam[0].Release.filter(
-    (release) => release._id === id
-  );
-
-  function onDragEnd(result) {
-    if (!result.destination) {
-      return;
-    }
-    const newItems = [...Array];
-    console.log("ss", newItems);
-    const [removed] = newItems.splice(result.source.index, 1);
-    newItems.splice(result.destination.index, 0, removed);
-
-    console.log("mm", newItems);
-
-    setFunction((prev) => {
-      console.log("sssA", { ...prev, [id]: newItems });
-      return { ...prev, [id]: newItems };
-    });
-  }
+  const releaseUsed = currentTeam
+    ? currentTeam[0].Release.filter((release) => release._id === id)
+    : [];
 
   return (
     <div className="h-fit w-fit mb-4  text-lg font-Josefin pt-2 pb-2 pr-2">
       <div className="w-full border-b pl-4 text-3xl text-gray-500  border-green-400">
-        Release {releaseUsed[0].name}
+        Release {releaseUsed ? releaseUsed[0].name : ""}
       </div>
       <Droppable droppableId={id} direction="horizontal" key={id}>
         {(provided) => {

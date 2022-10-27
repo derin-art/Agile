@@ -277,6 +277,7 @@ export default function SprintCardDisplay({
               {AssignedTo.map((item) => {
                 return (
                   <div
+                    key={item._id}
                     onMouseLeave={() => {
                       setAssignedUserUserHovered({ name: "" });
                     }}

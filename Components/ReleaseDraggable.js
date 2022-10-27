@@ -411,6 +411,7 @@ export default function ReleaseDraggable({
             {finalArr.map((item) => {
               return (
                 <div
+                  key={item.name}
                   className={`duration-200 border-${item.color} bg-indigo-900 w-20 px-1 truncate border-l-4 border font-Josefin  hover:w-64 text-center md:text-sm text-xs mr-4 text-white`}
                 >
                   {item.name}
@@ -516,7 +517,7 @@ export default function ReleaseDraggable({
                           className="flex h-full w-full"
                         >
                           <div className="flex-col flex font-Josefin ">
-                            <div className="flex  overflow-auto w-[1000px] order-red-500">
+                            <div className="flex  overflow-auto w-[1000px]  order-red-500">
                               {story[1].map((item, index) => {
                                 if (item) {
                                   return (

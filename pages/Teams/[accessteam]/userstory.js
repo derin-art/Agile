@@ -548,7 +548,7 @@ export default function UserStory() {
                   EPICS
                   <div className="text-xs">
                     Drag a User story over an epic to add them to the epic.
-                    click "save current state" to save it.
+                    click the save current state button to save it.
                   </div>
                 </div>
                 {Themes &&

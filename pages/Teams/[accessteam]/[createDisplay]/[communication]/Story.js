@@ -127,18 +127,19 @@ export default function Story() {
         }
       });
 
-    Object.entries(otherObj).forEach((keu) => {
-      if (keu[0] != "Tiles") {
-        if (
-          keu[1].length !=
-          biggestNo.sort(function (a, b) {
-            return b - a;
-          })[0]
-        ) {
-          arrayOfB.push(keu[0]);
+    currentTeam &&
+      Object.entries(otherObj).forEach((keu) => {
+        if (keu[0] != "Tiles") {
+          if (
+            keu[1].length !=
+            biggestNo.sort(function (a, b) {
+              return b - a;
+            })[0]
+          ) {
+            arrayOfB.push(keu[0]);
+          }
         }
-      }
-    });
+      });
 
     arrayOfB.forEach((item) => {
       const times =
@@ -157,10 +158,12 @@ export default function Story() {
 
   let finalBeARRAY;
 
-  if (typeof currentTeam[0].Map === "object") {
-    finalBeARRAY = currentTeam[0].Map;
-  } else {
-    finalBeARRAY = beArray;
+  if (currentTeam) {
+    if (typeof currentTeam[0].Map === "object") {
+      finalBeARRAY = currentTeam[0].Map;
+    } else {
+      finalBeARRAY = beArray;
+    }
   }
 
   const [testArray, setTestArray] = useState(SettleIt(finalBeARRAY));

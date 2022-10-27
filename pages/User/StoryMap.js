@@ -16,7 +16,7 @@ export default function StoryMap() {
   const launchTutorial = () => {
     toast.info(
       <div>
-        This is simply a rendering of the team's story map that the user is a
+        This is simply a rendering of the team story map that the user is a
         member of. Unlike from the Product Owner, Team members do not have the
         ability to drag and drop or edit this data.
       </div>,

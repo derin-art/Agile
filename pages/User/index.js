@@ -79,7 +79,10 @@ export default function User() {
             userData.teamRequests.map((item) => {
               console.log("mafwend", item.teamName);
               return (
-                <div className="font-Josefin p-1 w-full relative text-sm">
+                <div
+                  key={item.fromEmail}
+                  className="font-Josefin p-1 w-full relative text-sm"
+                >
                   <div className="w-24 truncate">
                     {item.teamName}
                     <div className="text-xs text-gray-600  w-16 md:w-24 truncate">

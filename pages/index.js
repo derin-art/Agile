@@ -144,14 +144,14 @@ export default function Home() {
   const launchTutorial = () => {
     toast.info(
       <div className="">
-        "Hey, welcome to the tutorial of my Agile and Scrum app. Below are two
+        Hey, welcome to the tutorial of my Agile and Scrum app. Below are two
         ways to login into the app, as a product owner and as a team member.
         Logging in as a product owner is preferable if you are first time user
-        as it exposes you to most of the apps functionality. If you don’t want
-        to start the entire process of creating a user, you can login with the
+        as it exposes you to most of the apps functionality. If you dont want to
+        start the entire process of creating a user, you can login with the
         tutorial user <span className="font-bold">email: guy@gmail.com</span>{" "}
         and <span className="font-bold">password: password1</span>. It is
-        advisable you do this for first time users."
+        advisable you do this for first time users.
       </div>,
       {
         autoClose: false,
