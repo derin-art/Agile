@@ -463,7 +463,7 @@ router
                 return { ...pin, pins: pinPins };
               }
             });
-            console.log("ss", newMappedArr);
+            console.log("sss", newMappedArr);
             const filteredNewMAP = newMappedArr.filter((found) => {
               if (found) {
                 return found;
