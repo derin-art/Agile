@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { AgileUser } from "../../Models/agileUser";
 import multer from "multer";
 import nextConnect, { createRouter } from "next-connect";
-const fs = require("fs");
+/* const fs = require("fs"); */
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -86,16 +86,16 @@ router
         return;
       });
     if (req.file) {
-      const img = fs.readFileSync(req.file.path);
-      const encode_img = img.toString("base64");
+      /*    const img = fs.readFileSync(req.file.path);
+      const encode_img = img.toString("base64"); */
       const createdUser = await AgileUser.create({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
-        profilePicture: {
+        /* profilePicture: {
           data: new Buffer(encode_img, "base64"),
           contentType: req.file.mimetype,
-        },
+        }, */
       });
       return res.status(201).json(createdUser);
     } else {
@@ -152,7 +152,7 @@ router
       console.log("sent", req.query.email, "role", req.body.TeamRole);
       const patchedUser = await AgileUser.findOneAndUpdate(
         { email: req.query.email },
-        /* { role: req.body.TeamRole }, */
+        { role: req.body.TeamRole },
         {
           new: true,
         }
