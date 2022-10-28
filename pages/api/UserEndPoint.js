@@ -152,7 +152,7 @@ router
       console.log("sent", req.query.email, "role", req.body.TeamRole);
       const patchedUser = await AgileUser.findOneAndUpdate(
         { email: req.query.email },
-        { role: req.body.TeamRole },
+        /* { role: req.body.TeamRole }, */
         {
           new: true,
         }
