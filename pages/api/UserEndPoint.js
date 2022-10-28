@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import { AgileUser } from "../../Models/agileUser";
 import multer from "multer";
 import nextConnect, { createRouter } from "next-connect";
+let http = require("http");
+let util = require("util");
+let multiparty = require("multiparty");
 /* const fs = require("fs"); */
 
 const upload = multer({
@@ -243,3 +246,18 @@ export default router.handler({
     res.status(404).end("Page is not found");
   },
 });
+
+module.exports = (req, res) => {
+  if (req.method === "POST") {
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+      res.writeHead(200, { "content-type": "text/plain" });
+      res.write("received upload: \n\n");
+      res.end(util.inspect({ fields: fields, files: files }));
+    });
+    return;
+  } else {
+    res.end("Send a POST request.");
+    return;
+  }
+};
