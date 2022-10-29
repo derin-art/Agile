@@ -1,5 +1,5 @@
 import Header from "./header";
-import SideBar from "./sideBar";
+import SideBar from "./SideBar";
 import { useRouter } from "next/router";
 import { useAuth } from "../Context/firebaseUserContext";
 import React from "react";

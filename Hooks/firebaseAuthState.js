@@ -109,17 +109,17 @@ export default function usefirebaseAuthState() {
     const formdata = new FormData();
     formdata.append("TeamRole", role);
     console.log("loginEmail", email);
+
     const editedUser = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`,
-        formdata,
-        config
-      )
+      .patch(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`, {
+        TeamRole: role,
+      })
       .catch((err) => {
         console.log(err);
         return;
       });
     console.log("Login details", editedUser);
+    return;
     setUserData(editedUser.data);
   };
 

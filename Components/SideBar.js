@@ -13,6 +13,7 @@ export default function SideBar() {
   const router = useRouter();
   const {
     currentTeam,
+    userData,
     setCurrentMessages,
     messagesBeforeUpdate,
     setCurrentTeam,
