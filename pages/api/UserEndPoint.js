@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { AgileUser } from "../../Models/agileUser";
+import { NextApiRequest, NextApiResponse } from "next";
 import multer from "multer";
 import nextConnect, { createRouter } from "next-connect";
 let http = require("http");
