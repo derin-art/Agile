@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 import { AgileUser } from "../../Models/agileUser";
-import next, { NextApiRequest, NextApiResponse } from "next";
-import multer from "multer";
+/* import next, { NextApiRequest, NextApiResponse } from "next";
+import multer from "multer"; */
 import nextConnect, { createRouter } from "next-connect";
-let http = require("http");
+/* let http = require("http");
 let util = require("util");
 let multiparty = require("multiparty");
-const fs = require("fs");
+const fs = require("fs"); */
 
-const upload = multer({
+/* const upload = multer({
   storage: multer.diskStorage({
     destination: "./public/uploads",
     filename: (req, file, cb) => cb(null, file.originalname),
   }),
 });
-const uploadImageMiddleWare = upload.single("Image");
+const uploadImageMiddleWare = upload.single("Image"); */
 
 const router = createRouter();
 
@@ -75,47 +75,49 @@ router
     }
   })
 
-  .post(uploadImageMiddleWare, async (req, res, next) => {
-    await mongoose
-      .connect(
-        "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
-        {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        }
-      )
-      .then(() => {
-        console.log("Connected to server");
-      })
-      .catch((err) => {
-        console.log("Mongo ERR", err);
-        return;
-      });
-    console.log(req.body, req.query);
-    if (req.file) {
-      /*    const img = fs.readFileSync(req.file.path);
+  .post(
+    /* uploadImageMiddleWare, */ async (req, res, next) => {
+      await mongoose
+        .connect(
+          "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
+          {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          }
+        )
+        .then(() => {
+          console.log("Connected to server");
+        })
+        .catch((err) => {
+          console.log("Mongo ERR", err);
+          return;
+        });
+      console.log(req.body, req.query);
+      if (req.file) {
+        /*    const img = fs.readFileSync(req.file.path);
       const encode_img = img.toString("base64"); */
-      const createdUser = await AgileUser.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        /* profilePicture: {
+        const createdUser = await AgileUser.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          /* profilePicture: {
           data: new Buffer(encode_img, "base64"),
           contentType: req.file.mimetype,
         }, */
-      });
-      return res.status(201).json(createdUser);
-    } else {
-      const createdUser = await AgileUser.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        gitHub: req.body.gitHub,
-      });
+        });
+        return res.status(201).json(createdUser);
+      } else {
+        const createdUser = await AgileUser.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          gitHub: req.body.gitHub,
+        });
 
-      return res.status(201).json(createdUser);
+        return res.status(201).json(createdUser);
+      }
     }
-  })
+  )
 
   .patch(
     /* uploadImageMiddleWare, */ async (req, res, next) => {
