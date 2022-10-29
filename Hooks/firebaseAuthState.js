@@ -108,6 +108,7 @@ export default function usefirebaseAuthState() {
 
     const formdata = new FormData();
     formdata.append("TeamRole", role);
+    console.log("TeamRole", role);
     console.log("loginEmail", email);
 
     const editedUser = await axios
