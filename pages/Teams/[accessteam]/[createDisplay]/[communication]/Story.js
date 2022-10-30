@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Mapped from "../../../../../Components/Mapped";
 import { v4 as uuidv4 } from "uuid";
 import Logo from "../../../../../public/logo";
+import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import parseJson from "parse-json";
 

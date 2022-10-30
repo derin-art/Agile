@@ -4,6 +4,7 @@ import Mapped from "../../Components/MappedUser";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import parseJson from "parse-json";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function StoryMap() {
   const { currentJoinedTeam } = useAuth();

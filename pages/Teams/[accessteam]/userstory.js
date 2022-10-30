@@ -6,6 +6,7 @@ import StoryTeamCard from "../../../Components/StoryTeamCard";
 import { useAuth } from "../../../Context/firebaseUserContext";
 import swordIcon from "../../../public/swordIcon";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { async, map } from "@firebase/util";
 import Logo from "../../../public/logo";
 import { motion } from "framer-motion";

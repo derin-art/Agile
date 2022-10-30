@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import logo from "../../public/logo";
 import Link from "next/dist/client/link";
 import stringify from "json-stringify";
+import "react-toastify/dist/ReactToastify.css";
 
 let socket;
 
