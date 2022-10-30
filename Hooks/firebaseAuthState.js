@@ -112,9 +112,10 @@ export default function usefirebaseAuthState() {
     console.log("loginEmail", email);
 
     const editedUser = await axios
-      .patch(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`, {
-        TeamRole: role,
-      })
+      .patch(
+        `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`,
+        formdata
+      )
       .catch((err) => {
         console.log(err);
         return;
