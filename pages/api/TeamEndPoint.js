@@ -1,7 +1,7 @@
 import { createRouter } from "next-connect";
 import AgileTeam from "../../Models/agileTeam";
 import mongoose from "mongoose";
-import multer from "multer";
+/* import multer from "multer"; */
 import bodyParser from "body-parser";
 import Release from "../../Components/ProductOwner/Release";
 import parseJson from "parse-json";
@@ -9,18 +9,21 @@ import { parse } from "postcss";
 
 const router = createRouter();
 
-const TeamJson = bodyParser.json();
+/* const TeamJson = bodyParser.json(); */
 
-const upload = multer({
+/* const upload = multer({
   storage: multer.diskStorage({
     destination: "./public/uploads",
     filename: (req, file, cb) => cb(null, file.originalname),
   }),
 });
 
-const uploadImageMiddleWare = upload.single("Image");
+const uploadImageMiddleWare = upload.single("Image"); */
 
 router
+  .use(async (req, res, next) => {
+    await next();
+  })
   .get(async (req, res) => {
     console.log("Team Request");
     await mongoose
@@ -64,8 +67,9 @@ router
 
     return getRequest();
   })
-  .post(uploadImageMiddleWare, async (req, res) => {
+  .post(async (req, res) => {
     console.log("Post team request");
+    console.log(req.body);
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -98,7 +102,7 @@ router
     console.log(createdTeam);
     return res.status(201).json(createdTeam);
   })
-  .patch(uploadImageMiddleWare, async (req, res) => {
+  .patch(async (req, res) => {
     if (req.body.newRelease) {
       console.log("IDD", req.body.newRelease);
       console.log(req.body.dateEnd, req.body.dateStart, "dates");
@@ -586,7 +590,7 @@ router
       }
     }
   })
-  .delete(uploadImageMiddleWare, async (req, res) => {
+  .delete(async (req, res) => {
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -676,11 +680,11 @@ router
     }
   });
 
-export const config = {
+/* export const config = {
   api: {
     bodyParser: false,
   },
-};
+}; */
 
 export default router.handler({
   onError: (err, req, res) => {

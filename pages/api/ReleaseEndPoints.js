@@ -6,14 +6,14 @@ import bodyParser from "body-parser";
 
 const TeamJson = bodyParser.json();
 
-const upload = multer({
+/* const upload = multer({
   storage: multer.diskStorage({
     destination: "./public/uploads",
     filename: (req, file, cb) => cb(null, file.originalname),
   }),
 });
 
-const uploadImageMiddleWare = upload.single("Image");
+const uploadImageMiddleWare = upload.single("Image"); */
 
 const router = createRouter();
 
@@ -45,7 +45,7 @@ router
 
     return getRequest();
   })
-  .post(uploadImageMiddleWare, async (req, res) => {
+  .post(async (req, res) => {
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -81,8 +81,9 @@ export default router.handler({
   },
 });
 
-export const config = {
+/* export const config = {
   api: {
     bodyParser: false,
   },
 };
+ */
