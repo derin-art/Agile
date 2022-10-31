@@ -71,26 +71,13 @@ export default function StoryMap() {
         <div className="rotate-90 absolute -ml-10 flex mt-16 items-center justify-center font-Josefin text-gray-400 text-3xl">
           Priority {sideArrow}
         </div>
-        <StoryMapRenderUser
-          Tiles={currentJoinedTeam[0].Map.Tiles}
-          testArray={currentJoinedTeam[0].Map}
-          key="StoryRenderUser"
-        ></StoryMapRenderUser>
-        <div className="pt-8 mt-16 h-4/6 overflow-y-auto w-fit hidden">
-          {currentJoinedTeam &&
-            Object.entries(currentJoinedTeam[0].Map).map((item) => {
-              if (item[0] != "Tiles") {
-                return (
-                  <Mapped
-                    Array={item[1]}
-                    id={item[0]}
-                    key={item[0]}
-                    name={item[0]}
-                  ></Mapped>
-                );
-              }
-            })}
-        </div>
+        {currentJoinedTeam && (
+          <StoryMapRenderUser
+            Tiles={currentJoinedTeam[0].Map.Tiles}
+            testArray={currentJoinedTeam[0].Map}
+            key="StoryRenderUser"
+          ></StoryMapRenderUser>
+        )}
       </div>
     </div>
   );
