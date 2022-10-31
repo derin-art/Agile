@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import parseJson from "parse-json";
+import TutorialIcon from "../../../../public/TutorialIcon";
 
 export default function CreateDisplay() {
   const {
@@ -39,7 +40,7 @@ export default function CreateDisplay() {
       {
         autoClose: false,
         className: "text-sm",
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.TOP_RIGHT,
       }
     );
   };
@@ -61,9 +62,9 @@ export default function CreateDisplay() {
           onClick={() => {
             launchTutorial();
           }}
-          className="absolute top-16 right-4 text-base text-black"
+          className="absolute top-14 right-4 text-base text-white bg-indigo-800 flex items-center justify-center rounded p-1"
         >
-          Show Tutorial
+          Read Tutorial {TutorialIcon("fill-white")}
         </button>
       </div>
       <div className="font-Josefin md:hidden p-2">

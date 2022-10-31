@@ -164,7 +164,7 @@ export default function SprintCardDisplay({
               </button>
               <div className="relative">
                 <div
-                  className={`h-8 text-sm font-Josefin w-fit ${
+                  className={`h-8 text-sm font-Josefin w-full ${
                     completed ? "mt-1" : "mt-2"
                   } flex oveflow-x-auto`}
                 >
@@ -178,7 +178,7 @@ export default function SprintCardDisplay({
                         setAssignedHovered(false);
                       }}
                     >
-                      {AssignedTo.map((item) => {
+                      {AssignedTo.map((item, index) => {
                         return (
                           <div
                             key={item._id}
@@ -189,8 +189,8 @@ export default function SprintCardDisplay({
                               setAssignedUserUserHovered(item);
                             }}
                             className={` ${
-                              assginedHovered ? "ml-1" : "-ml-2"
-                            } h-6 w-6 relative rounded-full absolute top-12 w-full border font-mono border-gray-600 duration-300 capitalize flex items-center justify-center bg-gray-400 text-gray-600`}
+                              index === 0 && assginedHovered ? "" : "-ml-2"
+                            } h-6 w-6 relative rounded-full mt-12 w-full border font-mono border-gray-600 duration-300 capitalize flex items-center justify-center bg-gray-400 text-gray-600`}
                           >
                             {" "}
                             <div

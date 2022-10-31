@@ -151,7 +151,7 @@ export default function User() {
               <p className="text-red-500 mt-4 ml-2">Close</p>
             ) : (
               <p className="mt-[15px] ml-2">
-                Explore the teams your are a member of
+                Explore the teams you are a member of...
               </p>
             )}
           </button>

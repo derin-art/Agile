@@ -11,6 +11,7 @@ import SmileUser from "../public/smileUser";
 import CreateUser from "../public/CreateUser";
 import TeamRoleIcon from "../public/TeamRole";
 import stringify from "json-stringify";
+import TutorialIcon from "../public/TutorialIcon";
 
 export default function Home() {
   const router = useRouter();
@@ -167,12 +168,12 @@ export default function Home() {
   return (
     <div className="h-full bg-indigo-900 font-Josefin">
       <button
-        className="absolute right-2 text-green-300"
+        className="absolute right-2 text-green-300 mt-2 rounded p-2 border-green-300 flex items-center justify-center border"
         onClick={() => {
           launchTutorial();
         }}
       >
-        Show Tutorial
+        Read Tutorial {TutorialIcon("fill-green-300")}
       </button>
       <div className="flex-col flex h-full">
         <div className="flex items-center justify-center h-3/4">
@@ -245,7 +246,7 @@ export default function Home() {
                   localStorage.setItem("enableTutorial", stringify(true));
                 }
               }}
-              className="p-2 px-6 border border-green-400 text-green-300 mt-2 hover:text-green-300"
+              className="p-2 px-6 hover:bg-green-400 hover:text-indigo-800 shadow-green-400/50 duration-300 border border-green-400 text-green-300 mt-2"
             >
               Login
             </button>
@@ -305,7 +306,7 @@ export default function Home() {
               onClick={() => {
                 createUserRequest();
               }}
-              className="p-2 px-6 border border-green-400 text-green-300 mt-2 hover:text-green-300"
+              className="p-2 px-6 border hover:bg-green-400 hover:text-indigo-800 duration-300 border-green-400 text-green-300 mt-2 hover:text-green-300"
             >
               SignUp
             </button>

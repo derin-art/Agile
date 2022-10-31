@@ -4,6 +4,7 @@ import infoIcon from "../../public/infoIcon";
 import Link from "next/dist/client/link";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import TutorialIcon from "../../public/TutorialIcon";
 
 import logo from "../../public/logo";
 import teamHeadsIcon from "../../public/teamHeadsicon";
@@ -101,7 +102,7 @@ export default function Team({
       {
         autoClose: false,
         className: "text-sm",
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.TOP_RIGHT,
       }
     );
   };
@@ -129,9 +130,9 @@ export default function Team({
           onClick={() => {
             launchTutorial();
           }}
-          className="absolute right-4 -top-6 text-sm text-gray-800"
+          className="absolute right-32 top-1 p-1 text-white rounded text-sm  bg-indigo-800 flex items-center justify-center"
         >
-          Show Tutorial
+          Read Tutorial {TutorialIcon("fill-white")}
         </button>
         <motion.div
           initial={{ opacity: 0 }}
