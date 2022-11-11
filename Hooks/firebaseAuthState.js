@@ -93,7 +93,11 @@ export default function usefirebaseAuthState() {
     };
 
     const createdMongoDbUser = await axios
-      .post(process.env.NEXT_PUBLIC_API_USER_ROUTE, formdata, config)
+      .post(
+        process.env.NEXT_PUBLIC_API_USER_ROUTE,
+        { name: name, email, password, gitHub: gitHubLink },
+        config
+      )
       .catch((err) => {
         console.log(err);
         return err;
@@ -108,18 +112,19 @@ export default function usefirebaseAuthState() {
 
     const formdata = new FormData();
     formdata.append("TeamRole", role);
+    console.log("TeamRole", role);
     console.log("loginEmail", email);
+
     const editedUser = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`,
-        formdata,
-        config
-      )
+      .patch(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`, {
+        TeamRole: role,
+      })
       .catch((err) => {
         console.log(err);
         return;
       });
     console.log("Login details", editedUser);
+
     setUserData(editedUser.data);
   };
 
@@ -165,7 +170,7 @@ export default function usefirebaseAuthState() {
     formdata.append("email", email);
     formdata.append("Summary", Summary);
     const createdTeamData = await axios
-      .post(process.env.NEXT_PUBLIC_API_TEAM_ROUTE, formdata, config)
+      .post(process.env.NEXT_PUBLIC_API_TEAM_ROUTE, { name, email, Summary })
       .catch((err) => {
         console.log(err);
       });
@@ -206,11 +211,15 @@ export default function usefirebaseAuthState() {
 
     console.log("Made it through");
     const updatedTeamWithRelease = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?id=${teamId}`,
-        formdata,
-        config
-      )
+      .patch(`${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?id=${teamId}`, {
+        newRelease: releaseData,
+        agilePins: releaseData.agilePins,
+        name: releaseData.name,
+        owner: releaseData.owner,
+        id: releaseData._id,
+        dateEnd: releaseData.dateEnd,
+        dateStart: releaseData.dateStart,
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -221,9 +230,6 @@ export default function usefirebaseAuthState() {
   };
 
   const CreateRelease = async (owner, teamId, name, startDate, endDate) => {
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
     const formdata = new FormData();
     formdata.append("owner", owner);
     formdata.append("teamId", teamId);
@@ -231,14 +237,20 @@ export default function usefirebaseAuthState() {
     formdata.append("startDate", startDate);
     formdata.append("endDate", endDate);
     const data = await axios
-      .post(process.env.NEXT_PUBLIC_API_RELEASE_ROUTE, formdata, config)
+      .post(process.env.NEXT_PUBLIC_API_RELEASE_ROUTE, {
+        owner: owner,
+        teamId: teamId,
+        name: name,
+        startDate,
+        endDate,
+      })
       .catch((err) => {
         console.log(err);
       });
     if (data) {
       console.log("DDD", data);
       console.log("dd", typeof data.data);
-      PatchTeamWithNewRelease(teamId, data.data, config);
+      PatchTeamWithNewRelease(teamId, data.data);
 
       return data.data;
     }
@@ -266,8 +278,21 @@ export default function usefirebaseAuthState() {
     const result = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamCurrentId=${teamCurrentId}&releaseCurrentId=${releaseCurrentId}`,
-        formdata,
-        config
+        {
+          AcceptanceCriteria: data.AcceptanceCriteria,
+          AssignedTo: data.AssignedTo,
+          DateCreated: data.DateCreated,
+          PriorityRank: data.PriorityRank,
+          Release: data.Release,
+          completed: data.completed,
+          inProgress: data.inProgress,
+          themeName: data.theme.name,
+          themeColor: data.theme.color,
+          name: data.name,
+          newStory: true,
+          storyPoints: data.storyPoints,
+          id: data._id,
+        }
       )
       .catch((err) => console.log(err));
     if (result) {
@@ -393,7 +418,13 @@ export default function usefirebaseAuthState() {
     formdata.append("StoryPoints", storyPoints);
     formdata.append("AcceptanceCriteria", AcceptanceCriteria);
     const data = await axios
-      .post(`${process.env.NEXT_PUBLIC_API_STORY_ROUTE}`, formdata, config)
+      .post(`${process.env.NEXT_PUBLIC_API_STORY_ROUTE}`, {
+        name,
+        Release,
+        PriorityRank: color,
+        StoryPoints: storyPoints,
+        AcceptanceCriteria,
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -590,11 +621,14 @@ export default function usefirebaseAuthState() {
         }?updateTeamWithStories=${true}&teamId=${
           currentTeam[0]._id
         }&releaseId=${currentOpenRelease[0]._id}&newStories=${newRelease}`,
-        formdata,
-        config
+        {
+          newStories: stringify(newRelease),
+          newMaps: stringify(currentTeam[0].Map),
+        }
       )
       .catch((err) => {
         console.log(err);
+        return;
       });
 
     if (UpdatedTeamWithStories) {
@@ -606,6 +640,7 @@ export default function usefirebaseAuthState() {
       );
       const EarlyUniqueEpics = newRelease1[0].agilePins.map((item) => {
         if (item) {
+          console.log("item", item);
           return item.theme.name;
         } else {
           return;
@@ -676,8 +711,7 @@ export default function usefirebaseAuthState() {
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${
           currentTeam[0]._id
         }&updateTeamWithSprints=${true}&releaseId=${releaseId}`,
-        formdata,
-        config
+        { Sprint: stringify(Sprint) }
       )
       .catch((err) => {
         console.log(err);
@@ -712,7 +746,7 @@ export default function usefirebaseAuthState() {
     const data = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?rejectTeamId=${teamId}&userId=${userId}`,
-        formdata
+        {}
       )
       .catch((err) => {
         console.log("teamRejectedErr", err);
@@ -729,10 +763,9 @@ export default function usefirebaseAuthState() {
     const formdata = new FormData();
     formdata.append("userFields", userFieldsString);
     const data = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${teamId}`,
-        formdata
-      )
+      .patch(`${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${teamId}`, {
+        userFields: userFieldsString,
+      })
       .catch((err) => {
         console.log("teamAcceptErr", err);
       });
@@ -745,7 +778,7 @@ export default function usefirebaseAuthState() {
     const data = await axios
       .get(
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamMemberId=${userId}`,
-        formdata
+        {}
       )
       .catch((err) => {
         console.log("teamMemeberIderr", err);
@@ -775,7 +808,7 @@ export default function usefirebaseAuthState() {
         }&releaseId=${
           currentOpenRelease[0]._id
         }&pinId=${pinId}&deletingPin=${true}`,
-        formdata
+        {}
       )
       .catch((err) => {
         console.log("deletingPinerr", err);
@@ -802,7 +835,7 @@ export default function usefirebaseAuthState() {
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?interaction=${true}&teamId=${
           currentJoinedTeam[0]._id
         }&releaseId=${releaseId}`,
-        formdata
+        { pinInteraction: stringify(entireObject) }
       )
       .catch((err) => {
         console.log("interactionErr", err);
@@ -823,7 +856,7 @@ export default function usefirebaseAuthState() {
     const savedMap = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?currentMapTeam=${currentTeam[0]._id}`,
-        formdata
+        { Map: stringify(map) }
       )
       .catch((err) => {
         console.log("mapErr", err);
@@ -845,10 +878,9 @@ export default function usefirebaseAuthState() {
       TeamId = currentTeam[0]._id;
     }
     const savedTeamAfterMessage = await axios
-      .patch(
-        `${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${TeamId}`,
-        formdata
-      )
+      .patch(`${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?teamId=${TeamId}`, {
+        Message: stringify(Object),
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -885,7 +917,7 @@ export default function usefirebaseAuthState() {
         `${
           process.env.NEXT_PUBLIC_API_TEAM_ROUTE
         }?deleteTeamMessages=${true}&teamId=${currentTeam[0]._id}`,
-        formdata
+        { emptyChatTeam: stringify(dataTobeSent) }
       )
       .catch((err) => {
         console.log(err);

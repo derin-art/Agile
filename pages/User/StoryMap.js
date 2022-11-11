@@ -4,6 +4,9 @@ import Mapped from "../../Components/MappedUser";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import parseJson from "parse-json";
+import "react-toastify/dist/ReactToastify.css";
+import StoryMapRenderUser from "../../Components/StoryMapRenderUser";
+import TutorialIcon from "../../public/TutorialIcon";
 
 export default function StoryMap() {
   const { currentJoinedTeam } = useAuth();
@@ -32,66 +35,49 @@ export default function StoryMap() {
     launchTutorial();
   }, []);
 
+  const sideArrow = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+    >
+      <path fill="none" d="M0 0h24v24H0z" />
+      <path d="M16 12l-6 6V6z" />
+    </svg>
+  );
+
   return (
-    <div className="pt-14 md:pl-24 h-full p-2">
+    <div className="pt-14 md:pl-24 h-screen p-2 w-fit">
       <ToastContainer></ToastContainer>
       <div className="md:hidden font-Josefin">
         Please Switch to a bigger screen to access this feature
       </div>
       <div className="h-full md:block hidden">
-        <div className="absolute top-12 font-Josefin text-sm left-[110px]">
-          Time ---›
-        </div>
         <button
           onClick={() => {
             launchTutorial();
           }}
-          className="absolute top-12 font-Josefin text-sm right-4"
+          className="absolute top-14 font-Josefin text-sm right-4 bg-indigo-800 text-white p-1 rounded flex items-center justify-center"
         >
-          Show Tutorial
+          Show Tutorial {TutorialIcon("fill-white")}
         </button>
-        <div className="absolute z-30 top-24 font-Josefin text-sm rotate-90 left-[72px]">
-          Priority---›
+        <div className="text-3xl border-b pl-4 text-gray-300 border-green-400 font-Josefin mb-4">
+          Story Map
         </div>
-        {currentJoinedTeam &&
-          Object.entries(currentJoinedTeam[0].Map).map((item) => {
-            if (item[0] === "Tiles") {
-              return (
-                <div
-                  key={"Tiles"}
-                  className="flex font-Josefin border-b pb-4 bg-white w-fit z-20 absolute top-16 z-30"
-                >
-                  {item[1].map((tiles) => {
-                    return (
-                      <div
-                        key={tiles.no}
-                        className={`border  truncate ${
-                          tiles.active ? "border-indigo-800" : ""
-                        }  border-t-8 w-32 px-1 ml-4 h-16 rounded-lg flex duration-300  justify-center items-center`}
-                      >
-                        {tiles.val}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            }
-          })}
-        <div className="pt-8 mt-16 h-4/6 overflow-y-auto w-fit">
-          {currentJoinedTeam &&
-            Object.entries(currentJoinedTeam[0].Map).map((item) => {
-              if (item[0] != "Tiles") {
-                return (
-                  <Mapped
-                    Array={item[1]}
-                    id={item[0]}
-                    key={item[0]}
-                    name={item[0]}
-                  ></Mapped>
-                );
-              }
-            })}
+        <div className="flex items-center font-Josefin text-gray-400 text-3xl ml-6">
+          Time {sideArrow}
         </div>
+        <div className="rotate-90 absolute -ml-10 flex mt-16 items-center justify-center font-Josefin text-gray-400 text-3xl">
+          Priority {sideArrow}
+        </div>
+        {currentJoinedTeam && (
+          <StoryMapRenderUser
+            Tiles={currentJoinedTeam[0].Map.Tiles}
+            testArray={currentJoinedTeam[0].Map}
+            key="StoryRenderUser"
+          ></StoryMapRenderUser>
+        )}
       </div>
     </div>
   );

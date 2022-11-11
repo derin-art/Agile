@@ -11,8 +11,8 @@ export default function Mapped({ Array, id, name }) {
   );
 
   return (
-    <div className="h-fit w-fit mb-4  text-lg font-Josefin  pt-2 pb-2 pr-2">
-      <div className="w-full border-b pl-4 text-2xl text-gray-500  border-green-400">
+    <div className="h-fit w-fit mb-4  text-lg font-Josefin  pt-2 pb-2 pr-2 border-l-8 border-green-400">
+      <div className="w-full border-b pl-4 uppercase text-3xl text-gray-500 ">
         Release {releaseUsed[0].name}
       </div>
       <div key={id} className="flex">

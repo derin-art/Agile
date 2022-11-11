@@ -4,7 +4,7 @@ import Logo from "../public/logo";
 import { useAuth } from "../Context/firebaseUserContext";
 import signOutIcon from "../public/signOutIcon";
 import downArrowFunction from "../public/downArrowIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import openFolderIcon from "../public/SideBarIcons/openFolderIcon";
 import parseJson from "parse-json";
 import Link from "next/link";
@@ -19,9 +19,12 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const { SignOut, currentTeam, userData, currentJoinedTeam } = useAuth();
   let tutorialBool;
-  if (typeof window !== "undefined") {
-    tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
-  }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      tutorialBool = parseJson(window.localStorage.getItem("enableTutorial"));
+    }
+  }, []);
 
   const teamLinks = [
     {
@@ -94,9 +97,12 @@ export default function Header() {
           onClick={() => {
             setTutorialEnabled((prev) => !prev);
             if (typeof window !== "undefined") {
+              const formerLocalStorageTutorialBool = parseJson(
+                window.localStorage.getItem("enableTutorial")
+              );
               window.localStorage.setItem(
                 "enableTutorial",
-                stringify(tutorialEnabled)
+                !formerLocalStorageTutorialBool
               );
             }
           }}

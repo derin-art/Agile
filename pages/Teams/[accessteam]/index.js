@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import addIcon from "../../../public/addIcon";
 import { motion } from "framer-motion";
 import parseJson from "parse-json";
+import TutorialIcon from "../../../public/TutorialIcon";
 
 export default function AccessTeam() {
   const {
@@ -45,7 +46,7 @@ export default function AccessTeam() {
       {
         autoClose: false,
         className: "text-sm",
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.TOP_RIGHT,
       }
     );
   };
@@ -73,9 +74,9 @@ export default function AccessTeam() {
               onClick={() => {
                 launchTutorial();
               }}
-              className="absolute top-14 right-2  "
+              className="absolute top-4 right-40  bg-indigo-800 text-white p-1 flex items-center justify-center rounded"
             >
-              Show Tutorial
+              Read Tutorial {TutorialIcon("fill-white")}
             </button>
             <motion.div
               initial={{ opacity: 0 }}
@@ -163,7 +164,7 @@ export default function AccessTeam() {
           </div>
 
           <div className="mt-4">
-            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-lg mb-2 text-gray-300">
+            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-3xl mb-2 text-gray-300">
               RELEASES
             </div>
             {currentTeam && currentTeam[0].Release.length > 0 ? (

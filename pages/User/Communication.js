@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { useAuth } from "../../Context/firebaseUserContext";
+import "react-toastify/dist/ReactToastify.css";
 
 const AblyChatComponent = dynamic(
   () => import("../../Components/AlbyChatComponent"),

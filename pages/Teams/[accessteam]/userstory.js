@@ -6,10 +6,12 @@ import StoryTeamCard from "../../../Components/StoryTeamCard";
 import { useAuth } from "../../../Context/firebaseUserContext";
 import swordIcon from "../../../public/swordIcon";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { async, map } from "@firebase/util";
 import Logo from "../../../public/logo";
 import { motion } from "framer-motion";
 import parseJson from "parse-json";
+import TutorialIcon from "../../../public/TutorialIcon";
 
 export default function UserStory() {
   const {
@@ -68,7 +70,7 @@ export default function UserStory() {
         into smaller stories and made/organized into an Epic.
       </div>,
       {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.TOP_RIGHT,
         autoClose: false,
         className: "text-sm",
       }
@@ -342,9 +344,9 @@ export default function UserStory() {
             onClick={() => {
               launchTutorial();
             }}
-            className="texts-sm right-8 -top-2 absolute font-Josefin"
+            className="texts-sm right-40 -top-14 absolute font-Josefin text-white bg-indigo-800 flex items-center justify-center p-1 rounded"
           >
-            Show Tutorial
+            Read Tutorial {TutorialIcon("fill-white")}
           </button>
         </div>
         <motion.div

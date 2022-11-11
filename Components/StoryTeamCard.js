@@ -157,6 +157,8 @@ export default function StoryTeamCard({
     );
   };
 
+  console.log(name, color);
+
   const [hovered, setHovered] = useState(false);
   const [priorityHover, setProtityHover] = useState(false);
 

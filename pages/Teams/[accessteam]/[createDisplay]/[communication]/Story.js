@@ -4,10 +4,24 @@ import { useState, useEffect } from "react";
 import Mapped from "../../../../../Components/Mapped";
 import { v4 as uuidv4 } from "uuid";
 import Logo from "../../../../../public/logo";
+import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import parseJson from "parse-json";
+import StoryMapRender from "../../../../../Components/StoryMapRender";
+import TutorialIcon from "../../../../../public/TutorialIcon";
 
 export default function Story() {
+  const sideArrow = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+    >
+      <path fill="none" d="M0 0h24v24H0z" />
+      <path d="M16 12l-6 6V6z" />
+    </svg>
+  );
   const { currentTeam, saveMap } = useAuth();
   const [savedStory, setSavedStory] = useState(false);
   const [themes, setThemes] = useState([]);
@@ -224,54 +238,82 @@ export default function Story() {
   }
 
   return (
-    <div className=" w-fit pt-24 h-screen">
+    <div className=" w-fit h-screen">
       <ToastContainer></ToastContainer>
-      <div className="lg:hidden font-Josefin p-2">
-        Please switch to to a bigger screen to access this feature
+      <div className="text-4xl mt-12 font-Josefin lg:hidden text-gray-300 border-b border-green-400">
+        Story Map
       </div>
-      <button
-        onClick={async () => {
-          setSavedStory(true);
-          const newM = await saveMap(testArray);
-          if (newM) {
-            setSavedStory(false);
-          }
-        }}
-        className="fixed lg:flex hidden -mt-10 ml-4 text-white rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
-      >
-        {Logo(
-          `${savedStory ? "block" : "hidden"} animate-spin fill-white mr-2`
-        )}{" "}
-        Save Current State
-      </button>
-      <button
-        onClick={() => {
-          launchTutorial();
-        }}
-        className="right-48 top-16 fixed font-Josefin"
-      >
-        Show Tutorial
-      </button>
-      <button
-        onClick={() => {
-          setTestArray((prev) => {
-            const numb = prev.Tiles.length;
-            return {
-              ...prev,
-              Tiles: [...prev.Tiles, { active: false, no: numb, val: "" }],
-            };
-          });
-        }}
-        className="fixed lg:flex hidden -mt-10 right-4 text-white rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
-      >
-        Add New Theme Row
-      </button>
-      <div className="relative hidden lg:block">
-        <div className="pl-4 font-Josefin -mb-2 text-xs">
-          Time —————————›
-          <div className="absolute rotate-90 -left-7 top-10">Priority ———›</div>
+      <div className="lg:hidden">
+        Please Switch to a bigger screen to access this feature.
+      </div>
+
+      {currentTeam && (
+        <div className="h-screen p-4  pt-16 lg:block hidden">
+          <div className="text-4xl mb-8 font-Josefin text-gray-300 border-b border-green-400">
+            Story Map
+          </div>
+
+          <div className="flex absolute top-16 right-4">
+            <button
+              onClick={() => {
+                launchTutorial();
+              }}
+              className=" font-Josefin mr-4 flex items-center justify-center bg-indigo-800 text-white p-1 rounded"
+            >
+              Read Tutorial {TutorialIcon("fill-white")}
+            </button>
+            <button
+              onClick={async () => {
+                setSavedStory(true);
+                const newM = await saveMap(testArray);
+                if (newM) {
+                  setSavedStory(false);
+                }
+              }}
+              className=" lg:flex hidden  text-white mr-4 top-20 rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
+            >
+              {Logo(
+                `${
+                  savedStory ? "block" : "hidden"
+                } animate-spin fill-white mr-2`
+              )}{" "}
+              Save Current State
+            </button>
+
+            <button
+              onClick={() => {
+                setTestArray((prev) => {
+                  const numb = prev.Tiles.length;
+                  return {
+                    ...prev,
+                    Tiles: [
+                      ...prev.Tiles,
+                      { active: false, no: numb, val: "" },
+                    ],
+                  };
+                });
+              }}
+              className=" lg:flex hidden right-4 text-white rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
+            >
+              Add New Theme Row
+            </button>
+          </div>
+          <div className="flex items-center font-Josefin text-gray-400 text-3xl ml-6">
+            Time {sideArrow}
+          </div>
+          <div className="rotate-90 absolute -ml-12 flex mt-16 items-center justify-center font-Josefin text-gray-400 text-3xl">
+            Priority {sideArrow}
+          </div>
+          <StoryMapRender
+            Tiles={testArray.Tiles}
+            onDragEnd={onDragEnd}
+            testArray={testArray}
+            setFunction={setTestArray}
+          ></StoryMapRender>
         </div>
-        {currentTeam && (
+      )}
+      {/* <div className="relative hidden lg:block">
+        {!currentTeam && (
           <DragDropContext onDragEnd={onDragEnd}>
             {Object.entries(testArray).map((entry) => {
               if (entry[0] === "Tiles") {
@@ -373,26 +415,7 @@ export default function Story() {
             })}
           </DragDropContext>
         )}
-      </div>
-      <div className="h-4/6 overflow-y-auto w-fit pt-8 lg:block hidden">
-        {currentTeam && (
-          <DragDropContext onDragEnd={onDragEnd}>
-            {Object.entries(testArray).map((entry) => {
-              if (entry[0] != "Tiles") {
-                return (
-                  <Mapped
-                    Array={entry[1]}
-                    allItems={testArray}
-                    setFunction={setTestArray}
-                    key={entry[0]}
-                    id={entry[0].toString()}
-                  ></Mapped>
-                );
-              }
-            })}
-          </DragDropContext>
-        )}
-      </div>
+      </div> */}
     </div>
   );
 }

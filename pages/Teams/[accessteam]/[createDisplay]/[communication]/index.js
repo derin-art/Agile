@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import addIcon from "../../../../../public/addIcon";
 import "react-toastify/dist/ReactToastify.css";
+
 import { useAuth } from "../../../../../Context/firebaseUserContext";
 
 export default function Communication() {
@@ -213,7 +214,7 @@ export default function Communication() {
             </button>
           </div>
           <div className={`ml-2 ${showMenu === "User" ? "" : "hidden"}`}>
-            <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-lg text-gray-500">
+            <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-3xl text-gray-300">
               Team
             </div>
             {currentTeam &&
@@ -237,7 +238,7 @@ export default function Communication() {
               })}
           </div>
           <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
-            <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-lg text-gray-500">
+            <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-3xl text-gray-300">
               KanBam Board
             </div>
             <div className="flex font-Josefin ">
