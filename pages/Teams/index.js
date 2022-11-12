@@ -8,6 +8,7 @@ import axios from "axios";
 import UserStory from "../../Components/ProductOwner/UserStory";
 import Team from "../../Components/ProductOwner/Teams";
 import { io } from "socket.io-client";
+import TeamsCard from "../../Components/ProductOwner/TeamsCards";
 let socket;
 
 export default function Newpage({ finalData }) {
@@ -60,7 +61,7 @@ export default function Newpage({ finalData }) {
   return (
     <div className="">
       <div className="mt-20 md:ml-4">
-        <Team
+        <TeamsCard
           messagesBeforeUpdate={messagesBeforeUpdate}
           setMessagesBeforeUpdate={setMessagesBeforeUpdate}
           userData={userData}
@@ -70,7 +71,20 @@ export default function Newpage({ finalData }) {
           authUser={authUser}
           setCurrentTeamAvailable={setCurrentTeamAvailable}
           deleteTeam={deleteTeam}
-        ></Team>
+        ></TeamsCard>
+        <div className="hidden">
+          <Team
+            messagesBeforeUpdate={messagesBeforeUpdate}
+            setMessagesBeforeUpdate={setMessagesBeforeUpdate}
+            userData={userData}
+            CreateTeam={CreateTeam}
+            getUserTeam={getUserTeam}
+            userTeamData={userTeamData}
+            authUser={authUser}
+            setCurrentTeamAvailable={setCurrentTeamAvailable}
+            deleteTeam={deleteTeam}
+          ></Team>
+        </div>
       </div>
     </div>
   );

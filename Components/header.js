@@ -72,7 +72,7 @@ export default function Header() {
       >
         <div className="flex">
           {Logo("fill-green-200", "30", "30")}
-          <p className="text-green-300 mt-1 text-xl font-Josefin"> BUOYANT</p>
+          <p className="text-green-300 mt-1 text-2xl font-Josefin"> BUOYANT</p>
         </div>
         <div className="ml-2 hidden">
           <Link href="/">Home</Link>
@@ -91,7 +91,7 @@ export default function Header() {
           )}
         </button>
         <button
-          className={`absolute right-32 hidden md:block font-Josefin ${
+          className={`absolute right-[130px] uppercase hidden md:block font-Josefin ${
             router.pathname === "/" ? "hidden md:hidden" : ""
           }`}
           onClick={() => {
@@ -112,7 +112,7 @@ export default function Header() {
             : "Enable Tutorial Popups"}
         </button>
         <button
-          className={`absolute right-4 flex text-green-300 font-Josefin ${
+          className={`absolute right-4 flex uppercase text-green-300 font-Josefin ${
             router.pathname === "/" ? "hidden" : "absolute"
           }`}
           onClick={() => {
