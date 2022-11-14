@@ -365,7 +365,7 @@ export default function UserStory() {
           <ToastContainer></ToastContainer>
           <div className=" border-b-2 border-l-2 w-full ml-2 mr-1 rounded-bl-2xl flex p-8">
             <DragDropContext onDragEnd={onDragEndFinal}>
-              <div className="flex-col mr-4 font-Josefin relative">
+              <div className="flex-col mr-4 font-Josefin relative hidden">
                 <button
                   style={{ transitionDuration: "3s" }}
                   onClick={() => {
@@ -463,7 +463,7 @@ export default function UserStory() {
                 </div>
               </div>
 
-              <div className="flex lg:w-[650px] max-w-[650px] h-[500px] overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+              <div className="flex lg:w-[1000px] max-w-[1000px] h-[500px] overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                 <div className="flex ml-2">
                   {currentPinsOpen &&
                     Object.entries(currentPinsOpen).map((epic) => {
@@ -475,7 +475,7 @@ export default function UserStory() {
                         return (
                           <div key={epic[0].toString()} className="relative">
                             <div className="absolute -top-0 z-40 text-gray-700 bg-gray-100 bg-white h-8 truncate border-b border-l w-full font-Josefin">
-                              <div className="w-48 truncate px-2 text-center">
+                              <div className="w-48 truncate px-2 text-center mt-1">
                                 {epic[0] === "Notheme" ? "No Epic" : epic[0]}
                               </div>
                             </div>

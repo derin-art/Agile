@@ -56,12 +56,12 @@ export default function AccessTeam() {
   }, []);
 
   return (
-    <div className="mt-16 p-2 font-Josefin">
+    <div className="mt-10 p-2 font-Josefin">
       {currentRelease ? (
         <p></p>
       ) : (
         <div>
-          <div className="flex border relative">
+          <div className="flex relative">
             <button
               onClick={() => {
                 setIsReleaseCreateOpen((prev) => !prev);
@@ -164,7 +164,7 @@ export default function AccessTeam() {
           </div>
 
           <div className="mt-4">
-            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-3xl mb-2 text-gray-300">
+            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-4xl mb-2 text-green-300">
               RELEASES
             </div>
             {currentTeam && currentTeam[0].Release.length > 0 ? (
@@ -295,18 +295,6 @@ export default function AccessTeam() {
                 </p>
               </div>
             </div>
-            <button
-              className={`duration-500 md:hidden ${
-                smallMenuOpen
-                  ? "text-transparent"
-                  : "text-green-400 bg-green-500 rounded-full p-1 border border-indigo-800"
-              }`}
-              onClick={() => setSmallMenuOpen(true)}
-            >
-              {addIcon(
-                `${smallMenuOpen ? "fill-transparent" : "fill-green-200 "}`
-              )}
-            </button>
           </div>
           <ToastContainer></ToastContainer>
         </div>
