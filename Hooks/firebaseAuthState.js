@@ -430,11 +430,16 @@ export default function usefirebaseAuthState() {
       });
     if (data) {
       console.log(data);
-      addUserStoryToTeam(
-        data.data,
-        currentTeam[0]._id,
-        currentOpenRelease[0]._id
-      );
+      try {
+        addUserStoryToTeam(
+          data.data,
+          currentTeam[0]._id,
+          currentOpenRelease[0]._id
+        );
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

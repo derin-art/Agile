@@ -189,13 +189,14 @@ export default function UserStory() {
               });
               return;
             }
-            addUserStory(
+            const data = addUserStory(
               storyName,
               currentOpenRelease[0]._id,
               storyPoints,
               acceptanceCriteria,
               color
             );
+            console.log("UserStoryCreateData", data);
           }}
         >
           CREATE
