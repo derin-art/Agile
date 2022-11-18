@@ -89,14 +89,14 @@ export default function TeamsCard({
       opacity: 0,
       x: -20,
       transition: {
-        duration: 0.75,
+        duration: 0.5,
       },
     },
     in: {
       opacity: 1,
       x: 0,
       transition: {
-        duration: 0.75,
+        duration: 0.5,
         delay: 0.3,
       },
     },

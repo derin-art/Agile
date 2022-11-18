@@ -19,6 +19,12 @@ a {
   box-sizing: border-box;
 }
 
+@layer components {
+  .btn-primary {
+    @apply p-2 px-6 bg-indigo-800 text-white text-sm font-Josefin flex items-center justify-center rounded hover:bg-indigo-900 duration-300;
+  }
+}
+
 @font-face {
   font-family: "Josefin";
   src: url("../public/Fonts/Josefin_Sans/JosefinSans-VariableFont_wght.ttf");

@@ -344,7 +344,7 @@ export default function UserStory() {
             onClick={() => {
               launchTutorial();
             }}
-            className="texts-sm right-40 -top-14 absolute font-Josefin text-white bg-indigo-800 flex items-center justify-center p-1 rounded"
+            className="btn-primary"
           >
             Read Tutorial {TutorialIcon("fill-white")}
           </button>
@@ -353,7 +353,7 @@ export default function UserStory() {
           initial={{ opacity: 0 }}
           animate={createStoryMenu ? { translateY: 20, opacity: 1 } : {}}
           transition={{ duration: 0.4 }}
-          className={`border rounded-2xl shadow z-30 pb-2 bg-white absolute  -top-8 right-2 ${
+          className={`border rounded-2xl shadow z-30 px-6 p-2 bg-white absolute  -top-8 right-2 ${
             createStoryMenu ? "" : "hidden"
           }`}
         >
@@ -485,7 +485,7 @@ export default function UserStory() {
                                   <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className={`h-96 overflow-auto pt-8 w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
+                                    className={`h-[500px] overflow-auto pt-8 w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
                                       themeObject[0]
                                         ? `border-${themeObject[0].color}`
                                         : ""
@@ -563,7 +563,7 @@ export default function UserStory() {
                               <div
                                 className={`border py-8 flex items-center border-${
                                   item.color
-                                } border-r-8 mb-8 p-6 border-2 text-gray-800 rounded font-Josefin duration-200 mr-4 w-32 truncate ${
+                                } border-r-8 mb-8 p-6 border-2 text-gray-800 rounded font-Josefin duration-200 mr-4 max-w-[125px] truncate ${
                                   snapshot.isDraggingOver ? "scale-110" : ""
                                 }`}
                                 {...provided.droppableProps}
