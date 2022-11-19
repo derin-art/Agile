@@ -56,13 +56,13 @@ export default function CreateDisplay() {
 
   return (
     <div className="mt-14 ml-6">
-      <div className="text-3xl font-Josefin border-b border-green-300 text-gray-300 mb-2">
+      <div className="header-main">
         Story Map
         <button
           onClick={() => {
             launchTutorial();
           }}
-          className="absolute top-14 right-4 text-base text-white bg-indigo-800 flex items-center justify-center rounded p-1"
+          className="absolute top-14 right-4 btn-primary"
         >
           Read Tutorial {TutorialIcon("fill-white")}
         </button>

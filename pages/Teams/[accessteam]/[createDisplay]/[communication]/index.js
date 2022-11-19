@@ -214,9 +214,7 @@ export default function Communication() {
             </button>
           </div>
           <div className={`ml-2 ${showMenu === "User" ? "" : "hidden"}`}>
-            <div className="mt-2 border-green-400 mb-2 font-Josefin border-b uppercase text-3xl text-gray-300">
-              Team
-            </div>
+            <div className="header-main">Team</div>
             {currentTeam &&
               currentTeam[0].members.map((item) => {
                 return (
@@ -238,9 +236,7 @@ export default function Communication() {
               })}
           </div>
           <div className={`${showMenu === "KanBam" ? "" : "hidden"}`}>
-            <div className="p-1 px-2 border-green-400 border-b font-Josefin uppercase text-3xl text-gray-300">
-              KanBam Board
-            </div>
+            <div className="header-main">KanBam Board</div>
             <div className="flex font-Josefin ">
               <div className="p-1 ">
                 <div className="ml-1">Not Started</div>

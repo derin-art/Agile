@@ -164,9 +164,7 @@ export default function AccessTeam() {
           </div>
 
           <div className="mt-4">
-            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-4xl mb-2 text-green-300">
-              RELEASES
-            </div>
+            <div className="header-main">RELEASES</div>
             {currentTeam && currentTeam[0].Release.length > 0 ? (
               currentTeam[0].Release.map((item) => {
                 if (item) {

@@ -240,7 +240,7 @@ export default function Story() {
   return (
     <div className=" w-fit h-screen">
       <ToastContainer></ToastContainer>
-      <div className="text-4xl mt-12 font-Josefin lg:hidden text-gray-300 border-b border-green-400">
+      <div className="text-4xl mt-12 font-Josefin lg:hidden header-main">
         Story Map
       </div>
       <div className="lg:hidden">
@@ -249,7 +249,7 @@ export default function Story() {
 
       {currentTeam && (
         <div className="h-screen p-4  pt-16 lg:block hidden">
-          <div className="text-4xl mb-8 font-Josefin text-gray-300 border-b border-green-400">
+          <div className="text-4xl mb-8 font-Josefin border-b border-green-400 header-main">
             Story Map
           </div>
 
@@ -258,7 +258,7 @@ export default function Story() {
               onClick={() => {
                 launchTutorial();
               }}
-              className=" font-Josefin mr-4 flex items-center justify-center bg-indigo-800 text-white p-1 rounded"
+              className=" font-Josefin mr-4 flex items-center justify-center bg-indigo-800 text-white btn-primary"
             >
               Read Tutorial {TutorialIcon("fill-white")}
             </button>
@@ -270,7 +270,7 @@ export default function Story() {
                   setSavedStory(false);
                 }
               }}
-              className=" lg:flex hidden  text-white mr-4 top-20 rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
+              className=" lg:flex hidden  text-white mr-4 top-20 font-Josefin text-sm bg-indigo-800 btn-primary"
             >
               {Logo(
                 `${
@@ -293,7 +293,7 @@ export default function Story() {
                   };
                 });
               }}
-              className=" lg:flex hidden right-4 text-white rounded-lg font-Josefin text-sm bg-indigo-800 p-2"
+              className=" lg:flex hidden right-4 text-white font-Josefin bg-indigo-800 btn-primary"
             >
               Add New Theme Row
             </button>
