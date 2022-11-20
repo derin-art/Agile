@@ -57,7 +57,7 @@ export default function CreateDisplay() {
   return (
     <div className="mt-14 ml-6">
       <div className="header-main">
-        Story Map
+        Sprint Planning
         <button
           onClick={() => {
             launchTutorial();

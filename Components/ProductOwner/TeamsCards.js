@@ -121,7 +121,7 @@ export default function TeamsCard({
                   onClick={() => {
                     menuOpenFunction();
                   }}
-                  className="hover:text-green-200 duration-300"
+                  className="hover:text-green-300 duration-300"
                 >
                   Explore Teams
                 </button>
@@ -236,7 +236,7 @@ export default function TeamsCard({
               </AnimatePresence>
             </div>
           </div>
-          <div className="w-full h-2/4 bg-indigo-800 border lg:mt-8 mt-4 rounded-2xl p-4">
+          <div className="w-full h-2/4 bg-indigo-800 border lg:mt-8 xl:mt-12 mt-4 rounded-2xl p-4">
             <div className="text-white md:text-4xl xl:text-7xl ">
               Read About
             </div>

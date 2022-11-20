@@ -185,9 +185,9 @@ export default function Communication() {
         }}
         className={`absolute right-5 top-12 duration-300 rounded ${
           teamMenuOpen ? "bg-red-500" : "bg-indigo-800"
-        } text-white mt-2 hidden lg:flex z-50 font-Josefin border text-sm p-1 flex items-center`}
+        } text-white mt-2 hidden lg:flex z-50 font-Josefin btn-primary`}
       >
-        {teamMenuOpen ? "Close" : "Team Add"}
+        {teamMenuOpen ? "Close" : "Send A Team Request"}
         {addIcon(
           `${teamMenuOpen ? "rotate-45" : ""} ml-2 fill-white duration-300`
         )}
@@ -320,7 +320,7 @@ export default function Communication() {
         }`}
       >
         {currentTeam && (
-          <div className="flex flex-col mt-20 p-1 font-Josefin">
+          <div className="flex flex-col mt-24 p-1 font-Josefin">
             <div className="text-lg border-b text-gray-500 border-green-400">
               Add A User Your Team
             </div>
