@@ -20,6 +20,7 @@ module.exports = {
         Josefin: ["Josefin", "san-serif"],
         Rampart: ["Rampart", "san-serif"],
         Rubik: ["Rubik", "san-serif"],
+        Poppins: ["Poppins", "san-serif"],
       },
     },
   },

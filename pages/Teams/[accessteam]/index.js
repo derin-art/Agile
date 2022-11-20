@@ -56,17 +56,17 @@ export default function AccessTeam() {
   }, []);
 
   return (
-    <div className="mt-16 p-2 font-Josefin">
+    <div className="mt-10 p-2 font-Josefin">
       {currentRelease ? (
         <p></p>
       ) : (
         <div>
-          <div className="flex border relative">
+          <div className="flex relative">
             <button
               onClick={() => {
                 setIsReleaseCreateOpen((prev) => !prev);
               }}
-              className="absolute top-2 right-2 rounded hover:bg-indigo-900 duration-300 bg-indigo-800 text-white p-2 px-6"
+              className="absolute top-[20px] right-44 btn-primary"
             >
               Add Release
             </button>
@@ -74,17 +74,17 @@ export default function AccessTeam() {
               onClick={() => {
                 launchTutorial();
               }}
-              className="absolute top-4 right-40  bg-indigo-800 text-white p-1 flex items-center justify-center rounded"
+              className="absolute top-[20px] right-2  btn-primary"
             >
-              Read Tutorial {TutorialIcon("fill-white")}
+              Read Tutorial {TutorialIcon("fill-white", "20", "20")}
             </button>
             <motion.div
               initial={{ opacity: 0 }}
               animate={
-                isReleaseCreateOpen ? { translateY: 20, opacity: 1 } : {}
+                isReleaseCreateOpen ? { translateY: 30, opacity: 1 } : {}
               }
               transition={{ duration: 0.4 }}
-              className={`flex flex-col-reverse z-50 bg-white text-sm border absolute top-10 right-2 w-fit p-2 rounded px-4 shadow ${
+              className={`flex flex-col-reverse z-50 bg-white text-sm border absolute top-10 right-2 input-menu ${
                 isReleaseCreateOpen ? "" : "hidden"
               }`}
             >
@@ -164,9 +164,7 @@ export default function AccessTeam() {
           </div>
 
           <div className="mt-4">
-            <div className="p-1 pb-0 z-10 tracking-wide border-b border-green-300 text-3xl mb-2 text-gray-300">
-              RELEASES
-            </div>
+            <div className="header-main">RELEASES</div>
             {currentTeam && currentTeam[0].Release.length > 0 ? (
               currentTeam[0].Release.map((item) => {
                 if (item) {
@@ -295,18 +293,6 @@ export default function AccessTeam() {
                 </p>
               </div>
             </div>
-            <button
-              className={`duration-500 md:hidden ${
-                smallMenuOpen
-                  ? "text-transparent"
-                  : "text-green-400 bg-green-500 rounded-full p-1 border border-indigo-800"
-              }`}
-              onClick={() => setSmallMenuOpen(true)}
-            >
-              {addIcon(
-                `${smallMenuOpen ? "fill-transparent" : "fill-green-200 "}`
-              )}
-            </button>
           </div>
           <ToastContainer></ToastContainer>
         </div>

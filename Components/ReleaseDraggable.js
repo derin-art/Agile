@@ -231,7 +231,7 @@ export default function ReleaseDraggable({
           onClick={() => {
             setOpenSprintCreate((prev) => !prev);
           }}
-          className="p-2 bg-indigo-800 text-white px-4 absolute top-[16px] z-40 font-Josefin text-sm rounded hover:bg-indigo-900 duration-300 right-56"
+          className="p-2 bg-indigo-800 text-white px-4 absolute top-[16px] z-40  right-56 btn-primary"
         >
           Add New Sprint
         </button>
@@ -244,7 +244,7 @@ export default function ReleaseDraggable({
           }`}
         >
           <button
-            className="p-1 px-2 hidden font-Josefin mb-2 text-white text-sm bg-indigo-800 rounded"
+            className="p-1 px-2 hidden font-Josefin mb-2 text-white text-sm bg-indigo-800 rounded btn-primary"
             onClick={async () => {
               Object.entries(testArray).forEach((val) => {
                 Sprints.forEach((item) => {
@@ -420,7 +420,7 @@ export default function ReleaseDraggable({
             })}
           </div>
           <button
-            className="p-2  ml-4 font-Josefin flex absolute right-2 top-4 text-white text-sm bg-indigo-800 rounded duration-300 hover:bg-indigo-900"
+            className="ml-4 text-sm p-2 font-Josefin flex absolute right-2 top-4 items-center justify-center text-white text-sm bg-indigo-800 rounded duration-300 hover:bg-indigo-900"
             onClick={async () => {
               setSaveSuccessful(true);
               Object.entries(testArray).forEach((val) => {
@@ -471,7 +471,7 @@ export default function ReleaseDraggable({
                 Release {name}
               </p>
               <button
-                className="p-1 px-2 ml-4 font-Josefin hidden -mt-3 border text-indigo-800 text-sm bg-white rounded"
+                className=" ml-4 font-Josefin hidden -mt-3 border text-indigo-800 text-sm bg-white rounded btn-primary"
                 onClick={() => {
                   Object.entries(testArray).forEach((val) => {
                     Sprints.forEach((item) => {

@@ -1,6 +1,7 @@
 import deleteIcon from "../../public/deleteIcon";
 import Link from "next/dist/client/link";
 import { toast } from "react-toastify";
+import FlagIcon from "../../public/Flag";
 
 export default function Release({
   name,
@@ -12,7 +13,8 @@ export default function Release({
   dateEnd,
 }) {
   return (
-    <div className="relative flex md:w-1/2 border-b">
+    <div className="relative flex md:w-1/2 border-b-2 items-center">
+      {FlagIcon("border p-2 rounded-full fill-green-400", "40", "40")}
       <Link href={`/Teams/${currentTeam[0]._id}/userstory`}>
         <div
           onClick={() => {

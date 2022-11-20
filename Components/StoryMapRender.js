@@ -79,7 +79,7 @@ export default function StoryMapRender({
         </Droppable>
       </DragDropContext>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="h-5/6 overflow-auto mt-8">
+        <div className="h-5/6 mt-8 overflow-y-auto border w-fit scrollbar-alt">
           {Object.entries(testArray).map((entry) => {
             if (entry[0] != "Tiles") {
               return (
