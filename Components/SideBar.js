@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import CommunicateIcon from "../public/SideBarIcons/communicateIcon";
 import MapIcon from "../public/SideBarIcons/mapIcon";
 import TeamDataIcon from "../public/SideBarIcons/teamDataIcon";
+import GoBackIcon from "../public/goBackIcon";
 
 export default function SideBar() {
   const router = useRouter();
@@ -22,6 +23,8 @@ export default function SideBar() {
   const isAccess =
     router.pathname === "/Teams/[accessteam]" ||
     router.pathname === "/Teams/[accessteam]/userstory";
+
+  const isInUserStory = router.pathname === "/Teams/[accessteam]/userstory";
 
   return (
     <div
@@ -57,16 +60,26 @@ export default function SideBar() {
                 : ""
             }`}
           >
-            {openFolderIcon(
-              `${isAccess ? "fill-green-300" : "fill-indigo-600"} duration-300 `
-            )}
+            {!isInUserStory
+              ? openFolderIcon(
+                  `${
+                    isAccess ? "fill-green-300" : "fill-indigo-600"
+                  } duration-300 `
+                )
+              : GoBackIcon(
+                  "24",
+                  "24",
+                  `${
+                    isAccess ? "fill-green-300" : "fill-indigo-600"
+                  } duration-300 `
+                )}
 
             <p
               className={`${
                 isAccess ? "text-green-300" : "text-indigo-500"
               } duration-300`}
             >
-              Backlog
+              {isInUserStory ? "Back" : "Releases"}
             </p>
           </button>
         </Link>

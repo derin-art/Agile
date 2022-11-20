@@ -12,6 +12,7 @@ import Logo from "../../../public/logo";
 import { motion } from "framer-motion";
 import parseJson from "parse-json";
 import TutorialIcon from "../../../public/TutorialIcon";
+import EpicMenu from "../../../Components/UserStoryComponent/EpicMenu";
 
 export default function UserStory() {
   const {
@@ -37,6 +38,7 @@ export default function UserStory() {
   const [themeColor, setThemeColor] = useState("");
   const [themeName, setThemeName] = useState("");
   const [dataSaved, setDataSaved] = useState({ status: "", loading: false });
+  const [createEpicMenu, setCreateEpicMenu] = useState(false);
 
   const uniqueEpics = [
     ...new Set(currentReleaseEpics.map((item) => item.name)),
@@ -322,29 +324,72 @@ export default function UserStory() {
   };
 
   return (
-    <div className="mt-16 md:ml-4">
-      <p className="text-3xl mb-2 text-gray-300 border-b border-green-300 font-Josefin">
-        BackLog
-      </p>
+    <div className="mt-14 md:ml-4">
+      <p className="header-main">BackLog</p>
       <div className="md:hidden font-Josefin p-2">
         Please Switch to a bigger screen to access this feature
       </div>
       <div className="w-full relative  hidden md:block">
-        <p className="text-sm font-Josefin">Begin by creating user stories</p>
-        <div className="">
+        <p className="text-xs font-Josefin ml-2">
+          Begin by creating user stories, Drag a User story over an epic to add
+          them to the epic. click the save current state button to save it.
+        </p>
+        <div className="flex">
           <button
             onClick={() => {
               setCreateStoryMenu((prev) => !prev);
             }}
-            className="p-2 px-6 bg-indigo-800 text-white text-sm font-Josefin absolute right-2 -top-14 rounded"
+            className="p-2 px-6 bg-indigo-800 text-white text-sm font-Josefin ml-2 rounded"
           >
             Add User Story
           </button>
+          <div className=" flex items-center">
+            <button
+              className="btn-primary ml-4"
+              onClick={async () => {
+                setDataSaved((prev) => ({ ...prev, loading: true }));
+
+                const editedPinsWithEpics = Object.entries(currentPinsOpen).map(
+                  (item, index) => {
+                    if (item) {
+                      return item[1].map((pins) => {
+                        if (pins) {
+                          const itemColor = Themes.filter((theme) => {
+                            if (theme) {
+                              return theme.name === item[0];
+                            }
+                          });
+
+                          const newTheme = {
+                            name: item[0],
+                            color: itemColor[0].color,
+                          };
+                          return { ...pins, theme: newTheme };
+                        }
+                      });
+                    } else {
+                      return;
+                    }
+                  }
+                );
+
+                const response = await saveStories(editedPinsWithEpics.flat());
+
+                setDataSaved((prev) => ({
+                  loading: false,
+                  status: response.status,
+                }));
+              }}
+            >
+              Save Current State
+            </button>
+            {dataSaved.loading && Logo("ml-2 fill-green-400 animate-spin")}
+          </div>
           <button
             onClick={() => {
               launchTutorial();
             }}
-            className="texts-sm right-40 -top-14 absolute font-Josefin text-white bg-indigo-800 flex items-center justify-center p-1 rounded"
+            className="btn-primary absolute right-2 -top-[53px]"
           >
             Read Tutorial {TutorialIcon("fill-white")}
           </button>
@@ -353,7 +398,7 @@ export default function UserStory() {
           initial={{ opacity: 0 }}
           animate={createStoryMenu ? { translateY: 20, opacity: 1 } : {}}
           transition={{ duration: 0.4 }}
-          className={`border rounded-2xl shadow z-30 pb-2 bg-white absolute  -top-8 right-2 ${
+          className={`input-menu absolute top-12 ${
             createStoryMenu ? "" : "hidden"
           }`}
         >
@@ -363,9 +408,9 @@ export default function UserStory() {
       <div className=" flex -z-50  hidden md:flex">
         <div className="flex flex-col">
           <ToastContainer></ToastContainer>
-          <div className=" border-b-2 border-l-2 w-full ml-2 mr-1 rounded-bl-2xl flex p-8">
+          <div className=" border-b-2 border-l-2 w-full ml-2 mr-1 rounded-bl-2xl flex p-8 pt-2">
             <DragDropContext onDragEnd={onDragEndFinal}>
-              <div className="flex-col mr-4 font-Josefin relative">
+              <div className="flex-col mr-4 font-Josefin relative hidden">
                 <button
                   style={{ transitionDuration: "3s" }}
                   onClick={() => {
@@ -394,6 +439,7 @@ export default function UserStory() {
                 >
                   Create a New Epic{" "}
                 </button>
+
                 <div className="-z-50 mt-4">
                   <p className="-mb-2 mt-2 text-black">Input Epic Name</p>
                   <input
@@ -463,7 +509,7 @@ export default function UserStory() {
                 </div>
               </div>
 
-              <div className="flex lg:w-[650px] max-w-[650px] h-[500px] overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+              <div className="flex lg:w-[1000px] max-w-[1000px] h-[500px] overflow-auto scrollbar-thin  scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                 <div className="flex ml-2">
                   {currentPinsOpen &&
                     Object.entries(currentPinsOpen).map((epic) => {
@@ -473,9 +519,12 @@ export default function UserStory() {
                         );
 
                         return (
-                          <div key={epic[0].toString()} className="relative">
-                            <div className="absolute -top-0 z-40 text-gray-700 bg-gray-100 bg-white h-8 truncate border-b border-l w-full font-Josefin">
-                              <div className="w-48 truncate px-2 text-center">
+                          <div
+                            key={epic[0].toString()}
+                            className="relative mr-2"
+                          >
+                            <div className="absolute -top-0 z-10 text-gray-700 bg-white h-8 truncate border w-full font-Josefin w-48 flex items-center justify-center">
+                              <div className="w-32 truncate px-2 text-center mt-1">
                                 {epic[0] === "Notheme" ? "No Epic" : epic[0]}
                               </div>
                             </div>
@@ -485,11 +534,11 @@ export default function UserStory() {
                                   <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className={`h-96 overflow-auto pt-8 w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
+                                    className={`h-[500px] overflow-auto pt-8 w-48 flex-col flex items-center mr-2 rounded-bl-2xl    ${
                                       themeObject[0]
                                         ? `border-${themeObject[0].color}`
                                         : ""
-                                    } border-l border-b `}
+                                    } border `}
                                   >
                                     {currentPinsOpen[epic[0]].map(
                                       (item, index) => {
@@ -547,11 +596,44 @@ export default function UserStory() {
               </div>
               <div className="flex flex-col ml-4 border-l max-h-[500px] overflow-auto scrollbar-thin items-center w-40 ">
                 <div className="mb-2 font-Josefin self-start ml-2 text-xl text-gray-700">
-                  EPICS
-                  <div className="text-xs">
-                    Drag a User story over an epic to add them to the epic.
-                    click the save current state button to save it.
-                  </div>
+                  EPICS{" "}
+                  <button
+                    onClick={() => {
+                      setCreateEpicMenu((prev) => !prev);
+                    }}
+                    className="btn-primary"
+                  >
+                    Add new Epic
+                  </button>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={
+                      createEpicMenu ? { translateY: 20, opacity: 1 } : {}
+                    }
+                    transition={{ duration: 0.4 }}
+                    className={`absolute text-sm top-54 z-40 mr-14 ${
+                      createEpicMenu ? "" : "hidden"
+                    }`}
+                  >
+                    <EpicMenu
+                      Logo={Logo}
+                      SetTheme={SetTheme}
+                      Themes={Themes}
+                      colorCOdes={colorCOdes}
+                      currentPinsOpen={currentPinsOpen}
+                      dataSaved={dataSaved}
+                      motion={motion}
+                      saveStories={saveStories}
+                      setCurrentPinsOpen={setCurrentPinsOpen}
+                      setDataSaved={setDataSaved}
+                      setThemeName={setThemeName}
+                      themeColor={themeColor}
+                      themeName={themeName}
+                      themes={themes}
+                      toast={toast}
+                      key={"EpicMenu"}
+                    ></EpicMenu>
+                  </motion.div>
                 </div>
                 {Themes &&
                   Themes.map((item) => {
@@ -563,7 +645,7 @@ export default function UserStory() {
                               <div
                                 className={`border py-8 flex items-center border-${
                                   item.color
-                                } border-r-8 mb-8 p-6 border-2 text-gray-800 rounded font-Josefin duration-200 mr-4 w-32 truncate ${
+                                } border-r-8 mb-8 p-6 border-2 text-gray-800 z-10 rounded font-Josefin duration-200 mr-4 max-w-[125px] truncate ${
                                   snapshot.isDraggingOver ? "scale-110" : ""
                                 }`}
                                 {...provided.droppableProps}
@@ -577,7 +659,9 @@ export default function UserStory() {
                                   });
                                 }}
                               >
-                                <div className="w-20 truncate">{item.name}</div>
+                                <div className="w-20 truncate z-20">
+                                  {item.name}
+                                </div>
                               </div>
                             );
                             {
