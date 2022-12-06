@@ -606,7 +606,7 @@ router
         console.log("Mongo ERR", err);
         return;
       });
-    console.log("iddddd", req.query.id, req.query.teamDelete);
+
     if (req.query.teamDelete) {
       console.log("deleting team");
       const newTeamAfterDelete = await AgileTeam.findByIdAndDelete(
