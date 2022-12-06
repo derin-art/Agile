@@ -66,7 +66,7 @@ export default function AccessTeam() {
               onClick={() => {
                 setIsReleaseCreateOpen((prev) => !prev);
               }}
-              className="absolute top-[20px] right-44 btn-primary"
+              className="absolute top-[20px] sm:right-44 right-0 btn-primary"
             >
               Add Release
             </button>
@@ -74,7 +74,7 @@ export default function AccessTeam() {
               onClick={() => {
                 launchTutorial();
               }}
-              className="absolute top-[20px] right-2  btn-primary"
+              className="absolute top-[20px] right-2  btn-primary hidden sm:flex"
             >
               Read Tutorial {TutorialIcon("fill-white", "20", "20")}
             </button>

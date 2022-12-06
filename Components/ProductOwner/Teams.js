@@ -130,7 +130,7 @@ export default function Team({
           onClick={() => {
             launchTutorial();
           }}
-          className="absolute right-32 top-1 p-1 text-white rounded text-sm  bg-indigo-800 flex items-center justify-center"
+          className="absolute right-32 btn-primary top-0 bg-indigo-800 hidden flex items-center justify-center"
         >
           Read Tutorial {TutorialIcon("fill-white")}
         </button>
