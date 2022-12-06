@@ -13,7 +13,7 @@ const router = createRouter();
 
 /* const upload = multer({
   storage: multer.diskStorage({
-    destination: "./public/uploads",
+    destination: "./public/uploads"
     filename: (req, file, cb) => cb(null, file.originalname),
   }),
 });
@@ -221,8 +221,6 @@ router
         }
       });
 
-      console.log("teamSPIRTS", TeamData.teamData.sprints);
-
       const UpdatedTeamWithUpdatedRelease = await AgileTeam.findByIdAndUpdate(
         req.query.teamCurrentId,
         {
@@ -376,8 +374,6 @@ router
           });
         });
       }
-
-      console.log("foinn", TestScenc[req.query.releaseId]);
 
       const targetedSprint =
         UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId];

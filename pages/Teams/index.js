@@ -60,19 +60,21 @@ export default function Newpage({ finalData }) {
 
   return (
     <div className="">
-      <div className="mt-20 md:ml-4">
-        <TeamsCard
-          messagesBeforeUpdate={messagesBeforeUpdate}
-          setMessagesBeforeUpdate={setMessagesBeforeUpdate}
-          userData={userData}
-          CreateTeam={CreateTeam}
-          getUserTeam={getUserTeam}
-          userTeamData={userTeamData}
-          authUser={authUser}
-          setCurrentTeamAvailable={setCurrentTeamAvailable}
-          deleteTeam={deleteTeam}
-        ></TeamsCard>
-        <div className="hidden">
+      <div className="sm:mt-20 mt-16 md:ml-4 ">
+        <div className="hidden sm:block">
+          <TeamsCard
+            messagesBeforeUpdate={messagesBeforeUpdate}
+            setMessagesBeforeUpdate={setMessagesBeforeUpdate}
+            userData={userData}
+            CreateTeam={CreateTeam}
+            getUserTeam={getUserTeam}
+            userTeamData={userTeamData}
+            authUser={authUser}
+            setCurrentTeamAvailable={setCurrentTeamAvailable}
+            deleteTeam={deleteTeam}
+          ></TeamsCard>
+        </div>
+        <div className="sm:hidden block">
           <Team
             messagesBeforeUpdate={messagesBeforeUpdate}
             setMessagesBeforeUpdate={setMessagesBeforeUpdate}
@@ -89,52 +91,3 @@ export default function Newpage({ finalData }) {
     </div>
   );
 }
-
-/* export async function getStaticProps() {
-  const data = await fetch("http://localhost:3000/api/handler").catch((err) => {
-    console.log(err);
-  });
-  const finalData = await data.json();
-  console.log(finalData);
-  return {
-    props: {
-      finalData,
-    },
-  };
-} */
-
-/*  <h1>
-        Newpage
-        <Link href="/">
-          <button>Home</button>
-        </Link>
-        <input
-          onChange={(e) => {
-            onChangeHandler(e.target.value);
-          }}
-          value={typedInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("join", "room1");
-            console.log("join room emitted");
-          }}
-        >
-          Create New Room
-        </button>
-        <button>Join created room</button>
-        <input
-          placeholder="room data"
-          onChange={(e) => {
-            setRoomInput(e.target.value);
-          }}
-          value={roomInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("roomMessage", roomInput);
-          }}
-        >
-          Send
-        </button>
-      </h1> */
