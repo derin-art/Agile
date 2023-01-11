@@ -15,9 +15,7 @@ function AuthUserProvider({ children }) {
 
   useEffect(() => {
     if (auth.authUser) {
-      console.log(auth.authUser);
       if (auth.authUser.email) {
-        console.log(auth.authUser.email);
         if (!auth.userData) {
           auth.getUserData(auth.authUser.email);
         }

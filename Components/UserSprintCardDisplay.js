@@ -26,10 +26,10 @@ export default function SprintCardDisplay({
   const [assginedUserHovered, setAssignedUserUserHovered] = useState({
     name: "",
   });
-  console.log("yess", id, name, PriorityRank);
+
   const ID = id;
   const { userData, UserStoryInteractions } = useAuth();
-  console.log("M", inProgress);
+
   const infoIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +195,6 @@ export default function SprintCardDisplay({
               } else {
                 entireObject.AssignedTo = [userData];
               }
-              console.log(entireObject, releaseId);
 
               UserStoryInteractions(entireObject, releaseId);
             }}
@@ -216,13 +215,6 @@ export default function SprintCardDisplay({
             }`}
             onClick={async () => {
               entireObject.completed = true;
-
-              /*    if (Array.isArray(entireObject.AssignedTo)) {
-                entireObject.AssignedTo.push(userData);
-              } else {
-                entireObject.AssignedTo = [userData];
-              } */
-              console.log(entireObject, releaseId);
 
               UserStoryInteractions(entireObject, releaseId);
             }}

@@ -543,7 +543,6 @@ export default function UserStory() {
                                     {currentPinsOpen[epic[0]].map(
                                       (item, index) => {
                                         if (item) {
-                                          console.log(item, "item");
                                           return (
                                             <Draggable
                                               draggableId={item._id}

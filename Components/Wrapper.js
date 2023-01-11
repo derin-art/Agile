@@ -7,12 +7,11 @@ import UserSideBar from "./UserSideBar";
 
 export default function Wrapper(props) {
   const router = useRouter();
-  console.log(router.pathname);
+
   const { authUser, loading } = useAuth();
 
   React.useEffect(() => {
     if (router.pathname != "/") {
-      console.log(authUser, loading, "NewPage");
       if (!authUser) {
         router.push("/");
       }

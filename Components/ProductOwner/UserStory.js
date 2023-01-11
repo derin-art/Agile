@@ -8,7 +8,6 @@ import PrioritySelector from "../UserStoryComponent/PrioritySelector";
 
 export default function UserStory() {
   const { addUserStory, currentOpenRelease } = useAuth();
-  console.log(currentOpenRelease, "CUrrent release");
 
   const [color, setColor] = useState("green");
 
@@ -171,7 +170,6 @@ export default function UserStory() {
               acceptanceCriteria,
               color
             );
-            console.log("UserStoryCreateData", data);
           }}
         >
           CREATE

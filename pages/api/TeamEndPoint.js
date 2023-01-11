@@ -25,7 +25,6 @@ router
     await next();
   })
   .get(async (req, res) => {
-    console.log("Team Request");
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -68,8 +67,6 @@ router
     return getRequest();
   })
   .post(async (req, res) => {
-    console.log("Post team request");
-    console.log(req.body);
     await mongoose
       .connect(
         "mongodb+srv://AgileManager:m041kVFXynBH6fMe@cluster0.lth3d.mongodb.net/AgileRecords?retryWrites=true&w=majority",
@@ -89,7 +86,6 @@ router
     const name = req.body.name;
     const email = req.body.email;
     const Summary = req.body.Summary;
-    console.log(req.body, "actual body");
 
     const createdTeam = await AgileTeam.create({
       name: name,
@@ -99,13 +95,10 @@ router
         sprints: {},
       },
     });
-    console.log(createdTeam);
     return res.status(201).json(createdTeam);
   })
   .patch(async (req, res) => {
     if (req.body.newRelease) {
-      console.log("IDD", req.body.newRelease);
-      console.log(req.body.dateEnd, req.body.dateStart, "dates");
       const updatedTeam = await AgileTeam.findOneAndUpdate(
         { _id: req.query.id },
         {
@@ -152,11 +145,9 @@ router
           name: req.body.name,
           _id: req.body.id,
         };
-        console.log(item._id, req.query.releaseCurrentId);
+
         if (item) {
           if (item._id.toString() === req.query.releaseCurrentId) {
-            console.log("Fit");
-            console.log(item);
             item.agilePins.push(sentStory);
             return { ...item, agilePins: [...item.agilePins, sentStory] };
           } else {
@@ -221,8 +212,6 @@ router
         }
       });
 
-      console.log("teamSPIRTS", TeamData.teamData.sprints);
-
       const UpdatedTeamWithUpdatedRelease = await AgileTeam.findByIdAndUpdate(
         req.query.teamCurrentId,
         {
@@ -240,22 +229,16 @@ router
       }
     }
     if (req.query.updateTeamWithSprints) {
-      console.log("parse", parseJson(req.body.Sprint));
       const UpdatedTeamWithStoriesAndEpics = await AgileTeam.findById(
         req.query.teamId
       ).catch((err) => {
         console.log(err);
       });
 
-      console.log("dataFRom", UpdatedTeamWithStoriesAndEpics.teamData.sprints);
-
       const newSprints = UpdatedTeamWithStoriesAndEpics.teamData.sprints;
 
       const id = req.query.releaseId;
-      console.log("thedata", {
-        [id]: parseJson(req.body.Sprint),
-        ...newSprints,
-      });
+
       newSprints[id] = parseJson(req.body.Sprint);
       const updatedFinalSprints = {
         ...newSprints,
@@ -280,11 +263,9 @@ router
         console.log(err);
       });
 
-      console.log("Latest", UpdatedTeamWithStoriesAndEpics);
       const newReleases = UpdatedTeamWithStoriesAndEpics.Release.map(
         (release) => {
           if (release._id.toString() === req.query.releaseId) {
-            console.log("release", release);
             release.agilePins = parseJson(req.body.newStories);
             return release;
           } else {
@@ -377,8 +358,6 @@ router
         });
       }
 
-      console.log("foinn", TestScenc[req.query.releaseId]);
-
       const targetedSprint =
         UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId];
       const newStories = [...parseJson(req.body.newStories)];
@@ -404,11 +383,6 @@ router
           });
         }
       }
-
-      console.log(
-        "newNew",
-        UpdatedTeamWithStoriesAndEpics.teamData.sprints[req.query.releaseId]
-      );
 
       if (newReleases) {
         const finalUpdatedTeam = await AgileTeam.findByIdAndUpdate(
@@ -456,18 +430,16 @@ router
                   return pin;
                 }
               } else if (pin.tName) {
-                console.log("pl", pin.tName);
                 const pinPins = pin.pins.filter((p) => {
                   if (p._id === req.query.pinId) {
-                    console.log("real", p);
                   }
                   return p._id != req.query.pinId;
                 });
-                console.log(pin.tName, pinPins);
+
                 return { ...pin, pins: pinPins };
               }
             });
-            console.log("sss", newMappedArr);
+
             const filteredNewMAP = newMappedArr.filter((found) => {
               if (found) {
                 return found;
@@ -482,10 +454,8 @@ router
       }
 
       teamToBeUpdated.Release.forEach((item) => {
-        console.log("rann", item._id);
         if (item._id.toString() === req.query.releaseId) {
           const newAgilePins = item.agilePins.filter((pins) => {
-            console.log(pins._id, req.query.pinId);
             return pins._id != req.query.pinId;
           });
           item.agilePins = newAgilePins;
@@ -513,7 +483,7 @@ router
           }
         }
       }
-      console.log("ss", teamToBeUpdated);
+
       const newUpdatedTeam = await AgileTeam.findByIdAndUpdate(
         req.query.teamId,
         teamToBeUpdated,
@@ -524,7 +494,6 @@ router
       return res.status(200).json(newUpdatedTeam);
     }
     if (req.query.interaction) {
-      console.log("sentA");
       const newUpdatedTeam = await AgileTeam.findById(req.query.teamId).catch(
         (err) => {
           console.log(err);
@@ -550,7 +519,7 @@ router
       ).catch((err) => {
         console.log(err);
       });
-      console.log(finalNewUpdatedTeam);
+
       return res.status(200).json(finalNewUpdatedTeam);
     }
     if (req.body.Map) {

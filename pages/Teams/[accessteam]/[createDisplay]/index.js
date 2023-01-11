@@ -8,18 +8,11 @@ import parseJson from "parse-json";
 import TutorialIcon from "../../../../public/TutorialIcon";
 
 export default function CreateDisplay() {
-  const {
-    currentTeam,
-    authUser,
-    loading,
-    CreateUserWithEmailAndPassword,
-    SignInWithEmailAndPassword,
-  } = useAuth();
-  console.log("currenetTemsa", currentTeam);
+  const { currentTeam, authUser, loading } = useAuth();
+
   const router = useRouter();
 
   useEffect(() => {
-    console.log(authUser, loading, "NewPage");
     if (!authUser) {
       router.push("/");
     }

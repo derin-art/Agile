@@ -61,7 +61,7 @@ export default function TeamsCard({
 
   const fetchTeamFunction = async () => {
     setStateTeamData(null);
-    console.log("mmm", userData);
+
     if (userData === null) {
       toast.error("User data unavailable due to poor internet connection", {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -70,7 +70,6 @@ export default function TeamsCard({
       return;
     }
     if (!userData.email) {
-      console.log("warn");
       toast.warn("User data still being fetched", {
         position: toast.POSITION.BOTTOM_CENTER,
         className: "text-sm",
@@ -79,7 +78,7 @@ export default function TeamsCard({
     if (userData) {
       if (!userData.email) return;
       const data = await getUserTeam(userData.email);
-      console.log("actual", data);
+
       setStateTeamData(data);
     }
   };
@@ -110,12 +109,12 @@ export default function TeamsCard({
   };
 
   return (
-    <div className="w-full h-screen font-Josefin">
+    <div className="w-full h-screen font-Josefin lg:block hidden ">
       <ToastContainer></ToastContainer>
       <div className="flex h-full w-full justify-center">
         <div className="w-2/5 h-96 bg-indigo-800 lg:mr-32 xl:mr-40 mr-8 hover:shadow-lg rounded-2xl p-4 duration-300 hover:shadow-indigo-800/50">
           <div className="w-full">
-            <div className="text-white md:text-4xl lg:text-5xl xl:text-7xl relative w-full text-left">
+            <div className="text-white md:text-4xl lg:text-5xl 2xl:text-7xl relative w-full text-left">
               {!isDataMenuOpen ? (
                 <button
                   onClick={() => {
@@ -192,7 +191,7 @@ export default function TeamsCard({
                   className="w-full h-full absolute top-0"
                 >
                   {!createTeamMenu ? (
-                    <div className="text-white md:text-4xl xl:text-7xl  h-full w-full">
+                    <div className="text-white md:text-4xl 2xl:text-7xl  h-full w-full">
                       <div className="">
                         <button
                           onClick={() => {
@@ -237,7 +236,7 @@ export default function TeamsCard({
             </div>
           </div>
           <div className="w-full h-2/4 bg-indigo-800 border lg:mt-8 xl:mt-12 mt-4 rounded-2xl p-4">
-            <div className="text-white md:text-4xl xl:text-7xl ">
+            <div className="text-white md:text-4xl 2xl:text-7xl ">
               Read About
             </div>
             {TutorialIcon("fill-indigo-900", "120", "120")}

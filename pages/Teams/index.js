@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import usefirebaseAuthState from "../../Hooks/firebaseAuthState";
 import { useAuth } from "../../Context/firebaseUserContext";
-import axios from "axios";
-import UserStory from "../../Components/ProductOwner/UserStory";
+
 import Team from "../../Components/ProductOwner/Teams";
-import { io } from "socket.io-client";
+
 import TeamsCard from "../../Components/ProductOwner/TeamsCards";
 let socket;
 
@@ -72,8 +71,9 @@ export default function Newpage({ finalData }) {
           setCurrentTeamAvailable={setCurrentTeamAvailable}
           deleteTeam={deleteTeam}
         ></TeamsCard>
-        <div className="hidden">
-          <Team
+        <div className="lg:hidden p-2 font-Josefin">
+          Please switch to a bigger screen to use this app
+          {/*  <Team
             messagesBeforeUpdate={messagesBeforeUpdate}
             setMessagesBeforeUpdate={setMessagesBeforeUpdate}
             userData={userData}
@@ -83,58 +83,9 @@ export default function Newpage({ finalData }) {
             authUser={authUser}
             setCurrentTeamAvailable={setCurrentTeamAvailable}
             deleteTeam={deleteTeam}
-          ></Team>
+          ></Team> */}
         </div>
       </div>
     </div>
   );
 }
-
-/* export async function getStaticProps() {
-  const data = await fetch("http://localhost:3000/api/handler").catch((err) => {
-    console.log(err);
-  });
-  const finalData = await data.json();
-  console.log(finalData);
-  return {
-    props: {
-      finalData,
-    },
-  };
-} */
-
-/*  <h1>
-        Newpage
-        <Link href="/">
-          <button>Home</button>
-        </Link>
-        <input
-          onChange={(e) => {
-            onChangeHandler(e.target.value);
-          }}
-          value={typedInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("join", "room1");
-            console.log("join room emitted");
-          }}
-        >
-          Create New Room
-        </button>
-        <button>Join created room</button>
-        <input
-          placeholder="room data"
-          onChange={(e) => {
-            setRoomInput(e.target.value);
-          }}
-          value={roomInput}
-        ></input>
-        <button
-          onClick={() => {
-            socket.emit("roomMessage", roomInput);
-          }}
-        >
-          Send
-        </button>
-      </h1> */

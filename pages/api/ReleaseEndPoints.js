@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import multer from "multer";
 import bodyParser from "body-parser";
 
-const TeamJson = bodyParser.json();
+/* const TeamJson = bodyParser.json(); */
 
 /* const upload = multer({
   storage: multer.diskStorage({

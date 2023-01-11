@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import "react-toastify/dist/ReactToastify.css";
 
 import { useAuth } from "../../../../../Context/firebaseUserContext";
 

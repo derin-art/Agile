@@ -113,8 +113,7 @@ export default function AccessTeam() {
                     });
                     return;
                   }
-                  console.log(currentTeam, userData);
-                  console.log("Yams");
+
                   if (currentTeam && userData) {
                     const newCreatedRelease = CreateRelease(
                       userData.email,
@@ -123,7 +122,6 @@ export default function AccessTeam() {
                       releaseStartDate,
                       releaseStopDate
                     );
-                    console.log(newCreatedRelease);
                   }
                 }}
               >

@@ -50,7 +50,7 @@ export default function Team({
 
   const fetchTeamFunction = async () => {
     setStateTeamData(null);
-    console.log("mmm", userData);
+
     if (userData === null) {
       toast.error("User data unavailable due to poor internet connection", {
         position: toast.POSITION.BOTTOM_CENTER,
@@ -59,7 +59,6 @@ export default function Team({
       return;
     }
     if (!userData.email) {
-      console.log("warn");
       toast.warn("User data still being fetched", {
         position: toast.POSITION.BOTTOM_CENTER,
         className: "text-sm",
@@ -68,7 +67,7 @@ export default function Team({
     if (userData) {
       if (!userData.email) return;
       const data = await getUserTeam(userData.email);
-      console.log("actual", data);
+
       setStateTeamData(data);
     }
   };

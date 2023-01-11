@@ -34,7 +34,6 @@ export default function usefirebaseAuthState() {
   const [currentPinsEpics, setCurrentPinEpics] = useState(null);
   const [themes, setTheme] = useState([]);
 
-  console.log("id current", themes, currentTeam, currentOpenRelease);
   const clear = () => {
     setAuthUser(null);
     setLoading(false);
@@ -48,7 +47,7 @@ export default function usefirebaseAuthState() {
   const getUserData = async (email) => {
     const formdata = new FormData();
     formdata.append("email", email);
-    console.log("emailData", email);
+
     const data = await axios
       .get(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`)
       .catch((err) => {
@@ -57,7 +56,6 @@ export default function usefirebaseAuthState() {
     if (data) {
       setUserData(data.data);
     }
-    console.log(data);
   };
 
   const auth = getAuth();
@@ -102,7 +100,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
         return err;
       });
-    console.log(createdMongoDbUser);
   };
 
   const patchedMongoDbUser = async (email, role) => {
@@ -112,8 +109,6 @@ export default function usefirebaseAuthState() {
 
     const formdata = new FormData();
     formdata.append("TeamRole", role);
-    console.log("TeamRole", role);
-    console.log("loginEmail", email);
 
     const editedUser = await axios
       .patch(`${process.env.NEXT_PUBLIC_API_USER_ROUTE}?email=${email}`, {
@@ -123,7 +118,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
         return;
       });
-    console.log("Login details", editedUser);
 
     setUserData(editedUser.data);
   };
@@ -154,7 +148,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     if (data) {
-      console.log(data.data);
       setUserTeamData(data.data);
       return data.data;
     }
@@ -174,7 +167,7 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log(err);
       });
-    console.log(createdTeamData);
+
     if (createdTeamData) {
       return createdTeamData;
     }
@@ -199,7 +192,6 @@ export default function usefirebaseAuthState() {
   };
 
   const PatchTeamWithNewRelease = async (teamId, releaseData, config) => {
-    console.log("Patchhh", releaseData);
     const formdata = new FormData();
     formdata.append("newRelease", releaseData);
     formdata.append("agilePins", releaseData.agilePins);
@@ -209,7 +201,6 @@ export default function usefirebaseAuthState() {
     formdata.append("dateEnd", releaseData.dateEnd);
     formdata.append("dateStart", releaseData.dateStart);
 
-    console.log("Made it through");
     const updatedTeamWithRelease = await axios
       .patch(`${process.env.NEXT_PUBLIC_API_TEAM_ROUTE}?id=${teamId}`, {
         newRelease: releaseData,
@@ -223,7 +214,7 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log(err);
       });
-    console.log("UpdatedTeam", updatedTeamWithRelease);
+
     if (updatedTeamWithRelease) {
       setCurrentTeam([updatedTeamWithRelease.data]);
     }
@@ -248,8 +239,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     if (data) {
-      console.log("DDD", data);
-      console.log("dd", typeof data.data);
       PatchTeamWithNewRelease(teamId, data.data);
 
       return data.data;
@@ -296,7 +285,6 @@ export default function usefirebaseAuthState() {
       )
       .catch((err) => console.log(err));
     if (result) {
-      console.log(result);
       const UpdatedReleaseWithStory = result.data.Release.filter(
         (item) => item._id === releaseCurrentId
       );
@@ -333,7 +321,6 @@ export default function usefirebaseAuthState() {
         });
         setCurrentPinsOpen(finalObject);
 
-        console.log(UpdatedReleaseWithStory, "Updated");
         setCurrentOpenRelease(UpdatedReleaseWithStory);
 
         setCurrentReleaseEpics((prev) => {
@@ -343,7 +330,7 @@ export default function usefirebaseAuthState() {
               allCurrentEpics.push(item.theme);
             }
           });
-          console.log("allCUrenr", allCurrentEpics);
+
           return allCurrentEpics;
         });
 
@@ -356,11 +343,6 @@ export default function usefirebaseAuthState() {
         );
 
         const allSaveThemes = [];
-        console.log(
-          "currentReleaseEpic",
-          currentReleaseEpics,
-          nonStateReleaseEpics
-        );
 
         uniqueEpics.forEach((name) => {
           const found = nonStateReleaseEpics.find((item) => {
@@ -380,12 +362,6 @@ export default function usefirebaseAuthState() {
             } else {
               return item;
             }
-          });
-          console.log("teamDataBefore", {
-            ...prev[0],
-            Map: result.data.Map,
-            Release: newRelease,
-            teamData: UpdatedTeamDataWithStory,
           });
 
           return [
@@ -459,7 +435,7 @@ export default function usefirebaseAuthState() {
       });
       return allCurrentEpics;
     });
-    console.log("set", current, id);
+
     if (current) {
       setCurrentOpenRelease(current);
       const EarlyUniqueEpics = current[0].agilePins.map((item) => {
@@ -471,12 +447,8 @@ export default function usefirebaseAuthState() {
       });
       const uniqueEpics = [...new Set(EarlyUniqueEpics)];
       uniqueEpics.forEach((name) => {});
-      /*      setCurrentPinsOpen({
-        allPins: current[0].agilePins,
-      }); */
 
       const allSaveThemes = [];
-      console.log("currentReleaseEpic", currentReleaseEpics);
 
       uniqueEpics.forEach((name) => {
         const found = currentReleaseEpics.find((item) => {
@@ -499,7 +471,6 @@ export default function usefirebaseAuthState() {
         }
       });
 
-      console.log("finalHeaven", finalObject);
       setCurrentPinsOpen(finalObject);
 
       setCurrentPinsOpenRevised((prev) => {
@@ -511,7 +482,7 @@ export default function usefirebaseAuthState() {
         const defaultArr = {};
         const finalModefiedArr = {};
         let arrNo = 0;
-        console.log("coulde", current[0].agilePins);
+
         for (let i = 0; i < current[0].agilePins.length; i += 1) {
           if (i % 4 === 0) {
             arrNo++;
@@ -520,8 +491,6 @@ export default function usefirebaseAuthState() {
           }
 
           defaultArr[arrNo].push(current[0].agilePins[i]);
-
-          console.log(defaultArr, "default");
         }
 
         finalArr = { ...finalArr, defaultArr };
@@ -541,34 +510,22 @@ export default function usefirebaseAuthState() {
             if (i % 4 === 0) {
               arrNo++;
               defaultArrMod = { ...defaultArrMod, [arrNo.toString()]: [] };
-              console.log(arrNo, "No");
             }
 
             defaultArrMod[arrNo].push(filteredAgilePins[i]);
-
-            console.log(defaultArrMod, "defaultM");
           }
 
           finalModefiedArr = { ...finalModefiedArr, [name]: defaultArrMod };
         });
-        console.log("Modefied", finalModefiedArr);
+
         finalArr = { ...finalArr, ...finalModefiedArr };
-        console.log("finalFor", finalArr);
+
         return finalArr;
       });
-
-      console.log(currentPinsOpenRevised, "lets gooo");
-      console.log(currentPinsOpen, "msms");
     }
-    console.log(
-      "Auth Reke",
-      currentOpenRelease,
-      process.env.NEXT_PUBLIC_API_STORY_ROUTE
-    );
   };
 
   const deleteTeam = async (id) => {
-    console.log("sentId", id);
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
@@ -581,15 +538,13 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     if (data) {
-      console.log("deletedteam", data.data);
       setUserTeamData((prev) => {
         const item = prev.filter((item) => {
           if (item._id != data.data._id) {
             return item;
           }
         });
-        console.log("deleting what", item);
-        console.log("prev", prev);
+
         return item;
       });
     }
@@ -606,7 +561,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     if (deletedReleaseTeam) {
-      console.log("deletedReleaseData", deletedReleaseTeam.data);
       setCurrentTeam([deletedReleaseTeam.data]);
     }
   };
@@ -618,7 +572,7 @@ export default function usefirebaseAuthState() {
     const formdata = new FormData();
     formdata.append("newStories", stringify(newRelease));
     formdata.append("newMaps", stringify(currentTeam[0].Map));
-    console.log("dataSent", newRelease);
+
     const UpdatedTeamWithStories = await axios
       .patch(
         `${
@@ -637,7 +591,6 @@ export default function usefirebaseAuthState() {
       });
 
     if (UpdatedTeamWithStories) {
-      console.log("dtaa", UpdatedTeamWithStories.data);
       const newRelease1 = UpdatedTeamWithStories.data.Release.filter(
         (release) => {
           return currentOpenRelease[0]._id === release._id;
@@ -645,7 +598,6 @@ export default function usefirebaseAuthState() {
       );
       const EarlyUniqueEpics = newRelease1[0].agilePins.map((item) => {
         if (item) {
-          console.log("item", item);
           return item.theme.name;
         } else {
           return;
@@ -684,7 +636,7 @@ export default function usefirebaseAuthState() {
           allSaveThemes.push(found);
         });
         setTheme(allSaveThemes);
-        console.log("ccynic", allCurrentEpics, newRelease1[0]);
+
         return allCurrentEpics;
       });
       setCurrentPinsOpen(finalObject);
@@ -694,7 +646,7 @@ export default function usefirebaseAuthState() {
             return prev[0]._id === release._id;
           }
         );
-        console.log("Newww", newRelease);
+
         return newRelease;
       });
 
@@ -722,7 +674,6 @@ export default function usefirebaseAuthState() {
         console.log(err);
       });
     if (teamAfterSavedSprint) {
-      console.log("teamAfTERS", teamAfterSavedSprint);
       setCurrentTeam([teamAfterSavedSprint.data]);
     }
 
@@ -740,14 +691,11 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log("datatRq", data);
   };
 
   const teamRequestRejected = async (teamId, userId) => {
     const formdata = new FormData();
 
-    console.log(teamId, userId, "mmmd");
     const data = await axios
       .patch(
         `${process.env.NEXT_PUBLIC_API_USER_ROUTE}?rejectTeamId=${teamId}&userId=${userId}`,
@@ -757,14 +705,13 @@ export default function usefirebaseAuthState() {
         console.log("teamRejectedErr", err);
       });
     if (data) {
-      console.log(data.data);
       setUserData(data.data);
     }
   };
 
   const teamRequestAccepted = async (teamId, userFields) => {
     const userFieldsString = stringify(userFields);
-    console.log("ddd", userFieldsString);
+
     const formdata = new FormData();
     formdata.append("userFields", userFieldsString);
     const data = await axios
@@ -788,23 +735,19 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log("teamMemeberIderr", err);
       });
-    console.log("dataWho", data);
+
     if (data) {
       setAllCurrentJoinedTeam(data.data);
     }
   };
 
   const setCurrentJoinedTeamFunction = (teamId) => {
-    console.log("based", allCurrentJoinedTeam);
     const team = allCurrentJoinedTeam.filter((item) => item._id === teamId);
-    console.log(team, "fold");
+
     setCurrentJoinedTeam(team);
   };
 
   const deletePin = async ({ pinId, pinThemeName }) => {
-    console.log("idddsss", currentTeam[0]._id, currentOpenRelease[0]._id);
-    console.log("hh", pinId, pinThemeName);
-
     const formdata = new FormData();
     const newTeamAfterPinDelete = await axios
       .patch(
@@ -818,7 +761,6 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log("deletingPinerr", err);
       });
-    console.log("Mmm", newTeamAfterPinDelete);
 
     if (newTeamAfterPinDelete) {
       setCurrentTeam([newTeamAfterPinDelete.data]);
@@ -832,7 +774,6 @@ export default function usefirebaseAuthState() {
   };
 
   const UserStoryInteractions = async (entireObject, releaseId) => {
-    console.log("dd", currentJoinedTeam[0]._id);
     const formdata = new FormData();
     formdata.append("pinInteraction", stringify(entireObject));
     const UpdatedTeamWithInteractions = await axios
@@ -847,11 +788,8 @@ export default function usefirebaseAuthState() {
       });
 
     if (UpdatedTeamWithInteractions) {
-      console.log("mmm", UpdatedTeamWithInteractions.data);
       setCurrentJoinedTeam([UpdatedTeamWithInteractions.data]);
     }
-
-    console.log("fij", UpdatedTeamWithInteractions);
   };
 
   const saveMap = async (map) => {
@@ -866,7 +804,7 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log("mapErr", err);
       });
-    console.log("savedMap", savedMap);
+
     if (savedMap) {
       setCurrentTeam([savedMap.data]);
       return savedMap;
@@ -889,7 +827,7 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log(err);
       });
-    console.log(savedTeamAfterMessage);
+
     if (savedTeamAfterMessage.data) {
       setCurrentTeam([savedTeamAfterMessage.data]);
       setCurrentJoinedTeam([savedTeamAfterMessage.data]);
@@ -904,10 +842,8 @@ export default function usefirebaseAuthState() {
   const setCurrentMessages = () => {
     return;
     let Team = currentTeam;
-    console.log("uia", messagesBeforeUpdate, Team);
 
     Team[0].chatHistory = messagesBeforeUpdate;
-    console.log(Team);
 
     setCurrentTeam(Team);
   };
@@ -927,8 +863,6 @@ export default function usefirebaseAuthState() {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log("sss", dataAfterDeleted);
   };
 
   return {

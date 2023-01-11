@@ -10,8 +10,7 @@ import deleteIcon from "../public/deleteIcon";
 
 export default function ReleaseDraggable({
   agilePins,
-  dateEnd,
-  dateStart,
+
   name,
   id,
   currentTeam,
@@ -37,7 +36,6 @@ export default function ReleaseDraggable({
     );
   };
 
-  console.log(prevSprints[0], "preb");
   const [openSprintCreate, setOpenSprintCreate] = useState(false);
   const [Sprints, setSprints] = useState(
     prevSprints.length > 0 ? prevSprints[0][1].sprints : []
@@ -51,8 +49,6 @@ export default function ReleaseDraggable({
   Sprints.forEach((elem, i) => {
     obj[elem.name] = elem.stories;
   });
-
-  console.log(obj, "flat");
 
   Sprints.forEach((item) => {
     const name = item.name;
@@ -143,12 +139,7 @@ export default function ReleaseDraggable({
   useEffect(() => {
     Object.entries(currentTeam[0].teamData.sprints).forEach((item) => {
       if (item[0] === id) {
-        console.log("saySpm", item);
         setTestArray((prev) => {
-          console.log("testCouldbe", {
-            ...prev,
-            unSelected: item[1].unSelected,
-          });
           return {
             ...prev,
             unSelected: item[1].unSelected,
@@ -158,14 +149,7 @@ export default function ReleaseDraggable({
     });
   }, []);
 
-  console.log("testArrayRel", testArray);
-
-  console.log(Object.entries(testArray));
-
-  console.log(Sprints, "allSprints");
-
   const removeFromList = (list, index) => {
-    console.log(list, "liut");
     const result = Array.from(list);
     const [removed] = result.splice(index, 1);
     return [removed, result];
@@ -181,14 +165,13 @@ export default function ReleaseDraggable({
     if (!result.destination) {
       return;
     }
-    console.log("rann");
-    console.log("drop", result.source.droppableId);
+
     const listCopy = { ...testArray };
-    console.log("listcopy", listCopy);
+
     const arrayKey = result.source.droppableId;
-    console.log("arr", arrayKey);
+
     const sourceList = listCopy[arrayKey];
-    console.log("sourceList", sourceList);
+
     const [removedElement, newSourceList] = removeFromList(
       sourceList,
       result.source.index
@@ -196,7 +179,7 @@ export default function ReleaseDraggable({
     listCopy[result.source.droppableId] = newSourceList;
 
     const destinationList = listCopy[result.destination.droppableId];
-    console.log("destination", result.destination.droppableId);
+
     listCopy[result.destination.droppableId] = addToList(
       destinationList,
       result.destination.index,
@@ -205,7 +188,7 @@ export default function ReleaseDraggable({
 
     setTestArray(listCopy);
   };
-  console.log("heqwHOSee", testArray);
+
   const finalArr = [];
 
   agilePins.forEach((item) => {
@@ -222,8 +205,6 @@ export default function ReleaseDraggable({
 
   const [saveSuccessful, setSaveSuccessful] = useState(false);
 
-  console.log("actualdAta", agilePins);
-
   return (
     <div className="w-fit lg:w-11/12 rounded-bl-2xl pb-3 border-t-8 bg-gray-100 p-4 mb-24 border-l border-b bg-opacity-75">
       <div className="relative ">
@@ -231,7 +212,7 @@ export default function ReleaseDraggable({
           onClick={() => {
             setOpenSprintCreate((prev) => !prev);
           }}
-          className="p-2 bg-indigo-800 text-white px-4 absolute top-[16px] z-40  right-56 btn-primary"
+          className="p-2 bg-indigo-800 text-white px-4 absolute top-[16px] z-40 text-xs  right-[200px] btn-primary"
         >
           Add New Sprint
         </button>
@@ -244,7 +225,7 @@ export default function ReleaseDraggable({
           }`}
         >
           <button
-            className="p-1 px-2 hidden font-Josefin mb-2 text-white text-sm bg-indigo-800 rounded btn-primary"
+            className="p-1 px-2 hidden font-Josefin mb-2 text-white text-xs bg-indigo-800 rounded btn-primary"
             onClick={async () => {
               Object.entries(testArray).forEach((val) => {
                 Sprints.forEach((item) => {
@@ -252,10 +233,6 @@ export default function ReleaseDraggable({
                     item.stories = val[1];
                   }
                 });
-              });
-              console.log({
-                unSelected: testArray.unSelected,
-                sprints: [...Sprints],
               });
 
               const data = await saveSprints(
@@ -265,7 +242,6 @@ export default function ReleaseDraggable({
                 },
                 id
               );
-              console.log(data, "Gottem Spottem");
             }}
           >
             save release story map
@@ -286,7 +262,6 @@ export default function ReleaseDraggable({
             </div>
             <input
               onChange={(e) => {
-                console.log("val", e.target.value);
                 setSprintStart(e.target.value);
               }}
               type="date"
@@ -342,7 +317,6 @@ export default function ReleaseDraggable({
           <button
             className="text-sm font-Josefin p-2 mt-2 relative bg-indigo-800 text-white rounded"
             onClick={() => {
-              console.log(sprintDuration, "sprint");
               if (!sprintName) {
                 toast.error("sprint name required to create sprint", {
                   position: toast.POSITION.BOTTOM_CENTER,
@@ -371,7 +345,6 @@ export default function ReleaseDraggable({
                 obj[elem.name] = elem.stories;
               });
 
-              console.log(obj, "flat");
               setTestArray((prev) => ({ ...prev, ...obj }));
               const oldDATE = new Date(sprintStart);
 
@@ -407,7 +380,7 @@ export default function ReleaseDraggable({
         <div className="flex -ml-24 lg:ml-0 justify-center border-b border-green-300 relative mb-4 p-2  py-6 rounded-t-2xl">
           {" "}
           <div className="mr-4 font-Josefin text-sm text-gray-800">Epics:</div>
-          <div className="max-x-l flex lg:w-[450px] w-[300px]">
+          <div className="max-x-l flex 2xl:w-[450px] w-[300px]">
             {finalArr.map((item) => {
               return (
                 <div
@@ -420,7 +393,7 @@ export default function ReleaseDraggable({
             })}
           </div>
           <button
-            className="ml-4 text-sm p-2 font-Josefin flex absolute right-2 top-4 items-center justify-center text-white text-sm bg-indigo-800 rounded duration-300 hover:bg-indigo-900"
+            className="ml-4 text-xs p-2 font-Josefin flex absolute right-2 top-4 items-center justify-center text-white text-sm bg-indigo-800 rounded duration-300 hover:bg-indigo-900"
             onClick={async () => {
               setSaveSuccessful(true);
               Object.entries(testArray).forEach((val) => {
@@ -429,10 +402,6 @@ export default function ReleaseDraggable({
                     item.stories = val[1];
                   }
                 });
-              });
-              console.log({
-                unSelected: testArray.unSelected,
-                sprints: [...Sprints],
               });
 
               const data = await saveSprints(
@@ -455,7 +424,6 @@ export default function ReleaseDraggable({
                   className: "text-sm",
                 });
               }
-              console.log(data, "SpottemGottem");
             }}
           >
             {saveSuccessful ? Logo("animate-spin mr-2 fill-green-300") : ""}{" "}
@@ -470,32 +438,6 @@ export default function ReleaseDraggable({
               <p className="ml-3 lg:text-3xl text-lg -mt-1 uppercase font-bold w-80 truncate">
                 Release {name}
               </p>
-              <button
-                className=" ml-4 font-Josefin hidden -mt-3 border text-indigo-800 text-sm bg-white rounded btn-primary"
-                onClick={() => {
-                  Object.entries(testArray).forEach((val) => {
-                    Sprints.forEach((item) => {
-                      if (item.name === val[0]) {
-                        item.stories = val[1];
-                      }
-                    });
-                  });
-                  console.log({
-                    unSelected: testArray.unSelected,
-                    sprints: [...Sprints],
-                  });
-
-                  saveSprints(
-                    {
-                      unSelected: testArray.unSelected,
-                      sprints: [...Sprints],
-                    },
-                    id
-                  );
-                }}
-              >
-                save release story map
-              </button>
             </div>
           </div>
 
@@ -504,8 +446,6 @@ export default function ReleaseDraggable({
               Unassigned Stories
             </p>
             {Object.entries(testArray).map((story) => {
-              console.log(story, "story");
-              console.log(Object.entries(testArray));
               if (story[0] === "unSelected") {
                 return (
                   <Droppable direction="horizontal" droppableId="unSelected">
@@ -559,7 +499,7 @@ export default function ReleaseDraggable({
                 );
               } else {
                 const Sprint = Sprints.filter((item) => item.name === story[0]);
-                console.log(Sprint, "sprint");
+
                 return (
                   <div className="mt-8 flex mb-6">
                     <SprintCard
@@ -580,10 +520,6 @@ export default function ReleaseDraggable({
                               }
                             });
                           });
-                          console.log({
-                            unSelected: testArray.unSelected,
-                            sprints: [...Sprints],
-                          });
 
                           const finalUnselectedArr = [];
                           const filteredSprints = [...Sprints].map((item) => {
@@ -597,12 +533,6 @@ export default function ReleaseDraggable({
                               return item;
                             }
                           });
-
-                          console.log(
-                            "filereSprinys",
-                            filteredSprints,
-                            finalUnselectedArr
-                          );
 
                           const finalFiltered = filteredSprints.filter(
                             (item) => {
@@ -630,7 +560,7 @@ export default function ReleaseDraggable({
                                   return item[0] !== Sprint[0].name;
                                 }
                               );
-                              console.log("cpl", Object.assign(arrayFiltered));
+
                               const emptyPrev = {};
                               arrayFiltered.forEach((item) => {
                                 emptyPrev[item[0]] = item[1];

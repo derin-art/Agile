@@ -15,7 +15,6 @@ export default function StoryTeamCard({
   deleteVisible = false,
   deleteFunction,
 }) {
-  console.log(priority, "pri");
   const purgeCSSSucks = () => {
     return (
       <div>
